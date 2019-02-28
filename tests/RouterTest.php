@@ -35,4 +35,22 @@ class RouterTest extends TestCase
 		self::assertEquals([25], $route->getParams());
 		self::assertEquals('User page', $route->run());
 	}
+
+	public function testValidateHTTPMethod()
+	{
+		$this->expectException(\InvalidArgumentException::class);
+		$this->router->match('FOO', 'http://domain.tld:8080');
+	}
+
+	public function testValidateURLWithoutScheme()
+	{
+		$this->expectException(\InvalidArgumentException::class);
+		$this->router->match('GET', 'domain.tld:8080');
+	}
+
+	public function testValidateURLWithoutSchemeOnlySlashs()
+	{
+		$this->expectException(\InvalidArgumentException::class);
+		$this->router->match('GET', '//domain.tld:8080');
+	}
 }

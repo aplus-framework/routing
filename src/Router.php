@@ -148,6 +148,9 @@ class Router
 		} elseif ( ! \in_array($method, ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], true)) {
 			throw new \InvalidArgumentException('Invalid HTTP method: ' . $method);
 		}
+		if ( ! \filter_var($url, \FILTER_VALIDATE_URL)) {
+			throw new \InvalidArgumentException('Invalid URL: ' . $url);
+		}
 		$parsed_url = $this->parseURL($url);
 		$base_url = $this->getBaseURL($parsed_url);
 		$collection = $this->matchCollection($base_url);
