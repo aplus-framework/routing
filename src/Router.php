@@ -70,22 +70,22 @@ class Router
 	{
 		$string = $this->replacePlaceholders($string);
 		\preg_match_all('#\(([^)]+)\)#', $string, $matches);
-		if ( ! empty($matches[0])) {
-			foreach ($matches[0] as $index => $pattern) {
-				if ( ! isset($params[$index])) {
-					throw new \Exception('Empty params');
-				}
-				if (\preg_match('#' . $pattern . '#', $params[$index])) {
-					$string = \substr_replace(
-						$string,
-						$params[$index],
-						\strpos($string, $pattern),
-						\strlen($pattern)
-					);
-					continue;
-				}
+		if (empty($matches[0])) {
+			return $string;
+		}
+		foreach ($matches[0] as $index => $pattern) {
+			if ( ! isset($params[$index])) {
+				throw new \Exception('Empty params');
+			}
+			if ( ! \preg_match('#' . $pattern . '#', $params[$index])) {
 				throw new \Exception('Invalid params');
 			}
+			$string = \substr_replace(
+				$string,
+				$params[$index],
+				\strpos($string, $pattern),
+				\strlen($pattern)
+			);
 		}
 		return $string;
 	}
@@ -131,7 +131,7 @@ class Router
 		return $parsed;
 	}
 
-	protected function getBaseURL(array $parsed_url) : string
+	protected function renderBaseURL(array $parsed_url) : string
 	{
 		$base_url = $parsed_url['scheme'] . '://' . $parsed_url['host'];
 		if (isset($parsed_url['port']) && ! \in_array($parsed_url['port'], [null, 80, 443], true)) {
@@ -152,7 +152,7 @@ class Router
 			throw new \InvalidArgumentException('Invalid URL: ' . $url);
 		}
 		$parsed_url = $this->parseURL($url);
-		$base_url = $this->getBaseURL($parsed_url);
+		$base_url = $this->renderBaseURL($parsed_url);
 		$collection = $this->matchCollection($base_url);
 		if ( ! $collection) {
 			// ROUTER ERROR 404
@@ -190,7 +190,7 @@ class Router
 			return null;
 		}
 		/**
-		 * @var Route
+		 * @var Route $route
 		 */
 		foreach ($routes[$method] as $route) {
 			$pattern = $this->replacePlaceholders($route->getPath());
