@@ -234,4 +234,62 @@ class RouterTest extends TestCase
 		$this->expectException(\Exception::class);
 		$this->router->fillPlaceholders('http://s{num}.domain.tld', 'abc');
 	}
+
+	public function testCollectionMatchWithPlaceholders()
+	{
+		$this->router->serve(
+			'http://subdomain.domain.tld:{port}',
+			function (Collection $collection) {
+				$collection->get('/', 'port');
+			}
+		);
+		$this->router->serve(
+			'{scheme}://subdomain.domain.tld:8080',
+			function (Collection $collection) {
+				$collection->get('/', 'scheme');
+			}
+		);
+		$this->router->serve(
+			'{scheme}://{subdomain}.domain.tld:{port}',
+			function (Collection $collection) {
+				$collection->get('/', 'scheme-subdomain-port');
+			}
+		);
+		$this->router->serve(
+			'https://domain.tld',
+			function (Collection $collection) {
+				$collection->get('/', 'none');
+			}
+		);
+		$this->router->serve(
+			'{any}',
+			function (Collection $collection) {
+				$collection->get('/', 'any');
+			}
+		);
+		self::assertEquals(
+			'any',
+			$this->router->match('GET', 'http://example.com')->getFunction()
+		);
+		self::assertEquals(
+			'none',
+			$this->router->match('GET', 'https://domain.tld')->getFunction()
+		);
+		self::assertEquals(
+			'scheme-subdomain-port',
+			$this->router->match('GET', 'http://test.domain.tld:8081')->getFunction()
+		);
+		self::assertEquals(
+			'scheme',
+			$this->router->match('GET', 'https://subdomain.domain.tld:8080')->getFunction()
+		);
+		self::assertEquals(
+			'port',
+			$this->router->match('GET', 'http://subdomain.domain.tld:8081')->getFunction()
+		);
+		self::assertEquals(
+			'any',
+			$this->router->match('GET', 'http://foo.bar.example.com')->getFunction()
+		);
+	}
 }
