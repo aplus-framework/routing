@@ -23,6 +23,9 @@ class RouterTest extends TestCase
 			$collection->get('/users/{num}', function (array $params) {
 				return "User page: {$params[0]}";
 			});
+			$collection->get('/users/{num}/posts/{num}', function (array $params) {
+				return "User {$params[0]}, post: {$params[1]}";
+			})->setName('user.post');
 			$collection->get('contact', function () {
 				return 'Contact page';
 			}, 'ctt');
@@ -30,6 +33,17 @@ class RouterTest extends TestCase
 				return 'Home page';
 			})->setName('home');
 		});
+	}
+
+	public function testRoutePath()
+	{
+		$this->prepare();
+		self::assertEquals(
+			'/users/10/posts/20',
+			$this->router->getNamedRoute('user.post')->getPath(10, 20)
+		);
+		self::expectException(\Exception::class);
+		$this->router->getNamedRoute('user.post')->getPath(10);
 	}
 
 	public function testGroup()
@@ -57,7 +71,7 @@ class RouterTest extends TestCase
 		self::assertEquals('/animals/dog', $this->router->getNamedRoute('animals.dog')->getPath());
 		self::assertEquals('/users', $this->router->getNamedRoute('users')->getPath());
 		self::assertEquals('/users', $this->router->getNamedRoute('users.create')->getPath());
-		self::assertEquals('/users/{num}', $this->router->getNamedRoute('users.show')->getPath());
+		self::assertEquals('/users/25', $this->router->getNamedRoute('users.show')->getPath(25));
 		self::assertEquals('/users/{num}/panel', $this->router->getNamedRoute('panel')->getPath());
 		self::assertEquals(
 			'/users/{num}/panel/config/update',

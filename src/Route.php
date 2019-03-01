@@ -49,8 +49,12 @@ class Route
 		$this->path = '/' . \trim($path, '/');
 	}
 
-	public function getPath() : string
+	public function getPath(...$params) : string
 	{
+		if ($params) {
+			return $this->collection->getRouter()
+				->fillPlaceholders($this->path, ...$params);
+		}
 		return $this->path;
 	}
 
