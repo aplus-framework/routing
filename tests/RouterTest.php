@@ -119,6 +119,12 @@ class RouterTest extends TestCase
 		self::assertEquals('/users/{num}', $route->getPath());
 		self::assertEquals([25], $route->getFunctionParams());
 		self::assertEquals('User page: 25', $route->run());
+		$route = $this->router->match('GET', 'https://domain.tld:8080/users/10/posts/15');
+		self::assertInstanceOf(Route::class, $route);
+		self::assertEquals('/users/{num}/posts/{num}', $route->getPath());
+		self::assertEquals('/users/7/posts/8', $route->getPath(7, 8));
+		self::assertEquals([10, 15], $route->getFunctionParams());
+		self::assertEquals('User 10, post: 15', $route->run());
 	}
 
 	public function testValidateHTTPMethod()
@@ -145,5 +151,87 @@ class RouterTest extends TestCase
 		self::assertEquals('/contact', $this->router->getNamedRoute('ctt')->getPath());
 		self::assertEquals('/', $this->router->getNamedRoute('home')->getPath());
 		self::assertNull($this->router->getNamedRoute('unknown'));
+	}
+
+	public function testPlaceholders()
+	{
+		$default = $this->router->getPlaceholders();
+		$custom = [
+			'a-b' => '([a-b]+)',
+			'c-e' => '([c-e]+)',
+		];
+		$this->router->addPlaceholder($custom);
+		$this->router->addPlaceholder('f-h', '([f-h]+)');
+		$custom['f-h'] = '([f-h]+)';
+		$expected = [];
+		foreach ($custom as $key => $placeholder) {
+			$expected['{' . $key . '}'] = $placeholder;
+		}
+		$expected = \array_merge($expected, $default);
+		$this->assertEquals($expected, $this->router->getPlaceholders());
+	}
+
+	public function testReplacePlaceholders()
+	{
+		$placeholders = '{alpha}/{alphanum}/{any}/{unknown}/{num}/{segment}';
+		$patterns = '([a-zA-Z]+)/([a-zA-Z0-9]+)/(.*)/{unknown}/([0-9]+)/([^/]+)';
+		$merged = '([a-zA-Z]+)/{alphanum}/(.*)/{unknown}/([0-9]+)/([^/]+)';
+		$this->assertEquals(
+			$patterns,
+			$this->router->replacePlaceholders($placeholders)
+		);
+		$this->assertEquals(
+			$placeholders,
+			$this->router->replacePlaceholders($patterns, true)
+		);
+		$this->assertEquals(
+			$patterns,
+			$this->router->replacePlaceholders($merged)
+		);
+		$this->assertEquals(
+			$placeholders,
+			$this->router->replacePlaceholders($merged, true)
+		);
+		$this->router->addPlaceholder('unknown', '([1-5])');
+		$this->assertEquals(
+			'([a-zA-Z]+)/([a-zA-Z0-9]+)/(.*)/([1-5])/([0-9]+)/([^/]+)',
+			$this->router->replacePlaceholders($placeholders)
+		);
+		$this->assertEquals(
+			$placeholders,
+			$this->router->replacePlaceholders($patterns, true)
+		);
+	}
+
+	public function testFillPlaceholders()
+	{
+		$this->assertEquals(
+			'http://s1.domain.tld/users/25',
+			$this->router->fillPlaceholders(
+				'http://s{num}.domain.tld/users/{num}',
+				1,
+				25
+			)
+		);
+		$this->assertEquals(
+			'http://domain.tld/a-pretty-title/abc123',
+			$this->router->fillPlaceholders(
+				'http://domain.tld/{segment}/{alphanum}',
+				'a-pretty-title',
+				'abc123'
+			)
+		);
+	}
+
+	public function testFillEmptyPlaceholders()
+	{
+		$this->expectException(\Exception::class);
+		$this->router->fillPlaceholders('http://s{num}.domain-{alpha}.tld', 25);
+	}
+
+	public function testFillInvalidPlaceholders()
+	{
+		$this->expectException(\Exception::class);
+		$this->router->fillPlaceholders('http://s{num}.domain.tld', 'abc');
 	}
 }
