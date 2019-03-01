@@ -20,9 +20,15 @@ class RouterTest extends TestCase
 	protected function prepare()
 	{
 		$this->router->serve('{scheme}://domain.tld:{num}', function (Collection $collection) {
-			$collection->get('/users/{num}', function () {
-				return 'User page';
+			$collection->get('/users/{num}', function (array $params) {
+				return "User page: {$params[0]}";
 			});
+			$collection->get('contact', function () {
+				return 'Contact page';
+			}, 'ctt');
+			$collection->get('', function () {
+				return 'Home page';
+			})->setName('home');
 		});
 	}
 
@@ -33,7 +39,7 @@ class RouterTest extends TestCase
 		self::assertInstanceOf(Route::class, $route);
 		self::assertEquals('/users/{num}', $route->getPath());
 		self::assertEquals([25], $route->getParams());
-		self::assertEquals('User page', $route->run());
+		self::assertEquals('User page: 25', $route->run());
 	}
 
 	public function testValidateHTTPMethod()
@@ -52,5 +58,13 @@ class RouterTest extends TestCase
 	{
 		$this->expectException(\InvalidArgumentException::class);
 		$this->router->match('GET', '//domain.tld:8080');
+	}
+
+	public function testNamedRoute()
+	{
+		$this->prepare();
+		self::assertEquals('/contact', $this->router->getNamedRoute('ctt')->getPath());
+		self::assertEquals('/', $this->router->getNamedRoute('home')->getPath());
+		self::assertNull($this->router->getNamedRoute('unknown'));
 	}
 }

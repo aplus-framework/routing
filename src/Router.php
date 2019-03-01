@@ -211,4 +211,18 @@ class Router
 		}
 		return null;
 	}
+
+	public function getNamedRoute(string $name) : ?Route
+	{
+		foreach ($this->getCollections() as $collection) {
+			foreach ($collection->getRoutes() as $routes) {
+				foreach ($routes as $route) {
+					if ($route->getName() === $name) {
+						return $route;
+					}
+				}
+			}
+		}
+		return null;
+	}
 }

@@ -46,38 +46,40 @@ class Collection
 		return $this->baseURL;
 	}
 
-	public function add($methods, string $path, $function) : Route
+	public function add(array $methods, string $path, $function, string $name = null) : Route
 	{
 		$route = new Route($this, $path, $function);
-		$methods = (array) $methods;
+		if ($name) {
+			$route->setName($name);
+		}
 		foreach ($methods as $method) {
 			$this->addRoute($method, $route);
 		}
 		return $route;
 	}
 
-	public function get(string $path, $function) : Route
+	public function get(string $path, $function, string $name = null) : Route
 	{
-		return $this->add('GET', $path, $function);
+		return $this->add(['GET'], $path, $function, $name);
 	}
 
-	public function post(string $path, $function) : Route
+	public function post(string $path, $function, string $name = null) : Route
 	{
-		return $this->add('POST', $path, $function);
+		return $this->add(['POST'], $path, $function, $name);
 	}
 
-	public function put(string $path, $function) : Route
+	public function put(string $path, $function, string $name = null) : Route
 	{
-		return $this->add('PUT', $path, $function);
+		return $this->add(['PUT'], $path, $function, $name);
 	}
 
-	public function patch(string $path, $function) : Route
+	public function patch(string $path, $function, string $name = null) : Route
 	{
-		return $this->add('PATCH', $path, $function);
+		return $this->add(['PATCH'], $path, $function, $name);
 	}
 
-	public function delete(string $path, $function) : Route
+	public function delete(string $path, $function, string $name = null) : Route
 	{
-		return $this->add('DELETE', $path, $function);
+		return $this->add(['DELETE'], $path, $function, $name);
 	}
 }

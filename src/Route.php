@@ -6,12 +6,24 @@ class Route
 	protected $path;
 	protected $function;
 	protected $params = [];
+	protected $name;
 
 	public function __construct(Collection $collection, string $path, $function)
 	{
 		$this->collection = $collection;
 		$this->setPath($path);
 		$this->function = $function;
+	}
+
+	public function getName() : ?string
+	{
+		return $this->name;
+	}
+
+	public function setName(string $name)
+	{
+		$this->name = $name;
+		return $this;
 	}
 
 	protected function setPath(string $path)
@@ -44,7 +56,7 @@ class Route
 	{
 		$function = $this->getFunction();
 		if ( ! \is_string($function)) {
-			return $function($construct);
+			return $function($this->getParams(), ...$construct);
 		}
 		[$class, $method] = \explode('::', $function);
 		$class = new $class(...$construct);
