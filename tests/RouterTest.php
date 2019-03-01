@@ -32,7 +32,30 @@ class RouterTest extends TestCase
 			$collection->get('', function () {
 				return 'Home page';
 			})->setName('home');
+			$collection->get('shop', 'Tests\Routing\Support\Shop');
+			$collection->get('shop/products', 'Tests\Routing\Support\Shop::listProducts');
+			$collection->get(
+				'shop/products/{title}/{num}/([a-z]{2})',
+				'Tests\Routing\Support\Shop::showProduct/1/0/2'
+			);
 		});
+	}
+
+	public function testRouteRunWithClass()
+	{
+		$this->prepare();
+		self::assertEquals(
+			'Tests\Routing\Support\Shop::index',
+			$this->router->match('GET', 'https://domain.tld:8081/shop')->run()
+		);
+		self::assertEquals(
+			'Tests\Routing\Support\Shop::listProducts',
+			$this->router->match('GET', 'https://domain.tld:8081/shop/products')->run()
+		);
+		self::assertEquals(
+			[22, 'foo-bar', 'en'],
+			$this->router->match('GET', 'https://domain.tld:8081/shop/products/foo-bar/22/en')->run()
+		);
 	}
 
 	public function testRoutePath()

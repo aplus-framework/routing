@@ -37,6 +37,11 @@ class Router
 		$this->defaultRouteNotFound=new Route()
 	}*/
 
+	public function getDefaultRouteFunction() : string
+	{
+		return $this->defaultRouteFunction;
+	}
+
 	/**
 	 * @param array|string $placeholder
 	 * @param string|null  $pattern

@@ -80,8 +80,51 @@ class Route
 		if ( ! \is_string($function)) {
 			return $function($this->getFunctionParams(), ...$construct);
 		}
-		[$class, $method] = \explode('::', $function);
-		$class = new $class(...$construct);
-		return $class->{$method}(...$this->getFunctionParams());
+		if (\strpos($function, '::') === false) {
+			$function .= '::' . $this->collection->getRouter()->getDefaultRouteFunction();
+		}
+		[$classname, $function] = \explode('::', $function, 2);
+		[$function, $params] = $this->extractFunctionAndParams($function);
+		if ( ! \class_exists($classname)) {
+			throw new \Exception("Class not exists: {$classname}");
+		}
+		$class = new $classname(...$construct);
+		if ( ! \method_exists($class, $function)) {
+			throw new \Exception(
+				"Class method not exists: {$classname}::{$function}"
+			);
+		}
+		return $class->{$function}(...$params);
+	}
+
+	/**
+	 * @param string $function A function part like: index/0/2/1
+	 *
+	 * @return array
+	 */
+	protected function extractFunctionAndParams(string $function) : array
+	{
+		if (\strpos($function, '/') === false) {
+			return [$function, []];
+		}
+		$params = \explode('/', $function);
+		$function = $params[0];
+		unset($params[0]);
+		if ($params) {
+			$function_params = $this->getFunctionParams();
+			$params = \array_values($params);
+			foreach ($params as $index => $param) {
+				if ( ! \array_key_exists($param, $function_params)) {
+					throw new \InvalidArgumentException(
+						'Undefined method param "' . $param . '" for Route ' . $this->getFunction()
+					);
+				}
+				$params[$index] = $function_params[$param];
+			}
+		}
+		return [
+			$function,
+			$params,
+		];
 	}
 }
