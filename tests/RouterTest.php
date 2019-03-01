@@ -32,6 +32,39 @@ class RouterTest extends TestCase
 		});
 	}
 
+	public function testGroup()
+	{
+		$this->router->serve('{scheme}://domain.tld:{num}', function (Collection $collection) {
+			$collection->group('animals', [
+				$collection->get('', 'Animals::index', 'animals'),
+				$collection->get('cat', 'Animals::cat', 'animals.cat'),
+				$collection->get('dog', 'Animals::dog', 'animals.dog'),
+			]);
+			$collection->group('users', [
+				$collection->get('', 'Users::index', 'users'),
+				$collection->post('', 'Users::index', 'users.create'),
+				$collection->get('{num}', 'Users::show/0', 'users.show'),
+				$collection->group('{num}/panel', [
+					$collection->get('', 'Panel::index', 'panel'),
+					$collection->group('config', [
+						$collection->get('update', 'Panel::config', 'panel.update'),
+					]),
+				]),
+			]);
+		});
+		self::assertEquals('/animals', $this->router->getNamedRoute('animals')->getPath());
+		self::assertEquals('/animals/cat', $this->router->getNamedRoute('animals.cat')->getPath());
+		self::assertEquals('/animals/dog', $this->router->getNamedRoute('animals.dog')->getPath());
+		self::assertEquals('/users', $this->router->getNamedRoute('users')->getPath());
+		self::assertEquals('/users', $this->router->getNamedRoute('users.create')->getPath());
+		self::assertEquals('/users/{num}', $this->router->getNamedRoute('users.show')->getPath());
+		self::assertEquals('/users/{num}/panel', $this->router->getNamedRoute('panel')->getPath());
+		self::assertEquals(
+			'/users/{num}/panel/config/update',
+			$this->router->getNamedRoute('panel.update')->getPath()
+		);
+	}
+
 	public function testServe()
 	{
 		$this->prepare();

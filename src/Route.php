@@ -7,12 +7,30 @@ class Route
 	protected $function;
 	protected $functionParams = [];
 	protected $name;
+	protected $options = [];
 
 	public function __construct(Collection $collection, string $path, $function)
 	{
 		$this->collection = $collection;
 		$this->setPath($path);
 		$this->function = $function;
+	}
+
+	public function getOptions() : array
+	{
+		return $this->options;
+	}
+
+	public function addOptions(array $options)
+	{
+		$this->options = \array_replace_recursive($this->options, $options);
+		return $this;
+	}
+
+	public function setOptions(array $options)
+	{
+		$this->options = $options;
+		return $this;
 	}
 
 	public function getName() : ?string
@@ -26,7 +44,7 @@ class Route
 		return $this;
 	}
 
-	protected function setPath(string $path)
+	public function setPath(string $path)
 	{
 		$this->path = '/' . \trim($path, '/');
 	}

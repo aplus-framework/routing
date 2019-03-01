@@ -82,4 +82,27 @@ class Collection
 	{
 		return $this->add(['DELETE'], $path, $function, $name);
 	}
+
+	/**
+	 * @param string  $base_path
+	 * @param Route[] $routes
+	 * @param array   $options
+	 *
+	 * @return array
+	 */
+	public function group(string $base_path, array $routes, array $options = [])
+	{
+		$base_path = \rtrim($base_path, '/');
+		foreach ($routes as $route) {
+			if (\is_array($route)) {
+				$this->group($base_path, $route, $options);
+				continue;
+			}
+			$route->setPath($base_path . $route->getPath());
+			if ($options) {
+				$route->addOptions($options);
+			}
+		}
+		return $routes;
+	}
 }
