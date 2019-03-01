@@ -1,6 +1,7 @@
 <?php namespace Tests\Routing;
 
 use Framework\Routing\Collection;
+use Framework\Routing\Exception;
 use Framework\Routing\Route;
 use Framework\Routing\Router;
 use PHPUnit\Framework\TestCase;
@@ -32,6 +33,8 @@ class RouterTest extends TestCase
 			$collection->get('', function () {
 				return 'Home page';
 			})->setName('home');
+			$collection->get('foo', 'Foo');
+			$collection->get('bar', 'Tests\Routing\Support\Shop::bar');
 			$collection->get('shop', 'Tests\Routing\Support\Shop');
 			$collection->get('shop/products', 'Tests\Routing\Support\Shop::listProducts');
 			$collection->get(
@@ -54,8 +57,35 @@ class RouterTest extends TestCase
 		);
 		self::assertEquals(
 			[22, 'foo-bar', 'en'],
-			$this->router->match('GET', 'https://domain.tld:8081/shop/products/foo-bar/22/en')->run()
+			$this->router->match('GET', 'https://domain.tld:8081/shop/products/foo-bar/22/en')
+				->run()
 		);
+	}
+
+	public function testRouteRunWithClassNotExists()
+	{
+		$this->prepare();
+		self::expectException(Exception::class);
+		self::expectExceptionMessage('Class not exists: Foo');
+		$this->router->match('GET', 'https://domain.tld:8081/foo')->run();
+	}
+
+	public function testRouteRunWithClassMethodNotExists()
+	{
+		$this->prepare();
+		self::expectException(Exception::class);
+		self::expectExceptionMessage('Class method not exists: Tests\Routing\Support\Shop::bar');
+		$this->router->match('GET', 'https://domain.tld:8081/bar')->run();
+	}
+
+	public function testRouteRunWithUndefinedFunctionParam()
+	{
+		$this->prepare();
+		$route = $this->router->match('GET', 'https://domain.tld:8081/shop/products/foo-bar/22/br');
+		self::expectException(\InvalidArgumentException::class);
+		self::expectExceptionMessage('Undefined function param: 2');
+		$route->setFunctionParams([22, 'foo-bar']);
+		$route->run();
 	}
 
 	public function testRoutePath()
@@ -65,7 +95,7 @@ class RouterTest extends TestCase
 			'/users/10/posts/20',
 			$this->router->getNamedRoute('user.post')->getPath(10, 20)
 		);
-		self::expectException(\Exception::class);
+		self::expectException(\InvalidArgumentException::class);
 		$this->router->getNamedRoute('user.post')->getPath(10);
 	}
 

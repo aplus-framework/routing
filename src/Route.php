@@ -86,11 +86,11 @@ class Route
 		[$classname, $function] = \explode('::', $function, 2);
 		[$function, $params] = $this->extractFunctionAndParams($function);
 		if ( ! \class_exists($classname)) {
-			throw new \Exception("Class not exists: {$classname}");
+			throw new Exception("Class not exists: {$classname}");
 		}
 		$class = new $classname(...$construct);
 		if ( ! \method_exists($class, $function)) {
-			throw new \Exception(
+			throw new Exception(
 				"Class method not exists: {$classname}::{$function}"
 			);
 		}
@@ -115,9 +115,7 @@ class Route
 			$params = \array_values($params);
 			foreach ($params as $index => $param) {
 				if ( ! \array_key_exists($param, $function_params)) {
-					throw new \InvalidArgumentException(
-						'Undefined method param "' . $param . '" for Route ' . $this->getFunction()
-					);
+					throw new \InvalidArgumentException("Undefined function param: {$param}");
 				}
 				$params[$index] = $function_params[$param];
 			}

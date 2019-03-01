@@ -29,6 +29,7 @@ class Router
 	 * @var array
 	 */
 	protected $matchedRouteParams = [];
+
 	/*public function getDefaultRouteNotFound() : Route
 	{
 		if ($this->defaultRouteNotFound) {
@@ -36,7 +37,6 @@ class Router
 		}
 		$this->defaultRouteNotFound=new Route()
 	}*/
-
 	public function getDefaultRouteFunction() : string
 	{
 		return $this->defaultRouteFunction;
@@ -83,10 +83,10 @@ class Router
 		}
 		foreach ($matches[0] as $index => $pattern) {
 			if ( ! isset($params[$index])) {
-				throw new \Exception('Empty params');
+				throw new \InvalidArgumentException("Parameter is empty. Index: {$index}");
 			}
 			if ( ! \preg_match('#' . $pattern . '#', $params[$index])) {
-				throw new \Exception('Invalid params');
+				throw new \InvalidArgumentException('Invalid parameters');
 			}
 			$string = \substr_replace(
 				$string,
