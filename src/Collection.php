@@ -90,7 +90,7 @@ class Collection
 	 *
 	 * @return array
 	 */
-	public function group(string $base_path, array $routes, array $options = [])
+	public function group(string $base_path, array $routes, array $options = []) : array
 	{
 		$base_path = \rtrim($base_path, '/');
 		foreach ($routes as $route) {

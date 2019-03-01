@@ -65,6 +65,38 @@ class RouterTest extends TestCase
 		);
 	}
 
+	public function testHTTPMethods()
+	{
+		$this->router->serve('{scheme}://domain.tld:{num}', function (Collection $collection) {
+			$collection->get('/', 'Home::get');
+			$collection->post('/', 'Home::post');
+			$collection->put('/', 'Home::put');
+			$collection->patch('/', 'Home::patch');
+			$collection->delete('/', 'Home::delete');
+		});
+		$base_url = 'http://domain.tld:8080';
+		self::assertEquals(
+			'Home::get',
+			$this->router->match('GET', $base_url)->getFunction()
+		);
+		self::assertEquals(
+			'Home::post',
+			$this->router->match('POST', $base_url)->getFunction()
+		);
+		self::assertEquals(
+			'Home::put',
+			$this->router->match('PUT', $base_url)->getFunction()
+		);
+		self::assertEquals(
+			'Home::patch',
+			$this->router->match('PATCH', $base_url)->getFunction()
+		);
+		self::assertEquals(
+			'Home::delete',
+			$this->router->match('DELETE', $base_url)->getFunction()
+		);
+	}
+
 	public function testServe()
 	{
 		$this->prepare();
