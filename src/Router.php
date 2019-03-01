@@ -204,7 +204,7 @@ class Router
 				//$this->matchedRoutePath = $matches[0];
 				unset($matches[0]);
 				//$this->matchedRouteParams = \array_values($matches);
-				$route->setParams(\array_values($matches));
+				$route->setFunctionParams(\array_values($matches));
 				//$this->matchedURL = $this->matchedBaseURL . $this->matchedRoutePath;
 				return $route;
 			}
@@ -216,6 +216,9 @@ class Router
 	{
 		foreach ($this->getCollections() as $collection) {
 			foreach ($collection->getRoutes() as $routes) {
+				/**
+				 * @var Route $route
+				 */
 				foreach ($routes as $route) {
 					if ($route->getName() === $name) {
 						return $route;

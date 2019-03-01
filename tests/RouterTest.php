@@ -38,7 +38,7 @@ class RouterTest extends TestCase
 		$route = $this->router->match('GET', 'https://domain.tld:8080/users/25');
 		self::assertInstanceOf(Route::class, $route);
 		self::assertEquals('/users/{num}', $route->getPath());
-		self::assertEquals([25], $route->getParams());
+		self::assertEquals([25], $route->getFunctionParams());
 		self::assertEquals('User page: 25', $route->run());
 	}
 

@@ -5,7 +5,7 @@ class Route
 	protected $collection;
 	protected $path;
 	protected $function;
-	protected $params = [];
+	protected $functionParams = [];
 	protected $name;
 
 	public function __construct(Collection $collection, string $path, $function)
@@ -41,14 +41,14 @@ class Route
 		return $this->function;
 	}
 
-	public function getParams() : array
+	public function getFunctionParams() : array
 	{
-		return $this->params;
+		return $this->functionParams;
 	}
 
-	public function setParams(array $params)
+	public function setFunctionParams(array $params)
 	{
-		$this->params = $params;
+		$this->functionParams = $params;
 		return $this;
 	}
 
@@ -56,10 +56,10 @@ class Route
 	{
 		$function = $this->getFunction();
 		if ( ! \is_string($function)) {
-			return $function($this->getParams(), ...$construct);
+			return $function($this->getFunctionParams(), ...$construct);
 		}
 		[$class, $method] = \explode('::', $function);
 		$class = new $class(...$construct);
-		return $class->{$method}(...$this->getParams());
+		return $class->{$method}(...$this->getFunctionParams());
 	}
 }
