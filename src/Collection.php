@@ -2,10 +2,24 @@
 
 class Collection
 {
+	/**
+	 * @var \Framework\Routing\Router
+	 */
 	protected $router;
+	/**
+	 * @var string
+	 */
 	protected $baseURL;
+	/**
+	 * Array of HTTP Methods as keys and array of Routes as values.
+	 *
+	 * @var array
+	 */
 	protected $routes = [];
-	protected $routeNotFound;
+	/**
+	 * @var Route|null
+	 */
+	protected $notFound;
 
 	public function __construct(Router $router, string $base_url)
 	{
@@ -13,46 +27,95 @@ class Collection
 		$this->setBaseURL($base_url);
 	}
 
+	public function __call($name, $arguments)
+	{
+		switch ($name) {
+			case 'getRouteNotFound':
+				return $this->getRouteNotFound();
+				break;
+		}
+	}
+
+	public function __get($name)
+	{
+		switch ($name) {
+			case 'baseURL':
+				return $this->baseURL;
+				break;
+			case 'router':
+				return $this->router;
+				break;
+			case 'routes':
+				return $this->routes;
+				break;
+		}
+	}
+
 	protected function setBaseURL(string $base_url)
 	{
 		$this->baseURL = \ltrim($base_url, '/');
+		return $this;
 	}
 
-	protected function addRoute(string $method, Route $route)
+	protected function addRoute(string $http_method, Route $route)
 	{
-		$this->routes[$method][] = $route;
-	}
-
-	public function getRouter() : Router
-	{
-		return $this->router;
+		$this->routes[\strtoupper($http_method)][] = $route;
+		return $this;
 	}
 
 	/**
-	 * @return array
+	 * Gets the Collection Base URL.
+	 *
+	 * @param mixed ...$params Parameters to fill the Base URL placeholders
+	 * @param mixed $function
+	 *
+	 * @return string
 	 */
-	public function getRoutes() : array
+	/*private function baseURL(...$params) : string
 	{
-		return $this->routes;
-	}
-
-	public function getRouteNotFound() : ?Route
-	{
-		return $this->routeNotFound;
-	}
-
-	public function getBaseURL() : string
-	{
+		if ($params) {
+			return $this->router->fillPlaceholders($this->baseURL, ...$params);
+		}
 		return $this->baseURL;
+	}*/
+	/**
+	 * Sets the function to the Collection Route Not Found.
+	 *
+	 * @param callable|string $function the Route function to run when no Route path is found for
+	 *                                  this collection
+	 */
+	public function notFound($function) : void
+	{
+		$this->notFound = $function;
 	}
 
-	public function add(array $methods, string $path, $function, string $name = null) : Route
+	/**
+	 * Gets the Route Not Found for this Collection.
+	 *
+	 * @see notFound()
+	 *
+	 * @return \Framework\Routing\Route|null the Route containing the Not Found Function or null if
+	 *                                       the Function was not set
+	 */
+	protected function getRouteNotFound() : ?Route
 	{
-		$route = new Route($this, $path, $function);
+		return empty($this->notFound)
+			? null
+			: new Route(
+				$this->router,
+				$this->router->getMatchedBaseURL(),
+				$this->router->getMatchedPath(),
+				$this->notFound
+			);
+	}
+
+	public function add(array $http_methods, string $path, $function, string $name = null) : Route
+	{
+		$route = new Route($this->router, $this->baseURL, $path, $function);
 		if ($name) {
 			$route->setName($name);
 		}
-		foreach ($methods as $method) {
+		foreach ($http_methods as $method) {
 			$this->addRoute($method, $route);
 		}
 		return $route;
@@ -84,9 +147,9 @@ class Collection
 	}
 
 	/**
-	 * @param string  $base_path
-	 * @param Route[] $routes
-	 * @param array   $options
+	 * @param string                     $base_path
+	 * @param \Framework\Routing\Route[] $routes
+	 * @param array                      $options
 	 *
 	 * @return array
 	 */
@@ -102,6 +165,110 @@ class Collection
 			if ($options) {
 				$route->addOptions($options);
 			}
+		}
+		return $routes;
+	}
+
+	public function resource(
+		string $path,
+		string $class,
+		string $base_name,
+		array $except = [],
+		string $placeholder = '{num}'
+	) : array
+	{
+		$path = \rtrim($path, '/') . '/';
+		$class .= '::';
+		if ($except) {
+			$except = \array_flip($except);
+		}
+		$routes = [];
+		if ( ! isset($except['index'])) {
+			$routes[] = $this->get(
+				$path,
+				$class . 'index',
+				$base_name . '.index'
+			);
+		}
+		if ( ! isset($except['create'])) {
+			$routes[] = $this->post(
+				$path,
+				$class . 'create',
+				$base_name . '.create'
+			);
+		}
+		if ( ! isset($except['show'])) {
+			$routes[] = $this->get(
+				$path . $placeholder,
+				$class . 'show/0',
+				$base_name . '.show'
+			);
+		}
+		if ( ! isset($except['update'])) {
+			$routes[] = $this->patch(
+				$path . $placeholder,
+				$class . 'update/0',
+				$base_name . '.update'
+			);
+		}
+		if ( ! isset($except['replace'])) {
+			$routes[] = $this->put(
+				$path . $placeholder,
+				$class . 'replace/0',
+				$base_name . '.replace'
+			);
+		}
+		if ( ! isset($except['delete'])) {
+			$routes[] = $this->delete(
+				$path . $placeholder,
+				$class . 'delete/0',
+				$base_name . '.delete'
+			);
+		}
+		return $routes;
+	}
+
+	public function webResource(
+		string $path,
+		string $class,
+		string $base_name,
+		array $except = [],
+		string $placeholder = '{num}'
+	) : array
+	{
+		$routes = $this->resource($path, $class, $base_name, $except, $placeholder);
+		$path = \rtrim($path, '/') . '/';
+		$class .= '::';
+		if ($except) {
+			$except = \array_flip($except);
+		}
+		if ( ! isset($except['web_new'])) {
+			$routes[] = $this->get(
+				$path . 'new',
+				$class . 'new',
+				$base_name . '.web_new'
+			);
+		}
+		if ( ! isset($except['web_edit'])) {
+			$routes[] = $this->get(
+				$path . $placeholder . '/edit',
+				$class . 'edit/0',
+				$base_name . '.web_edit'
+			);
+		}
+		if ( ! isset($except['web_delete'])) {
+			$routes[] = $this->post(
+				$path . $placeholder . '/delete',
+				$class . 'delete/0',
+				$base_name . '.web_delete'
+			);
+		}
+		if ( ! isset($except['web_update'])) {
+			$routes[] = $this->post(
+				$path . $placeholder . '/update',
+				$class . 'update/0',
+				$base_name . '.web_update'
+			);
 		}
 		return $routes;
 	}
