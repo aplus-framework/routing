@@ -4,6 +4,9 @@ class Router
 {
 	protected $defaultRouteNamespace;
 	protected $defaultRouteFunction = 'index';
+	/**
+	 * @var callable
+	 */
 	protected $defaultRouteNotFound;
 	protected $placeholders = [
 		'{alpha}' => '([a-zA-Z]+)',
@@ -26,9 +29,21 @@ class Router
 	 */
 	protected $matchedRoute;
 	/**
+	 * @var string|null
+	 */
+	protected $matchedBaseURL;
+	/**
 	 * @var array
 	 */
-	protected $matchedRouteParams = [];
+	protected $matchedBaseURLParams = [];
+	/**
+	 * @var string|null
+	 */
+	protected $matchedPath;
+	/**
+	 * @var array
+	 */
+	protected $matchedPathParams = [];
 
 	/*public function getDefaultRouteNotFound() : Route
 	{
@@ -40,6 +55,30 @@ class Router
 	public function getDefaultRouteFunction() : string
 	{
 		return $this->defaultRouteFunction;
+	}
+
+	public function setDefaultRouteFunction(string $function)
+	{
+		$this->defaultRouteFunction = $function;
+		return $this;
+	}
+
+	protected function getDefaultRouteNotFound() : Route
+	{
+		return (new Route(
+			$this,
+			$this->getMatchedBaseURL(),
+			$this->getMatchedPath(),
+			$this->defaultRouteNotFound ?? function () {
+				\http_response_code(404);
+			}
+		))->setName('not-found');
+	}
+
+	public function setDefaultRouteNotFound($function)
+	{
+		$this->defaultRouteNotFound = $function;
+		return $this;
 	}
 
 	/**
@@ -113,7 +152,7 @@ class Router
 	/**
 	 * @return \Framework\Routing\Collection[]
 	 */
-	protected function getCollections() : array
+	public function getCollections() : array
 	{
 		return $this->collections;
 	}
@@ -124,6 +163,58 @@ class Router
 	public function getMatchedRoute() : ?Route
 	{
 		return $this->matchedRoute;
+	}
+
+	protected function setMatchedRoute(Route $route)
+	{
+		$this->matchedRoute = $route;
+	}
+
+	public function getMatchedPath() : ?string
+	{
+		return $this->matchedPath;
+	}
+
+	protected function setMatchedPath(string $path)
+	{
+		$this->matchedPath = $path;
+	}
+
+	public function getMatchedPathParams() : array
+	{
+		return $this->matchedPathParams;
+	}
+
+	protected function setMatchedPathParams(array $params)
+	{
+		$this->matchedPathParams = $params;
+	}
+
+	public function getMatchedURL() : ?string
+	{
+		return $this->getMatchedBaseURL() ?
+			$this->getMatchedBaseURL() . $this->getMatchedPath()
+			: null;
+	}
+
+	public function getMatchedBaseURL() : ?string
+	{
+		return $this->matchedBaseURL;
+	}
+
+	protected function setMatchedBaseURL(string $base_url)
+	{
+		$this->matchedBaseURL = $base_url;
+	}
+
+	public function getMatchedBaseURLParams() : array
+	{
+		return $this->matchedBaseURLParams;
+	}
+
+	protected function setMatchedBaseURLParams(array $params)
+	{
+		$this->matchedBaseURLParams = $params;
 	}
 
 	protected function parseURL(string $url) : array
@@ -148,28 +239,34 @@ class Router
 		return $base_url;
 	}
 
-	public function match(string $method, string $url)
+	public function match(string $method, string $url) : Route
 	{
 		$method = \strtoupper($method);
 		if ($method === 'HEAD') {
 			$method = 'GET';
-		} elseif ( ! \in_array($method, ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], true)) {
+		} elseif ( ! \in_array(
+			$method,
+			['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+			true
+		)) {
 			throw new \InvalidArgumentException('Invalid HTTP method: ' . $method);
 		}
 		if ( ! \filter_var($url, \FILTER_VALIDATE_URL)) {
 			throw new \InvalidArgumentException('Invalid URL: ' . $url);
 		}
 		$parsed_url = $this->parseURL($url);
+		$this->setMatchedPath($parsed_url['path']);
 		$base_url = $this->renderBaseURL($parsed_url);
+		$this->setMatchedBaseURL($base_url);
 		$collection = $this->matchCollection($base_url);
 		if ( ! $collection) {
 			// ROUTER ERROR 404
-			return $this->defaultRouteNotFound;
+			return $this->getDefaultRouteNotFound();
 		}
 		$route = $this->matchRoute($method, $collection, $parsed_url['path']);
 		if ( ! $route) {
 			// COLLECTION ERROR 404
-			return $collection->getRouteNotFound() ?? $this->defaultRouteNotFound;
+			return $collection->getRouteNotFound() ?? $this->getDefaultRouteNotFound();
 		}
 		return $this->matchedRoute = $route;
 	}
@@ -177,14 +274,16 @@ class Router
 	protected function matchCollection(string $base_url) : ?Collection
 	{
 		foreach ($this->getCollections() as $collection) {
-			$pattern = $this->replacePlaceholders($collection->getBaseURL());
+			$pattern = $this->replacePlaceholders($collection->baseURL);
 			$matched = \preg_match(
 				'#^' . $pattern . '$#',
 				$base_url,
 				$matches
 			);
 			if ($matched) {
-				//$this->matchedBaseURL = $matches[0];
+				$this->setMatchedBaseURL($matches[0]);
+				unset($matches[0]);
+				$this->setMatchedBaseURLParams(\array_values($matches));
 				return $collection;
 			}
 		}
@@ -193,7 +292,7 @@ class Router
 
 	protected function matchRoute(string $method, Collection $collection, string $path) : ?Route
 	{
-		$routes = $collection->getRoutes();
+		$routes = $collection->routes;
 		if (empty($routes[$method])) {
 			return null;
 		}
@@ -208,11 +307,11 @@ class Router
 				$matches
 			);
 			if ($matched) {
-				$this->matchedRoute = $route;
-				//$this->matchedRoutePath = $matches[0];
+				$this->setMatchedRoute($route);
+				//$this->setMatchedRoutePath($matches[0]);
 				unset($matches[0]);
-				//$this->matchedRouteParams = \array_values($matches);
-				$route->setFunctionParams(\array_values($matches));
+				$this->setMatchedPathParams(\array_values($matches));
+				$route->setFunctionParams($this->getMatchedPathParams());
 				//$this->matchedURL = $this->matchedBaseURL . $this->matchedRoutePath;
 				return $route;
 			}
@@ -223,11 +322,11 @@ class Router
 	public function getNamedRoute(string $name) : ?Route
 	{
 		foreach ($this->getCollections() as $collection) {
-			foreach ($collection->getRoutes() as $routes) {
-				/**
-				 * @var Route $route
-				 */
+			foreach ($collection->routes as $routes) {
 				foreach ($routes as $route) {
+					/**
+					 * @var \Framework\Routing\Route $route
+					 */
 					if ($route->getName() === $name) {
 						return $route;
 					}
@@ -235,5 +334,18 @@ class Router
 			}
 		}
 		return null;
+	}
+
+	public function getRoutes() : array
+	{
+		$result = [];
+		foreach ($this->getCollections() as $collection) {
+			foreach ($collection->routes as $method => $routes) {
+				foreach ($routes as $route) {
+					$result[$method][] = $route;
+				}
+			}
+		}
+		return $result;
 	}
 }

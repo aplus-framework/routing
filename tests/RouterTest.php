@@ -44,6 +44,11 @@ class RouterTest extends TestCase
 		});
 	}
 
+	public function testDefaultRouteNotFound()
+	{
+		self::assertEquals('not-found', $this->router->match('GET', 'http://site.org')->getName());
+	}
+
 	public function testRouteRunWithClass()
 	{
 		$this->prepare();

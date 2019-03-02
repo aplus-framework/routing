@@ -78,6 +78,7 @@ class Collection
 		}
 		return $this->baseURL;
 	}*/
+
 	/**
 	 * Sets the function to the Collection Route Not Found.
 	 *
@@ -175,8 +176,7 @@ class Collection
 		string $base_name,
 		array $except = [],
 		string $placeholder = '{num}'
-	) : array
-	{
+	) : array {
 		$path = \rtrim($path, '/') . '/';
 		$class .= '::';
 		if ($except) {
@@ -234,8 +234,7 @@ class Collection
 		string $base_name,
 		array $except = [],
 		string $placeholder = '{num}'
-	) : array
-	{
+	) : array {
 		$routes = $this->resource($path, $class, $base_name, $except, $placeholder);
 		$path = \rtrim($path, '/') . '/';
 		$class .= '::';
