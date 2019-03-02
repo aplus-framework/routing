@@ -169,7 +169,11 @@ class Collection
 			}
 			$route->setPath($base_path . $route->getPath());
 			if ($options) {
-				$route->addOptions($options);
+				$specific_options = $options;
+				if ($route->getOptions()) {
+					$specific_options = \array_replace_recursive($options, $route->getOptions());
+				}
+				$route->setOptions($specific_options);
 			}
 		}
 		return $routes;

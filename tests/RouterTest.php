@@ -108,7 +108,7 @@ class RouterTest extends TestCase
 	{
 		$this->router->serve('{scheme}://domain.tld:{num}', function (Collection $collection) {
 			$collection->group('animals', [
-				$collection->get('', 'Animals::index', 'animals')->addOptions([
+				$collection->get('', 'Animals::index', 'animals')->setOptions([
 					'x' => 'foo',
 					'y' => 'bar',
 				]),
@@ -116,7 +116,7 @@ class RouterTest extends TestCase
 				$collection->get('dog', 'Animals::dog', 'animals.dog')->setOptions(['y' => 'set']),
 			], ['x' => 'xis']);
 			$collection->group('users', [
-				$collection->get('', 'Users::index', 'users'),
+				$collection->get('', 'Users::index', 'users')->setOptions(['x' => [0, 2 => ['c']]]),
 				$collection->post('', 'Users::index', 'users.create'),
 				$collection->get('{num}', 'Users::show/0', 'users.show'),
 				$collection->group('{num}/panel', [
@@ -125,11 +125,11 @@ class RouterTest extends TestCase
 						$collection->get('update', 'Panel::config', 'panel.update'),
 					]),
 				]),
-			]);
+			], ['x' => ['a', 'b']]);
 		});
 		self::assertEquals('/animals', $this->router->getNamedRoute('animals')->getPath());
 		self::assertEquals(
-			['x' => 'xis', 'y' => 'bar'],
+			['x' => 'foo', 'y' => 'bar'],
 			$this->router->getNamedRoute('animals')->getOptions()
 		);
 		self::assertEquals('/animals/cat', $this->router->getNamedRoute('animals.cat')->getPath());
@@ -143,7 +143,10 @@ class RouterTest extends TestCase
 			$this->router->getNamedRoute('animals.dog')->getOptions()
 		);
 		self::assertEquals('/users', $this->router->getNamedRoute('users')->getPath());
-		self::assertEmpty($this->router->getNamedRoute('users')->getOptions());
+		self::assertEquals(
+			['x' => [0, 'b', ['c']]],
+			$this->router->getNamedRoute('users')->getOptions()
+		);
 		self::assertEquals('/users', $this->router->getNamedRoute('users.create')->getPath());
 		self::assertEquals('/users/25', $this->router->getNamedRoute('users.show')->getPath(25));
 		self::assertEquals('/users/{num}/panel', $this->router->getNamedRoute('panel')->getPath());

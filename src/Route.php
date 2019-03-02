@@ -42,12 +42,6 @@ class Route
 		return $this->options;
 	}
 
-	public function addOptions(array $options)
-	{
-		$this->options = \array_replace_recursive($this->options, $options);
-		return $this;
-	}
-
 	public function setOptions(array $options)
 	{
 		$this->options = $options;
