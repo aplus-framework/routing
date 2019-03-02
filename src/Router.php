@@ -344,7 +344,7 @@ class Router
 		$allowed = $this->getAllowedMethods($collection);
 		return empty($allowed)
 			? null
-			: new Route(
+			: (new Route(
 				$this,
 				$this->getMatchedBaseURL(),
 				$this->getMatchedPath(),
@@ -352,7 +352,7 @@ class Router
 					\http_response_code(200);
 					\header('Allow: ' . \implode(', ', $allowed));
 				}
-			);
+			))->setName('auto-options');
 	}
 
 	protected function getAllowedMethods(Collection $collection) : array

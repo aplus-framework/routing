@@ -360,7 +360,9 @@ class RouterTest extends TestCase
 			$collection->resource('users', 'Tests\Routing\Support\Users', 'users');
 		});
 		$this->router->setAutoOptions(true);
-		$this->router->match('options', 'http://domain.tld/users/25')->run();
+		$route = $this->router->match('options', 'http://domain.tld/users/25');
+		self::assertEquals('auto-options', $route->getName());
+		$route->run();
 		self::assertContains(
 			'Allow: DELETE, GET, HEAD, OPTIONS, PATCH, PUT',
 			\xdebug_get_headers()
@@ -376,7 +378,9 @@ class RouterTest extends TestCase
 			$collection->resource('users', 'Tests\Routing\Support\Users', 'users');
 		});
 		$this->router->setAutoOptions(false);
-		$this->router->match('options', 'http://domain.tld/users/25')->run();
+		$route = $this->router->match('options', 'http://domain.tld/users/25');
+		self::assertEquals('not-found', $route->getName());
+		$route->run();
 		self::assertNotContains(
 			'Allow: DELETE, GET, HEAD, OPTIONS, PATCH, PUT',
 			\xdebug_get_headers()
@@ -395,7 +399,9 @@ class RouterTest extends TestCase
 			});
 		});
 		$this->router->setAutoOptions(true);
-		$this->router->match('options', 'http://domain.tld/users/25')->run();
+		$route = $this->router->match('options', 'http://domain.tld/users/25');
+		self::assertNull($route->getName());
+		$route->run();
 		self::assertNotContains(
 			'Allow: DELETE, GET, HEAD, OPTIONS, PATCH, PUT',
 			\xdebug_get_headers()
