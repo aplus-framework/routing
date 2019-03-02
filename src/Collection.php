@@ -147,6 +147,11 @@ class Collection
 		return $this->add(['DELETE'], $path, $function, $name);
 	}
 
+	public function options(string $path, $function, string $name = null) : Route
+	{
+		return $this->add(['OPTIONS'], $path, $function, $name);
+	}
+
 	/**
 	 * @param string                     $base_path
 	 * @param \Framework\Routing\Route[] $routes
