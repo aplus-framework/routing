@@ -350,4 +350,59 @@ class RouterTest extends TestCase
 			$this->router->match('GET', 'http://foo.bar.example.com')->getFunction()
 		);
 	}
+
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testAutoOptions()
+	{
+		$this->router->serve('http://domain.tld', function (Collection $collection) {
+			$collection->resource('users', 'Tests\Routing\Support\Users', 'users');
+		});
+		$this->router->setAutoOptions(true);
+		$this->router->match('options', 'http://domain.tld/users/25')->run();
+		self::assertContains(
+			'Allow: DELETE, GET, HEAD, OPTIONS, PATCH, PUT',
+			\xdebug_get_headers()
+		);
+	}
+
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testAutoOptionsDisabled()
+	{
+		$this->router->serve('http://domain.tld', function (Collection $collection) {
+			$collection->resource('users', 'Tests\Routing\Support\Users', 'users');
+		});
+		$this->router->setAutoOptions(false);
+		$this->router->match('options', 'http://domain.tld/users/25')->run();
+		self::assertNotContains(
+			'Allow: DELETE, GET, HEAD, OPTIONS, PATCH, PUT',
+			\xdebug_get_headers()
+		);
+	}
+
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testAutoOptionsWithOptionsRoute()
+	{
+		$this->router->serve('http://domain.tld', function (Collection $collection) {
+			$collection->resource('users', 'Tests\Routing\Support\Users', 'users');
+			$collection->options('users/{num}', function () {
+				\header('Foo: bar');
+			});
+		});
+		$this->router->setAutoOptions(true);
+		$this->router->match('options', 'http://domain.tld/users/25')->run();
+		self::assertNotContains(
+			'Allow: DELETE, GET, HEAD, OPTIONS, PATCH, PUT',
+			\xdebug_get_headers()
+		);
+		self::assertContains(
+			'Foo: bar',
+			\xdebug_get_headers()
+		);
+	}
 }

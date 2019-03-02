@@ -44,6 +44,10 @@ class Router
 	 * @var array
 	 */
 	protected $matchedPathParams = [];
+	/**
+	 * @var bool
+	 */
+	protected $autoOptions = false;
 
 	/*public function getDefaultRouteNotFound() : Route
 	{
@@ -261,12 +265,17 @@ class Router
 		$collection = $this->matchCollection($base_url);
 		if ( ! $collection) {
 			// ROUTER ERROR 404
-			return $this->getDefaultRouteNotFound();
+			return $this->matchedRoute = $this->getDefaultRouteNotFound();
 		}
 		$route = $this->matchRoute($method, $collection, $parsed_url['path']);
 		if ( ! $route) {
-			// COLLECTION ERROR 404
-			return $collection->getRouteNotFound() ?? $this->getDefaultRouteNotFound();
+			if ($method === 'OPTIONS' && $this->isAutoOptions()) {
+				$route = $this->getOptionsRoute($collection);
+			}
+			if ( ! $route) {
+				// COLLECTION ERROR 404
+				$route = $collection->getRouteNotFound() ?? $this->getDefaultRouteNotFound();
+			}
 		}
 		return $this->matchedRoute = $route;
 	}
@@ -317,6 +326,60 @@ class Router
 			}
 		}
 		return null;
+	}
+
+	public function setAutoOptions(bool $status)
+	{
+		$this->autoOptions = $status;
+		return $this;
+	}
+
+	public function isAutoOptions() : bool
+	{
+		return $this->autoOptions;
+	}
+
+	protected function getOptionsRoute(Collection $collection) : ?Route
+	{
+		$allowed = $this->getAllowedMethods($collection);
+		return empty($allowed)
+			? null
+			: new Route(
+				$this,
+				$this->getMatchedBaseURL(),
+				$this->getMatchedPath(),
+				function () use ($allowed) {
+					\http_response_code(200);
+					\header('Allow: ' . \implode(', ', $allowed));
+				}
+			);
+	}
+
+	protected function getAllowedMethods(Collection $collection) : array
+	{
+		$allowed = [];
+		foreach ($collection->routes as $method => $routes) {
+			foreach ($routes as $route) {
+				$pattern = $this->replacePlaceholders($route->getPath());
+				$matched = \preg_match(
+					'#^' . $pattern . '$#',
+					$this->getMatchedPath()
+				);
+				if ($matched) {
+					$allowed[] = $method;
+					continue 2;
+				}
+			}
+		}
+		if ($allowed) {
+			if (\in_array('GET', $allowed, true)) {
+				$allowed[] = 'HEAD';
+			}
+			$allowed[] = 'OPTIONS';
+			$allowed = \array_unique($allowed);
+			\sort($allowed);
+		}
+		return $allowed;
 	}
 
 	public function getNamedRoute(string $name) : ?Route
