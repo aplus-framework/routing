@@ -2,18 +2,39 @@
 
 class Route
 {
-	protected $collection;
+	protected $router;
+	protected $baseURL;
 	protected $path;
 	protected $function;
 	protected $functionParams = [];
 	protected $name;
 	protected $options = [];
 
-	public function __construct(Collection $collection, string $path, $function)
+	public function __construct(Router $router, string $base_url, string $path, $function)
 	{
-		$this->collection = $collection;
+		$this->router = $router;
+		$this->setBaseURL($base_url);
 		$this->setPath($path);
 		$this->function = $function;
+	}
+
+	public function getBaseURL(...$params) : string
+	{
+		if ($params) {
+			return $this->router->fillPlaceholders($this->baseURL, ...$params);
+		}
+		return $this->baseURL;
+	}
+
+	protected function setBaseURL(string $base_url)
+	{
+		$this->baseURL = \ltrim($base_url, '/');
+		return $this;
+	}
+
+	public function getURL(array $base_url_params = [], array $path_params = []) : string
+	{
+		return $this->getBaseURL(...$base_url_params) . $this->getPath(...$path_params);
 	}
 
 	public function getOptions() : array
@@ -47,13 +68,13 @@ class Route
 	public function setPath(string $path)
 	{
 		$this->path = '/' . \trim($path, '/');
+		return $this;
 	}
 
 	public function getPath(...$params) : string
 	{
 		if ($params) {
-			return $this->collection->getRouter()
-				->fillPlaceholders($this->path, ...$params);
+			return $this->router->fillPlaceholders($this->path, ...$params);
 		}
 		return $this->path;
 	}
@@ -81,7 +102,7 @@ class Route
 			return $function($this->getFunctionParams(), ...$construct);
 		}
 		if (\strpos($function, '::') === false) {
-			$function .= '::' . $this->collection->getRouter()->getDefaultRouteFunction();
+			$function .= '::' . $this->router->getDefaultRouteFunction();
 		}
 		[$classname, $function] = \explode('::', $function, 2);
 		[$function, $params] = $this->extractFunctionAndParams($function);
