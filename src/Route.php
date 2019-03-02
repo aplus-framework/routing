@@ -15,7 +15,7 @@ class Route
 		$this->router = $router;
 		$this->setBaseURL($base_url);
 		$this->setPath($path);
-		$this->function = $function;
+		$this->setFunction($function);
 	}
 
 	public function getBaseURL(...$params) : string
@@ -76,6 +76,12 @@ class Route
 	public function getFunction()
 	{
 		return $this->function;
+	}
+
+	public function setFunction($function)
+	{
+		$this->function = \is_string($function) ? \trim($function, '\\') : $function;
+		return $this;
 	}
 
 	public function getFunctionParams() : array

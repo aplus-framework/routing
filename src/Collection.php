@@ -20,6 +20,10 @@ class Collection
 	 * @var Route|null
 	 */
 	protected $notFound;
+	/**
+	 * @var string|null
+	 */
+	protected $namespace;
 
 	public function __construct(Router $router, string $base_url)
 	{
@@ -62,6 +66,13 @@ class Collection
 		$this->routes[\strtoupper($http_method)][] = $route;
 		return $this;
 	}
+
+	/*public function namespace(string $namespace, callable $callable) : void
+	{
+		$this->namespace = \trim($namespace, '\\');
+		$callable($this);
+		$this->namespace = null;
+	}*/
 
 	/**
 	 * Gets the Collection Base URL.
@@ -112,6 +123,9 @@ class Collection
 
 	public function add(array $http_methods, string $path, $function, string $name = null) : Route
 	{
+		/*if (\is_string($function)) {
+			$function = $this->namespace . '\\' . \rtrim($function, '\\');
+		}*/
 		$route = new Route($this->router, $this->baseURL, $path, $function);
 		if ($name) {
 			$route->setName($name);
@@ -174,6 +188,21 @@ class Collection
 					$specific_options = \array_replace_recursive($options, $route->getOptions());
 				}
 				$route->setOptions($specific_options);
+			}
+		}
+		return $routes;
+	}
+
+	public function namespace(string $namespace, array $routes) : array
+	{
+		$namespace = \trim($namespace, '\\');
+		foreach ($routes as $route) {
+			if (\is_array($route)) {
+				$this->namespace($namespace, $route);
+				continue;
+			}
+			if (\is_string($route->getFunction())) {
+				$route->setFunction($namespace . '\\' . $route->getFunction());
 			}
 		}
 		return $routes;
