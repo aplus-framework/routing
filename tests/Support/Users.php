@@ -7,9 +7,9 @@ class Users
 		return __METHOD__;
 	}
 
-	public function show($num)
+	public function new()
 	{
-		return __METHOD__ . '/' . $num;
+		return __METHOD__;
 	}
 
 	public function create()
@@ -17,18 +17,28 @@ class Users
 		return __METHOD__;
 	}
 
-	public function delete()
+	public function show($num)
 	{
-		return __METHOD__;
+		return __METHOD__ . '/' . $num;
 	}
 
-	public function update()
+	public function edit($num)
 	{
-		return __METHOD__;
+		return __METHOD__ . '/' . $num;
 	}
 
-	public function replace()
+	public function delete($num)
 	{
-		return __METHOD__;
+		return __METHOD__ . '/' . $num;
+	}
+
+	public function update($num)
+	{
+		return __METHOD__ . '/' . $num;
+	}
+
+	public function replace($num)
+	{
+		return __METHOD__ . '/' . $num;
 	}
 }
