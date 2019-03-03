@@ -553,4 +553,14 @@ class RouterTest extends TestCase
 		self::assertContains('Location: https://shop.com', \xdebug_get_headers());
 		self::assertEquals(301, \http_response_code());
 	}
+
+	public function testRoutes()
+	{
+		$this->prepare();
+		foreach ($this->router->getRoutes() as $routes) {
+			foreach ($routes as $route) {
+				self::assertInstanceOf(Route::class, $route);
+			}
+		}
+	}
 }
