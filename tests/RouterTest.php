@@ -204,6 +204,9 @@ class RouterTest extends TestCase
 		self::assertEquals('User 10, post: 15', $route->run());
 	}
 
+	/**
+	 * @runInSeparateProcess
+	 */
 	public function testValidateHTTPMethod()
 	{
 		$this->expectException(\InvalidArgumentException::class);
@@ -380,8 +383,9 @@ class RouterTest extends TestCase
 		});
 		$this->router->setAutoOptions(true);
 		$route = $this->router->match('options', 'http://domain.tld/users/25');
-		self::assertEquals('auto-options', $route->getName());
+		self::assertEquals('auto-allow-200', $route->getName());
 		$route->run();
+		self::assertEquals(200, \http_response_code());
 		self::assertContains(
 			'Allow: DELETE, GET, HEAD, OPTIONS, PATCH, PUT',
 			\xdebug_get_headers()
@@ -400,6 +404,7 @@ class RouterTest extends TestCase
 		$route = $this->router->match('options', 'http://domain.tld/users/25');
 		self::assertEquals('not-found', $route->getName());
 		$route->run();
+		self::assertEquals(404, \http_response_code());
 		self::assertNotContains(
 			'Allow: DELETE, GET, HEAD, OPTIONS, PATCH, PUT',
 			\xdebug_get_headers()
@@ -427,6 +432,64 @@ class RouterTest extends TestCase
 		);
 		self::assertContains(
 			'Foo: bar',
+			\xdebug_get_headers()
+		);
+	}
+
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testAutoMethods()
+	{
+		$this->router->serve('http://domain.tld', function (Collection $collection) {
+			$collection->resource('users', 'Tests\Routing\Support\Users', 'users');
+		});
+		$this->router->setAutoMethods(true);
+		$route = $this->router->match('put', 'http://domain.tld/users');
+		self::assertEquals('auto-allow-405', $route->getName());
+		$route->run();
+		self::assertEquals(405, \http_response_code());
+		self::assertContains(
+			'Allow: GET, HEAD, POST',
+			\xdebug_get_headers()
+		);
+	}
+
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testAutoMethodsDisabled()
+	{
+		$this->router->serve('http://domain.tld', function (Collection $collection) {
+			$collection->resource('users', 'Tests\Routing\Support\Users', 'users');
+		});
+		$this->router->setAutoMethods(false);
+		$route = $this->router->match('put', 'http://domain.tld/users');
+		self::assertEquals('not-found', $route->getName());
+		$route->run();
+		self::assertEquals(404, \http_response_code());
+		self::assertNotContains(
+			'Allow: GET, HEAD, POST',
+			\xdebug_get_headers()
+		);
+	}
+
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testAutoMethodsWithAutoOptions()
+	{
+		$this->router->serve('http://domain.tld', function (Collection $collection) {
+			$collection->resource('users', 'Tests\Routing\Support\Users', 'users');
+		});
+		$this->router->setAutoOptions(true);
+		$this->router->setAutoMethods(true);
+		$route = $this->router->match('options', 'http://domain.tld/users');
+		self::assertEquals('auto-allow-200', $route->getName());
+		$route->run();
+		self::assertEquals(200, \http_response_code());
+		self::assertContains(
+			'Allow: GET, HEAD, OPTIONS, POST',
 			\xdebug_get_headers()
 		);
 	}

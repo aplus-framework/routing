@@ -48,6 +48,10 @@ class Router
 	 * @var bool
 	 */
 	protected $autoOptions = false;
+	/**
+	 * @var bool
+	 */
+	protected $autoMethods = false;
 
 	/*public function getDefaultRouteNotFound() : Route
 	{
@@ -129,7 +133,7 @@ class Router
 				throw new \InvalidArgumentException("Parameter is empty. Index: {$index}");
 			}
 			if ( ! \preg_match('#' . $pattern . '#', $params[$index])) {
-				throw new \InvalidArgumentException('Invalid parameters');
+				throw new \InvalidArgumentException("Parameter is invalid. Index: {$index}");
 			}
 			$string = \substr_replace(
 				$string,
@@ -276,9 +280,11 @@ class Router
 			true
 		)) {
 			\http_response_code(405);
+			\header('Allow: GET, DELETE, HEAD, OPTIONS, PATCH, POST, PUT');
 			throw new \InvalidArgumentException('Invalid HTTP method: ' . $method);
 		}
 		if ( ! \filter_var($url, \FILTER_VALIDATE_URL)) {
+			\http_response_code(400);
 			throw new \InvalidArgumentException('Invalid URL: ' . $url);
 		}
 		$parsed_url = $this->parseURL($url);
@@ -293,7 +299,9 @@ class Router
 		$route = $this->matchRoute($method, $collection, $parsed_url['path']);
 		if ( ! $route) {
 			if ($method === 'OPTIONS' && $this->isAutoOptions()) {
-				$route = $this->getOptionsRoute($collection);
+				$route = $this->getRouteWithAllowHeader($collection, 200);
+			} elseif ($this->isAutoMethods()) {
+				$route = $this->getRouteWithAllowHeader($collection, 405);
 			}
 			if ( ! $route) {
 				// COLLECTION ERROR 404
@@ -362,7 +370,18 @@ class Router
 		return $this->autoOptions;
 	}
 
-	protected function getOptionsRoute(Collection $collection) : ?Route
+	public function setAutoMethods(bool $status)
+	{
+		$this->autoMethods = $status;
+		return $this;
+	}
+
+	public function isAutoMethods() : bool
+	{
+		return $this->autoMethods;
+	}
+
+	protected function getRouteWithAllowHeader(Collection $collection, int $code) : ?Route
 	{
 		$allowed = $this->getAllowedMethods($collection);
 		return empty($allowed)
@@ -371,11 +390,11 @@ class Router
 				$this,
 				$this->getMatchedOrigin(),
 				$this->getMatchedPath(),
-				function () use ($allowed) {
-					\http_response_code(200);
+				function () use ($allowed, $code) {
+					\http_response_code($code);
 					\header('Allow: ' . \implode(', ', $allowed));
 				}
-			))->setName('auto-options');
+			))->setName('auto-allow-' . $code);
 	}
 
 	protected function getAllowedMethods(Collection $collection) : array
@@ -398,7 +417,9 @@ class Router
 			if (\in_array('GET', $allowed, true)) {
 				$allowed[] = 'HEAD';
 			}
-			$allowed[] = 'OPTIONS';
+			if ($this->isAutoOptions()) {
+				$allowed[] = 'OPTIONS';
+			}
 			$allowed = \array_unique($allowed);
 			\sort($allowed);
 		}
