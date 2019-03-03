@@ -253,6 +253,7 @@ class Router
 			['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
 			true
 		)) {
+			\http_response_code(405);
 			throw new \InvalidArgumentException('Invalid HTTP method: ' . $method);
 		}
 		if ( ! \filter_var($url, \FILTER_VALIDATE_URL)) {
