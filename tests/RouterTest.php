@@ -395,6 +395,25 @@ class RouterTest extends TestCase
 	/**
 	 * @runInSeparateProcess
 	 */
+	public function testAutoOptionsNotFound()
+	{
+		$this->router->serve('http://domain.tld', function (Collection $collection) {
+			$collection->resource('users', 'Tests\Routing\Support\Users', 'users');
+		});
+		$this->router->setAutoOptions(true);
+		$route = $this->router->match('options', 'http://domain.tld/unknown');
+		self::assertEquals('not-found', $route->getName());
+		$route->run();
+		self::assertEquals(404, \http_response_code());
+		self::assertNotContains(
+			'Allow: DELETE, GET, HEAD, OPTIONS, PATCH, PUT',
+			\xdebug_get_headers()
+		);
+	}
+
+	/**
+	 * @runInSeparateProcess
+	 */
 	public function testAutoOptionsDisabled()
 	{
 		$this->router->serve('http://domain.tld', function (Collection $collection) {
@@ -451,6 +470,25 @@ class RouterTest extends TestCase
 		self::assertEquals(405, \http_response_code());
 		self::assertContains(
 			'Allow: GET, HEAD, POST',
+			\xdebug_get_headers()
+		);
+	}
+
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testAutoMethodsNotFound()
+	{
+		$this->router->serve('http://domain.tld', function (Collection $collection) {
+			$collection->resource('users', 'Tests\Routing\Support\Users', 'users');
+		});
+		$this->router->setAutoMethods(true);
+		$route = $this->router->match('get', 'http://domain.tld/unknown');
+		self::assertEquals('not-found', $route->getName());
+		$route->run();
+		self::assertEquals(404, \http_response_code());
+		self::assertNotContains(
+			'Allow: GET, HEAD, PUT',
 			\xdebug_get_headers()
 		);
 	}
