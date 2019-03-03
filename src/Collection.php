@@ -9,7 +9,7 @@ class Collection
 	/**
 	 * @var string
 	 */
-	protected $baseURL;
+	protected $origin;
 	/**
 	 * Array of HTTP Methods as keys and array of Routes as values.
 	 *
@@ -25,10 +25,10 @@ class Collection
 	 */
 	protected $namespace;
 
-	public function __construct(Router $router, string $base_url)
+	public function __construct(Router $router, string $origin)
 	{
 		$this->router = $router;
-		$this->setBaseURL($base_url);
+		$this->setOrigin($origin);
 	}
 
 	public function __call($name, $arguments)
@@ -43,8 +43,8 @@ class Collection
 	public function __get($name)
 	{
 		switch ($name) {
-			case 'baseURL':
-				return $this->baseURL;
+			case 'origin':
+				return $this->origin;
 				break;
 			case 'router':
 				return $this->router;
@@ -55,9 +55,9 @@ class Collection
 		}
 	}
 
-	protected function setBaseURL(string $base_url)
+	protected function setOrigin(string $origin)
 	{
-		$this->baseURL = \ltrim($base_url, '/');
+		$this->origin = \ltrim($origin, '/');
 		return $this;
 	}
 
@@ -77,27 +77,27 @@ class Collection
 	 * Gets the Collection Base URL.
 	 *
 	 * @param mixed ...$params Parameters to fill the Base URL placeholders
-	 * @param mixed $function
+	 * @param mixed $action
 	 *
 	 * @return string
 	 */
-	/*private function baseURL(...$params) : string
+	/*private function origin(...$params) : string
 	{
 		if ($params) {
-			return $this->router->fillPlaceholders($this->baseURL, ...$params);
+			return $this->router->fillPlaceholders($this->origin, ...$params);
 		}
-		return $this->baseURL;
+		return $this->origin;
 	}*/
 
 	/**
-	 * Sets the function to the Collection Route Not Found.
+	 * Sets the action to the Collection Route Not Found.
 	 *
-	 * @param callable|string $function the Route function to run when no Route path is found for
-	 *                                  this collection
+	 * @param callable|string $action the Route function to run when no Route path is found for
+	 *                                this collection
 	 */
-	public function notFound($function) : void
+	public function notFound($action) : void
 	{
-		$this->notFound = $function;
+		$this->notFound = $action;
 	}
 
 	/**
@@ -105,8 +105,8 @@ class Collection
 	 *
 	 * @see notFound()
 	 *
-	 * @return \Framework\Routing\Route|null the Route containing the Not Found Function or null if
-	 *                                       the Function was not set
+	 * @return \Framework\Routing\Route|null the Route containing the Not Found Action or null if
+	 *                                       the Action was not set
 	 */
 	protected function getRouteNotFound() : ?Route
 	{
@@ -114,18 +114,18 @@ class Collection
 			? null
 			: new Route(
 				$this->router,
-				$this->router->getMatchedBaseURL(),
+				$this->router->getMatchedOrigin(),
 				$this->router->getMatchedPath(),
 				$this->notFound
 			);
 	}
 
-	public function add(array $http_methods, string $path, $function, string $name = null) : Route
+	public function add(array $http_methods, string $path, $action, string $name = null) : Route
 	{
-		/*if (\is_string($function)) {
-			$function = $this->namespace . '\\' . \rtrim($function, '\\');
+		/*if (\is_string($action)) {
+			$action = $this->namespace . '\\' . \rtrim($action, '\\');
 		}*/
-		$route = new Route($this->router, $this->baseURL, $path, $function);
+		$route = new Route($this->router, $this->origin, $path, $action);
 		if ($name) {
 			$route->setName($name);
 		}
@@ -135,34 +135,34 @@ class Collection
 		return $route;
 	}
 
-	public function get(string $path, $function, string $name = null) : Route
+	public function get(string $path, $action, string $name = null) : Route
 	{
-		return $this->add(['GET'], $path, $function, $name);
+		return $this->add(['GET'], $path, $action, $name);
 	}
 
-	public function post(string $path, $function, string $name = null) : Route
+	public function post(string $path, $action, string $name = null) : Route
 	{
-		return $this->add(['POST'], $path, $function, $name);
+		return $this->add(['POST'], $path, $action, $name);
 	}
 
-	public function put(string $path, $function, string $name = null) : Route
+	public function put(string $path, $action, string $name = null) : Route
 	{
-		return $this->add(['PUT'], $path, $function, $name);
+		return $this->add(['PUT'], $path, $action, $name);
 	}
 
-	public function patch(string $path, $function, string $name = null) : Route
+	public function patch(string $path, $action, string $name = null) : Route
 	{
-		return $this->add(['PATCH'], $path, $function, $name);
+		return $this->add(['PATCH'], $path, $action, $name);
 	}
 
-	public function delete(string $path, $function, string $name = null) : Route
+	public function delete(string $path, $action, string $name = null) : Route
 	{
-		return $this->add(['DELETE'], $path, $function, $name);
+		return $this->add(['DELETE'], $path, $action, $name);
 	}
 
-	public function options(string $path, $function, string $name = null) : Route
+	public function options(string $path, $action, string $name = null) : Route
 	{
-		return $this->add(['OPTIONS'], $path, $function, $name);
+		return $this->add(['OPTIONS'], $path, $action, $name);
 	}
 
 	public function redirect(string $path, string $url, int $code = 302) : Route
@@ -207,8 +207,8 @@ class Collection
 				$this->namespace($namespace, $route);
 				continue;
 			}
-			if (\is_string($route->getFunction())) {
-				$route->setFunction($namespace . '\\' . $route->getFunction());
+			if (\is_string($route->getAction())) {
+				$route->setAction($namespace . '\\' . $route->getAction());
 			}
 		}
 		return $routes;

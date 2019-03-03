@@ -3,7 +3,7 @@
 class Router
 {
 	protected $defaultRouteNamespace;
-	protected $defaultRouteFunction = 'index';
+	protected $defaultRouteActionMethod = 'index';
 	/**
 	 * @var callable
 	 */
@@ -31,11 +31,11 @@ class Router
 	/**
 	 * @var string|null
 	 */
-	protected $matchedBaseURL;
+	protected $matchedOrigin;
 	/**
 	 * @var array
 	 */
-	protected $matchedBaseURLParams = [];
+	protected $matchedOriginParams = [];
 	/**
 	 * @var string|null
 	 */
@@ -56,14 +56,14 @@ class Router
 		}
 		$this->defaultRouteNotFound=new Route()
 	}*/
-	public function getDefaultRouteFunction() : string
+	public function getDefaultRouteActionMethod() : string
 	{
-		return $this->defaultRouteFunction;
+		return $this->defaultRouteActionMethod;
 	}
 
-	public function setDefaultRouteFunction(string $function)
+	public function setDefaultRouteActionMethod(string $action)
 	{
-		$this->defaultRouteFunction = $function;
+		$this->defaultRouteActionMethod = $action;
 		return $this;
 	}
 
@@ -71,7 +71,7 @@ class Router
 	{
 		return (new Route(
 			$this,
-			$this->getMatchedBaseURL(),
+			$this->getMatchedOrigin(),
 			$this->getMatchedPath(),
 			$this->defaultRouteNotFound ?? function () {
 				\http_response_code(404);
@@ -79,9 +79,9 @@ class Router
 		))->setName('not-found');
 	}
 
-	public function setDefaultRouteNotFound($function)
+	public function setDefaultRouteNotFound($action)
 	{
-		$this->defaultRouteNotFound = $function;
+		$this->defaultRouteNotFound = $action;
 		return $this;
 	}
 
@@ -141,9 +141,17 @@ class Router
 		return $string;
 	}
 
-	public function serve(string $base_url, callable $callable) : void
+	/**
+	 * Serves a Collection of Routes to a specific Origin.
+	 *
+	 * @param string   $origin   URL Origin. A string in the following format:
+	 *                           {scheme}://{hostname}[:{port}]
+	 * @param callable $callable A function receiving an instance of Collection as the first
+	 *                           parameter
+	 */
+	public function serve(string $origin, callable $callable) : void
 	{
-		$collection = new Collection($this, $base_url);
+		$collection = new Collection($this, $origin);
 		$callable($collection);
 		$this->addCollection($collection);
 	}
@@ -161,9 +169,6 @@ class Router
 		return $this->collections;
 	}
 
-	/**
-	 * @return \Framework\Routing\Route|null
-	 */
 	public function getMatchedRoute() : ?Route
 	{
 		return $this->matchedRoute;
@@ -196,29 +201,29 @@ class Router
 
 	public function getMatchedURL() : ?string
 	{
-		return $this->getMatchedBaseURL() ?
-			$this->getMatchedBaseURL() . $this->getMatchedPath()
+		return $this->getMatchedOrigin() ?
+			$this->getMatchedOrigin() . $this->getMatchedPath()
 			: null;
 	}
 
-	public function getMatchedBaseURL() : ?string
+	public function getMatchedOrigin() : ?string
 	{
-		return $this->matchedBaseURL;
+		return $this->matchedOrigin;
 	}
 
-	protected function setMatchedBaseURL(string $base_url)
+	protected function setMatchedOrigin(string $origin)
 	{
-		$this->matchedBaseURL = $base_url;
+		$this->matchedOrigin = $origin;
 	}
 
-	public function getMatchedBaseURLParams() : array
+	public function getMatchedOriginParams() : array
 	{
-		return $this->matchedBaseURLParams;
+		return $this->matchedOriginParams;
 	}
 
-	protected function setMatchedBaseURLParams(array $params)
+	protected function setMatchedOriginParams(array $params)
 	{
-		$this->matchedBaseURLParams = $params;
+		$this->matchedOriginParams = $params;
 	}
 
 	protected function parseURL(string $url) : array
@@ -234,15 +239,32 @@ class Router
 		return $parsed;
 	}
 
-	protected function renderBaseURL(array $parsed_url) : string
+	/**
+	 * @param array $parsed_url
+	 *
+	 * @see parseURL()
+	 *
+	 * @return string
+	 */
+	protected function renderOrigin(array $parsed_url) : string
 	{
-		$base_url = $parsed_url['scheme'] . '://' . $parsed_url['host'];
+		$origin = $parsed_url['scheme'] . '://' . $parsed_url['host'];
 		if (isset($parsed_url['port']) && ! \in_array($parsed_url['port'], [null, 80, 443], true)) {
-			$base_url .= ':' . $parsed_url['port'];
+			$origin .= ':' . $parsed_url['port'];
 		}
-		return $base_url;
+		return $origin;
 	}
 
+	/**
+	 * Match HTTP Method and URL against Collections to process the request.
+	 *
+	 * @param string $method HTTP Method. One of: GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS
+	 * @param string $url    The requested URL
+	 *
+	 * @see serve()
+	 *
+	 * @return \Framework\Routing\Route Always returns a Route, even if it is the Route Not Found
+	 */
 	public function match(string $method, string $url) : Route
 	{
 		$method = \strtoupper($method);
@@ -261,9 +283,9 @@ class Router
 		}
 		$parsed_url = $this->parseURL($url);
 		$this->setMatchedPath($parsed_url['path']);
-		$base_url = $this->renderBaseURL($parsed_url);
-		$this->setMatchedBaseURL($base_url);
-		$collection = $this->matchCollection($base_url);
+		$origin = $this->renderOrigin($parsed_url);
+		$this->setMatchedOrigin($origin);
+		$collection = $this->matchCollection($origin);
 		if ( ! $collection) {
 			// ROUTER ERROR 404
 			return $this->matchedRoute = $this->getDefaultRouteNotFound();
@@ -281,19 +303,19 @@ class Router
 		return $this->matchedRoute = $route;
 	}
 
-	protected function matchCollection(string $base_url) : ?Collection
+	protected function matchCollection(string $origin) : ?Collection
 	{
 		foreach ($this->getCollections() as $collection) {
-			$pattern = $this->replacePlaceholders($collection->baseURL);
+			$pattern = $this->replacePlaceholders($collection->origin);
 			$matched = \preg_match(
 				'#^' . $pattern . '$#',
-				$base_url,
+				$origin,
 				$matches
 			);
 			if ($matched) {
-				$this->setMatchedBaseURL($matches[0]);
+				$this->setMatchedOrigin($matches[0]);
 				unset($matches[0]);
-				$this->setMatchedBaseURLParams(\array_values($matches));
+				$this->setMatchedOriginParams(\array_values($matches));
 				return $collection;
 			}
 		}
@@ -321,8 +343,8 @@ class Router
 				//$this->setMatchedRoutePath($matches[0]);
 				unset($matches[0]);
 				$this->setMatchedPathParams(\array_values($matches));
-				$route->setFunctionParams($this->getMatchedPathParams());
-				//$this->matchedURL = $this->matchedBaseURL . $this->matchedRoutePath;
+				$route->setActionParams($this->getMatchedPathParams());
+				//$this->matchedURL = $this->matchedOrigin . $this->matchedRoutePath;
 				return $route;
 			}
 		}
@@ -347,7 +369,7 @@ class Router
 			? null
 			: (new Route(
 				$this,
-				$this->getMatchedBaseURL(),
+				$this->getMatchedOrigin(),
 				$this->getMatchedPath(),
 				function () use ($allowed) {
 					\http_response_code(200);

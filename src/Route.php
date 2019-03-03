@@ -3,38 +3,47 @@
 class Route
 {
 	protected $router;
-	protected $baseURL;
+	protected $origin;
 	protected $path;
-	protected $function;
-	protected $functionParams = [];
+	protected $action;
+	protected $actionParams = [];
 	protected $name;
 	protected $options = [];
 
-	public function __construct(Router $router, string $base_url, string $path, $function)
+	/**
+	 * Route constructor.
+	 *
+	 * @param \Framework\Routing\Router $router
+	 * @param string                    $origin URL Origin. A string in the following format:
+	 *                                          {scheme}://{hostname}[:{port}]
+	 * @param string                    $path   URL Path. A string starting with '/'
+	 * @param \Closure|string           $action
+	 */
+	public function __construct(Router $router, string $origin, string $path, $action)
 	{
 		$this->router = $router;
-		$this->setBaseURL($base_url);
+		$this->setOrigin($origin);
 		$this->setPath($path);
-		$this->setFunction($function);
+		$this->setAction($action);
 	}
 
-	public function getBaseURL(...$params) : string
+	public function getOrigin(...$params) : string
 	{
 		if ($params) {
-			return $this->router->fillPlaceholders($this->baseURL, ...$params);
+			return $this->router->fillPlaceholders($this->origin, ...$params);
 		}
-		return $this->baseURL;
+		return $this->origin;
 	}
 
-	protected function setBaseURL(string $base_url)
+	protected function setOrigin(string $origin)
 	{
-		$this->baseURL = \ltrim($base_url, '/');
+		$this->origin = \ltrim($origin, '/');
 		return $this;
 	}
 
-	public function getURL(array $base_url_params = [], array $path_params = []) : string
+	public function getURL(array $origin_params = [], array $path_params = []) : string
 	{
-		return $this->getBaseURL(...$base_url_params) . $this->getPath(...$path_params);
+		return $this->getOrigin(...$origin_params) . $this->getPath(...$path_params);
 	}
 
 	public function getOptions() : array
@@ -73,76 +82,76 @@ class Route
 		return $this->path;
 	}
 
-	public function getFunction()
+	public function getAction()
 	{
-		return $this->function;
+		return $this->action;
 	}
 
-	public function setFunction($function)
+	public function setAction($action)
 	{
-		$this->function = \is_string($function) ? \trim($function, '\\') : $function;
+		$this->action = \is_string($action) ? \trim($action, '\\') : $action;
 		return $this;
 	}
 
-	public function getFunctionParams() : array
+	public function getActionParams() : array
 	{
-		return $this->functionParams;
+		return $this->actionParams;
 	}
 
-	public function setFunctionParams(array $params)
+	public function setActionParams(array $params)
 	{
-		$this->functionParams = $params;
+		$this->actionParams = $params;
 		return $this;
 	}
 
 	public function run(...$construct)
 	{
-		$function = $this->getFunction();
-		if ( ! \is_string($function)) {
-			return $function($this->getFunctionParams(), ...$construct);
+		$action = $this->getAction();
+		if ( ! \is_string($action)) {
+			return $action($this->getActionParams(), ...$construct);
 		}
-		if (\strpos($function, '::') === false) {
-			$function .= '::' . $this->router->getDefaultRouteFunction();
+		if (\strpos($action, '::') === false) {
+			$action .= '::' . $this->router->getDefaultRouteActionMethod();
 		}
-		[$classname, $function] = \explode('::', $function, 2);
-		[$function, $params] = $this->extractFunctionAndParams($function);
+		[$classname, $action] = \explode('::', $action, 2);
+		[$action, $params] = $this->extractActionAndParams($action);
 		if ( ! \class_exists($classname)) {
 			throw new Exception("Class not exists: {$classname}");
 		}
 		$class = new $classname(...$construct);
-		if ( ! \method_exists($class, $function)) {
+		if ( ! \method_exists($class, $action)) {
 			throw new Exception(
-				"Class method not exists: {$classname}::{$function}"
+				"Class method not exists: {$classname}::{$action}"
 			);
 		}
-		return $class->{$function}(...$params);
+		return $class->{$action}(...$params);
 	}
 
 	/**
-	 * @param string $function A function part like: index/0/2/1
+	 * @param string $action An action part like: index/0/2/1
 	 *
 	 * @return array
 	 */
-	protected function extractFunctionAndParams(string $function) : array
+	protected function extractActionAndParams(string $action) : array
 	{
-		if (\strpos($function, '/') === false) {
-			return [$function, []];
+		if (\strpos($action, '/') === false) {
+			return [$action, []];
 		}
-		$params = \explode('/', $function);
-		$function = $params[0];
+		$params = \explode('/', $action);
+		$action = $params[0];
 		unset($params[0]);
 		if ($params) {
-			$function_params = $this->getFunctionParams();
+			$action_params = $this->getActionParams();
 			$params = \array_values($params);
 			foreach ($params as $index => $param) {
-				if ( ! \array_key_exists($param, $function_params)) {
-					throw new \InvalidArgumentException("Undefined function param: {$param}");
+				if ( ! \array_key_exists($param, $action_params)) {
+					throw new \InvalidArgumentException("Undefined action param: {$param}");
 				}
-				$params[$index] = $function_params[$param];
+				$params[$index] = $action_params[$param];
 			}
 		}
 		return [
-			$function,
+			$action,
 			$params,
 		];
 	}

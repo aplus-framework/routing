@@ -83,13 +83,13 @@ class RouterTest extends TestCase
 		$this->router->match('GET', 'https://domain.tld:8081/bar')->run();
 	}
 
-	public function testRouteRunWithUndefinedFunctionParam()
+	public function testRouteRunWithUndefinedActionParam()
 	{
 		$this->prepare();
 		$route = $this->router->match('GET', 'https://domain.tld:8081/shop/products/foo-bar/22/br');
 		self::expectException(\InvalidArgumentException::class);
-		self::expectExceptionMessage('Undefined function param: 2');
-		$route->setFunctionParams([22, 'foo-bar']);
+		self::expectExceptionMessage('Undefined action param: 2');
+		$route->setActionParams([22, 'foo-bar']);
 		$route->run();
 	}
 
@@ -168,23 +168,23 @@ class RouterTest extends TestCase
 		$base_url = 'http://domain.tld:8080';
 		self::assertEquals(
 			'Home::get',
-			$this->router->match('GET', $base_url)->getFunction()
+			$this->router->match('GET', $base_url)->getAction()
 		);
 		self::assertEquals(
 			'Home::post',
-			$this->router->match('POST', $base_url)->getFunction()
+			$this->router->match('POST', $base_url)->getAction()
 		);
 		self::assertEquals(
 			'Home::put',
-			$this->router->match('PUT', $base_url)->getFunction()
+			$this->router->match('PUT', $base_url)->getAction()
 		);
 		self::assertEquals(
 			'Home::patch',
-			$this->router->match('PATCH', $base_url)->getFunction()
+			$this->router->match('PATCH', $base_url)->getAction()
 		);
 		self::assertEquals(
 			'Home::delete',
-			$this->router->match('DELETE', $base_url)->getFunction()
+			$this->router->match('DELETE', $base_url)->getAction()
 		);
 	}
 
@@ -194,13 +194,13 @@ class RouterTest extends TestCase
 		$route = $this->router->match('GET', 'https://domain.tld:8080/users/25');
 		self::assertInstanceOf(Route::class, $route);
 		self::assertEquals('/users/{num}', $route->getPath());
-		self::assertEquals([25], $route->getFunctionParams());
+		self::assertEquals([25], $route->getActionParams());
 		self::assertEquals('User page: 25', $route->run());
 		$route = $this->router->match('GET', 'https://domain.tld:8080/users/10/posts/15');
 		self::assertInstanceOf(Route::class, $route);
 		self::assertEquals('/users/{num}/posts/{num}', $route->getPath());
 		self::assertEquals('/users/7/posts/8', $route->getPath(7, 8));
-		self::assertEquals([10, 15], $route->getFunctionParams());
+		self::assertEquals([10, 15], $route->getActionParams());
 		self::assertEquals('User 10, post: 15', $route->run());
 	}
 
@@ -346,27 +346,27 @@ class RouterTest extends TestCase
 		);
 		self::assertEquals(
 			'any',
-			$this->router->match('GET', 'http://example.com')->getFunction()
+			$this->router->match('GET', 'http://example.com')->getAction()
 		);
 		self::assertEquals(
 			'none',
-			$this->router->match('GET', 'https://domain.tld')->getFunction()
+			$this->router->match('GET', 'https://domain.tld')->getAction()
 		);
 		self::assertEquals(
 			'scheme-subdomain-port',
-			$this->router->match('GET', 'http://test.domain.tld:8081')->getFunction()
+			$this->router->match('GET', 'http://test.domain.tld:8081')->getAction()
 		);
 		self::assertEquals(
 			'scheme',
-			$this->router->match('GET', 'https://subdomain.domain.tld:8080')->getFunction()
+			$this->router->match('GET', 'https://subdomain.domain.tld:8080')->getAction()
 		);
 		self::assertEquals(
 			'port',
-			$this->router->match('GET', 'http://subdomain.domain.tld:8081')->getFunction()
+			$this->router->match('GET', 'http://subdomain.domain.tld:8081')->getAction()
 		);
 		self::assertEquals(
 			'any',
-			$this->router->match('GET', 'http://foo.bar.example.com')->getFunction()
+			$this->router->match('GET', 'http://foo.bar.example.com')->getAction()
 		);
 	}
 
