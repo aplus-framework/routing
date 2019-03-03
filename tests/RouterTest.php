@@ -540,4 +540,17 @@ class RouterTest extends TestCase
 		self::assertEquals('not-found', $route->getName());
 		self::assertNull($route->run());
 	}
+
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testRedirect()
+	{
+		$this->router->serve('http://domain.tld', function (Collection $collection) {
+			$collection->redirect('shop', 'https://shop.com', 301);
+		});
+		$this->router->match('get', 'http://domain.tld/shop')->run();
+		self::assertContains('Location: https://shop.com', \xdebug_get_headers());
+		self::assertEquals(301, \http_response_code());
+	}
 }

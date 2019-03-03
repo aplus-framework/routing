@@ -73,7 +73,6 @@ class Collection
 		$callable($this);
 		$this->namespace = null;
 	}*/
-
 	/**
 	 * Gets the Collection Base URL.
 	 *
@@ -164,6 +163,13 @@ class Collection
 	public function options(string $path, $function, string $name = null) : Route
 	{
 		return $this->add(['OPTIONS'], $path, $function, $name);
+	}
+
+	public function redirect(string $path, string $url, int $code = 302) : Route
+	{
+		return $this->add(['GET'], $path, function () use ($url, $code) {
+			\header('Location: ' . $url, true, $code);
+		});
 	}
 
 	/**
