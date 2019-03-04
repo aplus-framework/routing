@@ -91,7 +91,7 @@ class Collection
 	/**
 	 * Gets the Route Not Found for this Collection.
 	 *
-	 * @see notFound()
+	 * @see notFound
 	 *
 	 * @return Route|null The Route containing the Not Found Action or null if
 	 *                    the Action was not set

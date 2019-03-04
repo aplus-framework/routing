@@ -137,7 +137,14 @@ class Route
 	}
 
 	/**
-	 * @param \Closure|string $action
+	 * Sets the Route Action.
+	 *
+	 * @param \Closure|string $action A \Closure or a string in the format of the __METHOD__
+	 *                                constant. Example: App\Blog::show/0/2/1. Where /0/2/1 is the
+	 *                                method parameters order
+	 *
+	 * @see setActionParams
+	 * @see run
 	 *
 	 * @return $this
 	 */
@@ -152,8 +159,19 @@ class Route
 		return $this->actionParams;
 	}
 
+	/**
+	 * Sets the Action parameters.
+	 *
+	 * @param array $params The parameters. Note that the indexes set the order of how the
+	 *                      parameters are passed to the Action
+	 *
+	 * @see setAction
+	 *
+	 * @return $this
+	 */
 	public function setActionParams(array $params)
 	{
+		\ksort($params);
 		$this->actionParams = $params;
 		return $this;
 	}
@@ -206,7 +224,7 @@ class Route
 			$params = \array_values($params);
 			foreach ($params as $index => $param) {
 				if ( ! \array_key_exists($param, $action_params)) {
-					throw new \InvalidArgumentException("Undefined action param: {$param}");
+					throw new \InvalidArgumentException("Undefined action parameter: {$param}");
 				}
 				$params[$index] = $action_params[$param];
 			}

@@ -138,17 +138,17 @@ class Router
 		if (empty($matches[0])) {
 			if ($params) {
 				throw new \InvalidArgumentException(
-					'String has not placeholders. Parameters not required'
+					'String has no placeholders. Parameters not required'
 				);
 			}
 			return $string;
 		}
 		foreach ($matches[0] as $index => $pattern) {
 			if ( ! isset($params[$index])) {
-				throw new \InvalidArgumentException("Parameter is empty. Index: {$index}");
+				throw new \InvalidArgumentException("Placeholder parameter is empty: {$index}");
 			}
 			if ( ! \preg_match('#' . $pattern . '#', $params[$index])) {
-				throw new \InvalidArgumentException("Parameter is invalid. Index: {$index}");
+				throw new \InvalidArgumentException("Placeholder parameter is invalid: {$index}");
 			}
 			$string = \substr_replace(
 				$string,
@@ -261,7 +261,7 @@ class Router
 	/**
 	 * @param array $parsed_url
 	 *
-	 * @see parseURL()
+	 * @see parseURL
 	 *
 	 * @return string
 	 */
@@ -280,7 +280,7 @@ class Router
 	 * @param string $method HTTP Method. One of: GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS
 	 * @param string $url    The requested URL
 	 *
-	 * @see serve()
+	 * @see serve
 	 *
 	 * @return Route Always returns a Route, even if it is the Route Not Found
 	 */

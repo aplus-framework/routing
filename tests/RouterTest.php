@@ -39,9 +39,48 @@ class RouterTest extends TestCase
 			$collection->get('shop/products', 'Tests\Routing\Support\Shop::listProducts');
 			$collection->get(
 				'shop/products/{title}/{num}/([a-z]{2})',
-				'Tests\Routing\Support\Shop::showProduct/1/0/2'
+				'Tests\Routing\Support\Shop::showProduct/1/0/2',
+				'shop.showProduct'
 			);
 		});
+	}
+
+	public function testRouteActionParams()
+	{
+		$this->prepare();
+		$route = $this->router->getNamedRoute('shop.showProduct');
+		self::assertEmpty($route->getActionParams());
+		$route->setActionParams([1 => 25, 0 => 'hello-spirit', 2 => 'br']);
+		self::assertEquals(
+			'/shop/products/{title}/{num}/([a-z]{2})',
+			$route->getPath()
+		);
+		self::assertEquals(
+			'/shop/products/hello-spirit/25/br',
+			$route->getPath(...$route->getActionParams())
+		);
+		self::assertEquals(
+			[25, 'hello-spirit', 'br'],
+			$route->run()
+		);
+	}
+
+	public function testRouteActionParamsEmpty()
+	{
+		$this->prepare();
+		$route = $this->router->getNamedRoute('shop.showProduct');
+		$route->setActionParams(['hello-spirit']);
+		self::expectExceptionMessage('Placeholder parameter is empty: 1');
+		$route->getPath(...$route->getActionParams());
+	}
+
+	public function testRouteActionParamsInvalid()
+	{
+		$this->prepare();
+		$route = $this->router->getNamedRoute('shop.showProduct');
+		$route->setActionParams([0 => 'hello-spirit', 1 => 25, 2 => 'b1']);
+		self::expectExceptionMessage('Placeholder parameter is invalid: 2');
+		$route->getPath(...$route->getActionParams());
 	}
 
 	public function testMatchHead()
@@ -220,7 +259,7 @@ class RouterTest extends TestCase
 		$this->prepare();
 		$route = $this->router->match('GET', 'https://domain.tld:8081/shop/products/foo-bar/22/br');
 		self::expectException(\InvalidArgumentException::class);
-		self::expectExceptionMessage('Undefined action param: 2');
+		self::expectExceptionMessage('Undefined action parameter: 2');
 		$route->setActionParams([22, 'foo-bar']);
 		$route->run();
 	}
