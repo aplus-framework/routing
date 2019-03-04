@@ -1,23 +1,47 @@
 <?php namespace Framework\Routing;
 
+/**
+ * Class Route.
+ */
 class Route
 {
+	/**
+	 * @var Router
+	 */
 	protected $router;
+	/**
+	 * @var string
+	 */
 	protected $origin;
+	/**
+	 * @var string
+	 */
 	protected $path;
+	/**
+	 * @var \Closure|string
+	 */
 	protected $action;
+	/**
+	 * @var array
+	 */
 	protected $actionParams = [];
+	/**
+	 * @var string|null
+	 */
 	protected $name;
+	/**
+	 * @var array
+	 */
 	protected $options = [];
 
 	/**
 	 * Route constructor.
 	 *
-	 * @param \Framework\Routing\Router $router
-	 * @param string                    $origin URL Origin. A string in the following format:
-	 *                                          {scheme}://{hostname}[:{port}]
-	 * @param string                    $path   URL Path. A string starting with '/'
-	 * @param \Closure|string           $action
+	 * @param Router          $router A Router instance
+	 * @param string          $origin URL Origin. A string in the following format:
+	 *                                {scheme}://{hostname}[:{port}]
+	 * @param string          $path   URL Path. A string starting with '/'
+	 * @param \Closure|string $action The action
 	 */
 	public function __construct(Router $router, string $origin, string $path, $action)
 	{
@@ -27,6 +51,13 @@ class Route
 		$this->setAction($action);
 	}
 
+	/**
+	 * Gets the URL Origin.
+	 *
+	 * @param mixed ...$params Parameters to fill the URL Origin placeholders
+	 *
+	 * @return string
+	 */
 	public function getOrigin(...$params) : string
 	{
 		if ($params) {
@@ -41,6 +72,14 @@ class Route
 		return $this;
 	}
 
+	/**
+	 * Gets the URL.
+	 *
+	 * @param array $origin_params Parameters to fill the URL Origin placeholders
+	 * @param array $path_params   Parameters to fill the URL Path placeholders
+	 *
+	 * @return string
+	 */
 	public function getURL(array $origin_params = [], array $path_params = []) : string
 	{
 		return $this->getOrigin(...$origin_params) . $this->getPath(...$path_params);
@@ -74,6 +113,13 @@ class Route
 		return $this;
 	}
 
+	/**
+	 * Gets the URL Path.
+	 *
+	 * @param mixed ...$params Parameters to fill the URL Path placeholders
+	 *
+	 * @return string
+	 */
 	public function getPath(...$params) : string
 	{
 		if ($params) {
@@ -82,11 +128,19 @@ class Route
 		return $this->path;
 	}
 
+	/**
+	 * @return \Closure|string
+	 */
 	public function getAction()
 	{
 		return $this->action;
 	}
 
+	/**
+	 * @param \Closure|string $action
+	 *
+	 * @return $this
+	 */
 	public function setAction($action)
 	{
 		$this->action = \is_string($action) ? \trim($action, '\\') : $action;
@@ -104,6 +158,13 @@ class Route
 		return $this;
 	}
 
+	/**
+	 * Run the Route Action.
+	 *
+	 * @param mixed ...$construct Class constructor parameters
+	 *
+	 * @return mixed The action returned value
+	 */
 	public function run(...$construct)
 	{
 		$action = $this->getAction();

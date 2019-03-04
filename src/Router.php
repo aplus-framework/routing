@@ -1,13 +1,25 @@
 <?php namespace Framework\Routing;
 
+/**
+ * Class Router.
+ */
 class Router
 {
+	/**
+	 * @var string|null
+	 */
 	protected $defaultRouteNamespace;
+	/**
+	 * @var string
+	 */
 	protected $defaultRouteActionMethod = 'index';
 	/**
 	 * @var callable
 	 */
 	protected $defaultRouteNotFound;
+	/**
+	 * @var array
+	 */
 	protected $placeholders = [
 		'{alpha}' => '([a-zA-Z]+)',
 		'{alphanum}' => '([a-zA-Z0-9]+)',
@@ -21,11 +33,11 @@ class Router
 		'{title}' => '([a-zA-Z0-9_-]+)',
 	];
 	/**
-	 * @var \Framework\Routing\Collection[]
+	 * @var Collection[]
 	 */
 	protected $collections = [];
 	/**
-	 * @var \Framework\Routing\Route|null
+	 * @var Route|null
 	 */
 	protected $matchedRoute;
 	/**
@@ -53,13 +65,6 @@ class Router
 	 */
 	protected $autoMethods = false;
 
-	/*public function getDefaultRouteNotFound() : Route
-	{
-		if ($this->defaultRouteNotFound) {
-			return $this->defaultRouteNotFound;
-		}
-		$this->defaultRouteNotFound=new Route()
-	}*/
 	public function getDefaultRouteActionMethod() : string
 	{
 		return $this->defaultRouteActionMethod;
@@ -83,6 +88,11 @@ class Router
 		))->setName('not-found');
 	}
 
+	/**
+	 * @param \Closure|string $action
+	 *
+	 * @return $this
+	 */
 	public function setDefaultRouteNotFound($action)
 	{
 		$this->defaultRouteNotFound = $action;
@@ -171,7 +181,7 @@ class Router
 	}
 
 	/**
-	 * @return \Framework\Routing\Collection[]
+	 * @return Collection[]
 	 */
 	public function getCollections() : array
 	{
@@ -272,7 +282,7 @@ class Router
 	 *
 	 * @see serve()
 	 *
-	 * @return \Framework\Routing\Route Always returns a Route, even if it is the Route Not Found
+	 * @return Route Always returns a Route, even if it is the Route Not Found
 	 */
 	public function match(string $method, string $url) : Route
 	{
@@ -438,7 +448,7 @@ class Router
 			foreach ($collection->routes as $routes) {
 				foreach ($routes as $route) {
 					/**
-					 * @var \Framework\Routing\Route $route
+					 * @var Route $route
 					 */
 					if ($route->getName() === $name) {
 						return $route;

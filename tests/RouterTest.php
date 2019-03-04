@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 class RouterTest extends TestCase
 {
 	/**
-	 * @var \Framework\Routing\Router
+	 * @var Router
 	 */
 	protected $router;
 
