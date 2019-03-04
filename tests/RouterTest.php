@@ -829,4 +829,17 @@ class RouterTest extends TestCase
 		);
 		self::assertIsCallable($this->router->getNamedRoute('foo')->getAction());
 	}
+
+	public function testCollectionMagicMethods()
+	{
+		$this->router->serve('http://foo.com', function (Collection $collection) {
+			self::assertEquals('http://foo.com', $collection->origin);
+			self::assertEquals($this->router, $collection->router);
+			self::assertIsArray($collection->routes);
+			self::assertNull($collection->getRouteNotFound());
+			$collection->notFound('NotFound::index');
+		});
+		$this->router->match('get', 'http://foo.com/bla');
+		self::assertEquals('NotFound::index', $this->router->getMatchedRoute()->getAction());
+	}
 }
