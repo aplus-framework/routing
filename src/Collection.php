@@ -112,12 +112,12 @@ class Collection
 	{
 		return empty($this->notFound)
 			? null
-			: new Route(
+			: (new Route(
 				$this->router,
 				$this->router->getMatchedOrigin(),
 				$this->router->getMatchedPath(),
 				$this->notFound
-			);
+			))->setName('collection-not-found');
 	}
 
 	public function add(array $http_methods, string $path, $action, string $name = null) : Route

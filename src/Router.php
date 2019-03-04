@@ -126,6 +126,11 @@ class Router
 		$string = $this->replacePlaceholders($string);
 		\preg_match_all('#\(([^)]+)\)#', $string, $matches);
 		if (empty($matches[0])) {
+			if ($params) {
+				throw new \InvalidArgumentException(
+					'String has not placeholders. Parameters not required'
+				);
+			}
 			return $string;
 		}
 		foreach ($matches[0] as $index => $pattern) {
@@ -293,22 +298,23 @@ class Router
 		$this->setMatchedOrigin($origin);
 		$collection = $this->matchCollection($origin);
 		if ( ! $collection) {
-			// ROUTER ERROR 404
 			return $this->matchedRoute = $this->getDefaultRouteNotFound();
 		}
-		$route = $this->matchRoute($method, $collection, $parsed_url['path']);
-		if ( ! $route) {
-			if ($method === 'OPTIONS' && $this->isAutoOptions()) {
-				$route = $this->getRouteWithAllowHeader($collection, 200);
-			} elseif ($this->isAutoMethods()) {
-				$route = $this->getRouteWithAllowHeader($collection, 405);
-			}
-			if ( ! $route) {
-				// COLLECTION ERROR 404
-				$route = $collection->getRouteNotFound() ?? $this->getDefaultRouteNotFound();
-			}
+		return $this->matchedRoute = $this->matchRoute($method, $collection, $parsed_url['path'])
+			?? $this->getAlternativeRoute($method, $collection);
+	}
+
+	protected function getAlternativeRoute(string $method, Collection $collection) : Route
+	{
+		if ($method === 'OPTIONS' && $this->isAutoOptions()) {
+			$route = $this->getRouteWithAllowHeader($collection, 200);
+		} elseif ($this->isAutoMethods()) {
+			$route = $this->getRouteWithAllowHeader($collection, 405);
 		}
-		return $this->matchedRoute = $route;
+		if (empty($route)) {
+			$route = $collection->getRouteNotFound() ?? $this->getDefaultRouteNotFound();
+		}
+		return $route;
 	}
 
 	protected function matchCollection(string $origin) : ?Collection

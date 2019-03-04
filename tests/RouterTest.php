@@ -44,9 +44,141 @@ class RouterTest extends TestCase
 		});
 	}
 
+	public function testMatchHead()
+	{
+		$this->prepare();
+		self::assertEquals('home', $this->router->match('head', 'http://domain.tld:81')->getName());
+	}
+
+	public function testMatchedURL()
+	{
+		$this->prepare();
+		$this->router->match('get', 'http://domain.tld:81/users/5/posts/12/?a=foo&e=5#id-x');
+		self::assertEquals('http://domain.tld:81/users/5/posts/12', $this->router->getMatchedURL());
+	}
+
+	public function testMatchedOrigin()
+	{
+		$this->prepare();
+		$this->router->match('get', 'http://domain.tld:81/users/5/posts/12');
+		self::assertEquals('http://domain.tld:81', $this->router->getMatchedOrigin());
+		self::assertEquals(['http', 81], $this->router->getMatchedOriginParams());
+	}
+
+	public function testMatchedPath()
+	{
+		$this->prepare();
+		$this->router->match('get', 'http://domain.tld:81/users/5/posts/12');
+		self::assertEquals('/users/5/posts/12', $this->router->getMatchedPath());
+		self::assertEquals([5, 12], $this->router->getMatchedPathParams());
+	}
+
+	public function testMatchedRoute()
+	{
+		$this->prepare();
+		self::assertNull($this->router->getMatchedRoute());
+		$this->router->match('get', 'http://domain.tld:81/users/5/posts/12');
+		self::assertInstanceOf(Route::class, $this->router->getMatchedRoute());
+		self::assertEquals('user.post', $this->router->getMatchedRoute()->getName());
+		self::assertEquals('/users/{num}/posts/{num}', $this->router->getMatchedRoute()->getPath());
+	}
+
+	public function testRouteURL()
+	{
+		$this->prepare();
+		$this->router->match('get', 'http://domain.tld:81/users/5/posts/12');
+		self::assertEquals(
+			'{scheme}://domain.tld:{num}',
+			$this->router->getMatchedRoute()->getOrigin()
+		);
+		self::assertEquals(
+			'https://domain.tld:82',
+			$this->router->getMatchedRoute()->getOrigin('https', 82)
+		);
+		self::assertEquals(
+			'{scheme}://domain.tld:{num}',
+			$this->router->getMatchedRoute()->getOrigin()
+		);
+		self::assertEquals(
+			'/users/{num}/posts/{num}',
+			$this->router->getMatchedRoute()->getPath()
+		);
+		self::assertEquals(
+			'/users/4/posts/5',
+			$this->router->getMatchedRoute()->getPath(4, 5)
+		);
+		self::assertEquals(
+			'/users/{num}/posts/{num}',
+			$this->router->getMatchedRoute()->getPath()
+		);
+		self::assertEquals(
+			'{scheme}://domain.tld:{num}/users/{num}/posts/{num}',
+			$this->router->getMatchedRoute()->getURL()
+		);
+		self::assertEquals(
+			'http://domain.tld:83/users/1/posts/2',
+			$this->router->getMatchedRoute()->getURL(['http', 83], [1, 2])
+		);
+	}
+
+	/**
+	 * @runInSeparateProcess
+	 */
 	public function testDefaultRouteNotFound()
 	{
-		self::assertEquals('not-found', $this->router->match('GET', 'http://site.org')->getName());
+		$route = $this->router->match('GET', 'http://site.org');
+		self::assertEquals('not-found', $route->getName());
+		$route->run();
+		self::assertEquals(404, \http_response_code());
+	}
+
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testCustomDefaultRouteNotFound()
+	{
+		$this->router->setDefaultRouteNotFound(function () {
+			\http_response_code(400);
+		});
+		$route = $this->router->match('GET', 'http://site.org');
+		self::assertEquals('not-found', $route->getName());
+		$route->run();
+		self::assertEquals(400, \http_response_code());
+	}
+
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testCollectionRouteNotFound()
+	{
+		$this->router->serve('http://site.org', function (Collection $collection) {
+			$collection->notFound(function () {
+				\http_response_code(402);
+			});
+		});
+		$route = $this->router->match('GET', 'http://site.org');
+		self::assertEquals('collection-not-found', $route->getName());
+		$route->run();
+		self::assertEquals(402, \http_response_code());
+	}
+
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testDefaultRouteActionMethod()
+	{
+		$this->router->serve('http://foo.com', function (Collection $collection) {
+			$collection->get('/', 'Tests\Routing\Support\Shop');
+		});
+		self::assertEquals(
+			'Tests\Routing\Support\Shop::index',
+			$this->router->match('get', 'http://foo.com')->run()
+		);
+		$this->router->setDefaultRouteActionMethod('listProducts');
+		self::assertEquals(
+			'Tests\Routing\Support\Shop::listProducts',
+			$this->router->match('get', 'http://foo.com')->run()
+		);
 	}
 
 	public function testRouteRunWithClass()
@@ -301,6 +433,12 @@ class RouterTest extends TestCase
 				'abc123'
 			)
 		);
+		$this->assertEquals(
+			'http://s1.domain.tld/users/30',
+			$this->router->fillPlaceholders('http://s1.domain.tld/users/30')
+		);
+		$this->expectException(\InvalidArgumentException::class);
+		$this->router->fillPlaceholders('http://s1.domain.tld/users/30', 1, 25);
 	}
 
 	public function testFillEmptyPlaceholders()
@@ -663,5 +801,32 @@ class RouterTest extends TestCase
 				self::assertInstanceOf(Route::class, $route);
 			}
 		}
+	}
+
+	public function testCollectionNamespace()
+	{
+		$this->router->serve('http://foo.com', function (Collection $collection) {
+			$collection->namespace('App', [
+				$collection->get('/', 'Home::index', 'home'),
+				$collection->namespace('\Blog\Test\\', [
+					$collection->group('/blog', [
+						$collection->get('', 'Blog', 'blog'),
+						$collection->get('{num}', 'Posts::show/0', 'post'),
+						$collection->get('foo', function () {
+						}, 'foo'),
+					]),
+				]),
+			]);
+		});
+		self::assertEquals('App\Home::index', $this->router->getNamedRoute('home')->getAction());
+		self::assertEquals(
+			'App\Blog\Test\Blog',
+			$this->router->getNamedRoute('blog')->getAction()
+		);
+		self::assertEquals(
+			'App\Blog\Test\Posts::show/0',
+			$this->router->getNamedRoute('post')->getAction()
+		);
+		self::assertIsCallable($this->router->getNamedRoute('foo')->getAction());
 	}
 }
