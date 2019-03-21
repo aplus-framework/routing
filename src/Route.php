@@ -186,7 +186,7 @@ class Route
 	public function run(...$construct)
 	{
 		$action = $this->getAction();
-		if ( ! \is_string($action)) {
+		if ($action instanceof \Closure) {
 			return $action($this->getActionParams(), ...$construct);
 		}
 		if (\strpos($action, '::') === false) {
@@ -203,7 +203,17 @@ class Route
 				"Class method not exists: {$classname}::{$action}"
 			);
 		}
-		return $class->{$action}(...$params);
+		if (\method_exists($class, 'beforeAction')) {
+			$response = $class->beforeAction($action, $params);
+			if ($response !== null) {
+				return $response;
+			}
+		}
+		$response = $class->{$action}(...$params);
+		if ($response === null && \method_exists($class, 'afterAction')) {
+			$response = $class->afterAction($action, $params);
+		}
+		return $response;
 	}
 
 	/**

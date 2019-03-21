@@ -565,7 +565,7 @@ class RouterTest extends TestCase
 		self::assertEquals(200, \http_response_code());
 		self::assertContains(
 			'Allow: DELETE, GET, HEAD, OPTIONS, PATCH, PUT',
-			\xdebug_get_headers()
+			xdebug_get_headers()
 		);
 	}
 
@@ -584,7 +584,7 @@ class RouterTest extends TestCase
 		self::assertEquals(404, \http_response_code());
 		self::assertNotContains(
 			'Allow: DELETE, GET, HEAD, OPTIONS, PATCH, PUT',
-			\xdebug_get_headers()
+			xdebug_get_headers()
 		);
 	}
 
@@ -603,7 +603,7 @@ class RouterTest extends TestCase
 		self::assertEquals(404, \http_response_code());
 		self::assertNotContains(
 			'Allow: DELETE, GET, HEAD, OPTIONS, PATCH, PUT',
-			\xdebug_get_headers()
+			xdebug_get_headers()
 		);
 	}
 
@@ -624,11 +624,11 @@ class RouterTest extends TestCase
 		$route->run();
 		self::assertNotContains(
 			'Allow: DELETE, GET, HEAD, OPTIONS, PATCH, PUT',
-			\xdebug_get_headers()
+			xdebug_get_headers()
 		);
 		self::assertContains(
 			'Foo: bar',
-			\xdebug_get_headers()
+			xdebug_get_headers()
 		);
 	}
 
@@ -647,7 +647,7 @@ class RouterTest extends TestCase
 		self::assertEquals(405, \http_response_code());
 		self::assertContains(
 			'Allow: GET, HEAD, POST',
-			\xdebug_get_headers()
+			xdebug_get_headers()
 		);
 	}
 
@@ -666,7 +666,7 @@ class RouterTest extends TestCase
 		self::assertEquals(404, \http_response_code());
 		self::assertNotContains(
 			'Allow: GET, HEAD, PUT',
-			\xdebug_get_headers()
+			xdebug_get_headers()
 		);
 	}
 
@@ -685,7 +685,7 @@ class RouterTest extends TestCase
 		self::assertEquals(404, \http_response_code());
 		self::assertNotContains(
 			'Allow: GET, HEAD, POST',
-			\xdebug_get_headers()
+			xdebug_get_headers()
 		);
 	}
 
@@ -705,7 +705,7 @@ class RouterTest extends TestCase
 		self::assertEquals(200, \http_response_code());
 		self::assertContains(
 			'Allow: GET, HEAD, OPTIONS, POST',
-			\xdebug_get_headers()
+			xdebug_get_headers()
 		);
 	}
 
@@ -828,7 +828,7 @@ class RouterTest extends TestCase
 			$collection->redirect('shop', 'https://shop.com', 301);
 		});
 		$this->router->match('get', 'http://domain.tld/shop')->run();
-		self::assertContains('Location: https://shop.com', \xdebug_get_headers());
+		self::assertContains('Location: https://shop.com', xdebug_get_headers());
 		self::assertEquals(301, \http_response_code());
 	}
 
