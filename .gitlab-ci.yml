@@ -25,9 +25,6 @@ test:php7.3:
     - composer normalize --dry-run --indent-size=1 --indent-style=tab
     # Check if syntax errors was fixed with php-cs-fixer
     - vendor/bin/php-cs-fixer fix --diff --dry-run --verbose
-    # PHP errors
-    - php -l src/*
-    - php -l tests/*
     # Analyse code with PHPStan
     #- vendor/bin/phpstan analyse
     # PHPMD
