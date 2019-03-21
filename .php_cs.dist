@@ -3,7 +3,7 @@
 use PhpCsFixer\Config;
 use PhpCsFixer\Finder;
 
-$year = \date('Y');
+$year = date('Y');
 $header = <<<EOF
 Copyright (C) 2018-{$year} Natan Felles <natanfelles@gmail.com>
 EOF;
@@ -14,8 +14,8 @@ $finder = Finder::create()
 return Config::create()
 	->setRiskyAllowed(true)
 	->setFinder($finder)
-	->setCacheFile('/tmp/' . \md5(__FILE__))
-	->setUsingCache((bool) \getenv('GITLAB_CI'))
+	->setCacheFile('/tmp/' . md5(__FILE__))
+	->setUsingCache((bool) getenv('GITLAB_CI'))
 	->setIndent("\t")
 	->setLineEnding("\n")
 	->setRules([
@@ -30,6 +30,7 @@ return Config::create()
 		'blank_line_after_opening_tag' => false,
 		'blank_line_before_statement' => false,
 		'braces' => [
+			'allow_single_line_closure' => false,
 			'position_after_anonymous_constructs' => 'same',
 			'position_after_control_structures' => 'same',
 			'position_after_functions_and_oop_constructs' => 'next',
@@ -120,10 +121,13 @@ return Config::create()
 		],
 		'native_constant_invocation' => true,
 		'native_function_casing' => true,
-		'native_function_invocation' => true,
+		'native_function_invocation' => [
+			'scope' => 'namespaced',
+			'strict' => true,
+		],
 		'new_with_braces' => true,
 		'no_alias_functions' => true,
-		'no_alternative_syntax' => false,
+		'no_alternative_syntax' => true,
 		'no_binary_string' => true,
 		'no_blank_lines_after_class_opening' => true,
 		'no_blank_lines_after_phpdoc' => true,
@@ -186,7 +190,19 @@ return Config::create()
 		'not_operator_with_space' => true,
 		'not_operator_with_successor_space' => false,
 		'object_operator_without_whitespace' => true,
-		'ordered_class_elements' => false,
+		'ordered_class_elements' => [
+			'order' => [
+				'use_trait',
+				'constant',
+				'property',
+				'construct',
+				'destruct',
+				'magic',
+				'method',
+				'method_static',
+			],
+			'sortAlgorithm' => 'none',
+		],
 		'ordered_imports' => true,
 		'php_unit_construct' => true,
 		'phpdoc_add_missing_param_annotation' => true,
@@ -195,7 +211,7 @@ return Config::create()
 		'phpdoc_indent' => true,
 		'phpdoc_inline_tag' => true,
 		'phpdoc_no_access' => true,
-		'phpdoc_no_alias_tag' => true,
+		'phpdoc_no_alias_tag' => ['type' => 'var', 'link' => 'see'],
 		'phpdoc_no_empty_return' => true,
 		'phpdoc_no_package' => true,
 		'phpdoc_no_useless_inheritdoc' => true,
