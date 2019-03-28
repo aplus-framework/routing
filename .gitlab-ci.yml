@@ -1,24 +1,12 @@
 ---
-image: php:7.3
+image: natanfelles/php-base
 
 test:php7.3:
-  image: php:7.3
   stage: test
   cache:
     paths:
       - vendor/
   before_script:
-    - apt-get update -yqq
-    - apt-get install -yqq curl git libcurl4-gnutls-dev libxml2-dev libbz2-dev
-      libzip-dev wget zlib1g-dev zip automake autoconf libtool g++
-    # Install PHP extensions
-    - docker-php-ext-install curl json mbstring xml zip
-    # Install & enable Xdebug for code coverage reports
-    - pecl install xdebug-beta
-    - docker-php-ext-enable xdebug
-    # Install and run Composer
-    - curl -sS https://getcomposer.org/installer | php
-    - mv composer.phar /usr/bin/composer
     - composer install
   script:
     # composer.json normalization
