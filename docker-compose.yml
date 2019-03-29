@@ -1,0 +1,9 @@
+---
+version: "3"
+services:
+  package:
+    image: natanfelles/package
+    container_name: routing-package
+    working_dir: /package
+    volumes:
+      - .:/package
