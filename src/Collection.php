@@ -299,7 +299,7 @@ class Collection
 		string $class,
 		string $base_name,
 		array $except = [],
-		string $placeholder = '{num}'
+		string $placeholder = '{int}'
 	) : array {
 		$path = \rtrim($path, '/') . '/';
 		$class .= '::';
@@ -370,7 +370,7 @@ class Collection
 		string $class,
 		string $base_name,
 		array $except = [],
-		string $placeholder = '{num}'
+		string $placeholder = '{int}'
 	) : array {
 		$routes = $this->resource($path, $class, $base_name, $except, $placeholder);
 		$path = \rtrim($path, '/') . '/';
