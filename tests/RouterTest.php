@@ -921,4 +921,20 @@ class RouterTest extends TestCase
 			$collection->foo;
 		});
 	}
+
+	public function testBeforeAndAfterRouteActions()
+	{
+		$this->router->serve('http://foo.com', function (Collection $collection) {
+			$collection->get('/before', 'Tests\Routing\Support\BeforeActionRoute::index');
+			$collection->get('/after', 'Tests\Routing\Support\AfterActionRoute::index');
+		});
+		$this->assertEquals(
+			'Tests\Routing\Support\BeforeActionRoute::beforeAction',
+			$this->router->match('GET', 'http://foo.com/before')->run()
+		);
+		$this->assertEquals(
+			'Tests\Routing\Support\AfterActionRoute::afterAction',
+			$this->router->match('GET', 'http://foo.com/after')->run()
+		);
+	}
 }

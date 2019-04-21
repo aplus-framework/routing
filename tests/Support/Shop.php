@@ -1,6 +1,8 @@
 <?php namespace Tests\Routing\Support;
 
-class Shop
+use Framework\Routing\RouteAction;
+
+class Shop extends RouteAction
 {
 	public function index()
 	{
