@@ -424,9 +424,9 @@ class RouterTest extends TestCase
 
 	public function testReplacePlaceholders()
 	{
-		$placeholders = '{alpha}/{alphanum}/{any}/{unknown}/{num}/{segment}';
-		$patterns = '([a-zA-Z]+)/([a-zA-Z0-9]+)/(.*)/{unknown}/([0-9]+)/([^/]+)';
-		$merged = '([a-zA-Z]+)/{alphanum}/(.*)/{unknown}/([0-9]+)/([^/]+)';
+		$placeholders = '{alpha}/{alphanum}/{any}/{unknown}/{num}/{segment}/{int}/{md5}';
+		$patterns = '([a-zA-Z]+)/([a-zA-Z0-9]+)/(.*)/{unknown}/([0-9]+)/([^/]+)/([0-9]{1,18}+)/([a-f0-9]{32}+)';
+		$merged = '([a-zA-Z]+)/{alphanum}/(.*)/{unknown}/([0-9]+)/([^/]+)/([0-9]{1,18}+)/([a-f0-9]{32}+)';
 		$this->assertEquals(
 			$patterns,
 			$this->router->replacePlaceholders($placeholders)
@@ -445,7 +445,7 @@ class RouterTest extends TestCase
 		);
 		$this->router->addPlaceholder('unknown', '([1-5])');
 		$this->assertEquals(
-			'([a-zA-Z]+)/([a-zA-Z0-9]+)/(.*)/([1-5])/([0-9]+)/([^/]+)',
+			'([a-zA-Z]+)/([a-zA-Z0-9]+)/(.*)/([1-5])/([0-9]+)/([^/]+)/([0-9]{1,18}+)/([a-f0-9]{32}+)',
 			$this->router->replacePlaceholders($placeholders)
 		);
 		$this->assertEquals(
