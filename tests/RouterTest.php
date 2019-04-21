@@ -49,17 +49,17 @@ class RouterTest extends TestCase
 	{
 		$this->prepare();
 		$route = $this->router->getNamedRoute('shop.showProduct');
-		self::assertEmpty($route->getActionParams());
+		$this->assertEmpty($route->getActionParams());
 		$route->setActionParams([1 => 25, 0 => 'hello-spirit', 2 => 'br']);
-		self::assertEquals(
+		$this->assertEquals(
 			'/shop/products/{title}/{num}/([a-z]{2})',
 			$route->getPath()
 		);
-		self::assertEquals(
+		$this->assertEquals(
 			'/shop/products/hello-spirit/25/br',
 			$route->getPath(...$route->getActionParams())
 		);
-		self::assertEquals(
+		$this->assertEquals(
 			[25, 'hello-spirit', 'br'],
 			$route->run()
 		);
@@ -70,7 +70,7 @@ class RouterTest extends TestCase
 		$this->prepare();
 		$route = $this->router->getNamedRoute('shop.showProduct');
 		$route->setActionParams(['hello-spirit']);
-		self::expectExceptionMessage('Placeholder parameter is empty: 1');
+		$this->expectExceptionMessage('Placeholder parameter is empty: 1');
 		$route->getPath(...$route->getActionParams());
 	}
 
@@ -79,82 +79,82 @@ class RouterTest extends TestCase
 		$this->prepare();
 		$route = $this->router->getNamedRoute('shop.showProduct');
 		$route->setActionParams([0 => 'hello-spirit', 1 => 25, 2 => 'b1']);
-		self::expectExceptionMessage('Placeholder parameter is invalid: 2');
+		$this->expectExceptionMessage('Placeholder parameter is invalid: 2');
 		$route->getPath(...$route->getActionParams());
 	}
 
 	public function testMatchHead()
 	{
 		$this->prepare();
-		self::assertEquals('home', $this->router->match('head', 'http://domain.tld:81')->getName());
+		$this->assertEquals('home', $this->router->match('head', 'http://domain.tld:81')->getName());
 	}
 
 	public function testMatchedURL()
 	{
 		$this->prepare();
 		$this->router->match('get', 'http://domain.tld:81/users/5/posts/12/?a=foo&e=5#id-x');
-		self::assertEquals('http://domain.tld:81/users/5/posts/12', $this->router->getMatchedURL());
+		$this->assertEquals('http://domain.tld:81/users/5/posts/12', $this->router->getMatchedURL());
 	}
 
 	public function testMatchedOrigin()
 	{
 		$this->prepare();
 		$this->router->match('get', 'http://domain.tld:81/users/5/posts/12');
-		self::assertEquals('http://domain.tld:81', $this->router->getMatchedOrigin());
-		self::assertEquals(['http', 81], $this->router->getMatchedOriginParams());
+		$this->assertEquals('http://domain.tld:81', $this->router->getMatchedOrigin());
+		$this->assertEquals(['http', 81], $this->router->getMatchedOriginParams());
 	}
 
 	public function testMatchedPath()
 	{
 		$this->prepare();
 		$this->router->match('get', 'http://domain.tld:81/users/5/posts/12');
-		self::assertEquals('/users/5/posts/12', $this->router->getMatchedPath());
-		self::assertEquals([5, 12], $this->router->getMatchedPathParams());
+		$this->assertEquals('/users/5/posts/12', $this->router->getMatchedPath());
+		$this->assertEquals([5, 12], $this->router->getMatchedPathParams());
 	}
 
 	public function testMatchedRoute()
 	{
 		$this->prepare();
-		self::assertNull($this->router->getMatchedRoute());
+		$this->assertNull($this->router->getMatchedRoute());
 		$this->router->match('get', 'http://domain.tld:81/users/5/posts/12');
-		self::assertInstanceOf(Route::class, $this->router->getMatchedRoute());
-		self::assertEquals('user.post', $this->router->getMatchedRoute()->getName());
-		self::assertEquals('/users/{num}/posts/{num}', $this->router->getMatchedRoute()->getPath());
+		$this->assertInstanceOf(Route::class, $this->router->getMatchedRoute());
+		$this->assertEquals('user.post', $this->router->getMatchedRoute()->getName());
+		$this->assertEquals('/users/{num}/posts/{num}', $this->router->getMatchedRoute()->getPath());
 	}
 
 	public function testRouteURL()
 	{
 		$this->prepare();
 		$this->router->match('get', 'http://domain.tld:81/users/5/posts/12');
-		self::assertEquals(
+		$this->assertEquals(
 			'{scheme}://domain.tld:{num}',
 			$this->router->getMatchedRoute()->getOrigin()
 		);
-		self::assertEquals(
+		$this->assertEquals(
 			'https://domain.tld:82',
 			$this->router->getMatchedRoute()->getOrigin('https', 82)
 		);
-		self::assertEquals(
+		$this->assertEquals(
 			'{scheme}://domain.tld:{num}',
 			$this->router->getMatchedRoute()->getOrigin()
 		);
-		self::assertEquals(
+		$this->assertEquals(
 			'/users/{num}/posts/{num}',
 			$this->router->getMatchedRoute()->getPath()
 		);
-		self::assertEquals(
+		$this->assertEquals(
 			'/users/4/posts/5',
 			$this->router->getMatchedRoute()->getPath(4, 5)
 		);
-		self::assertEquals(
+		$this->assertEquals(
 			'/users/{num}/posts/{num}',
 			$this->router->getMatchedRoute()->getPath()
 		);
-		self::assertEquals(
+		$this->assertEquals(
 			'{scheme}://domain.tld:{num}/users/{num}/posts/{num}',
 			$this->router->getMatchedRoute()->getURL()
 		);
-		self::assertEquals(
+		$this->assertEquals(
 			'http://domain.tld:83/users/1/posts/2',
 			$this->router->getMatchedRoute()->getURL(['http', 83], [1, 2])
 		);
@@ -166,9 +166,9 @@ class RouterTest extends TestCase
 	public function testDefaultRouteNotFound()
 	{
 		$route = $this->router->match('GET', 'http://site.org');
-		self::assertEquals('not-found', $route->getName());
+		$this->assertEquals('not-found', $route->getName());
 		$route->run();
-		self::assertEquals(404, \http_response_code());
+		$this->assertEquals(404, \http_response_code());
 	}
 
 	/**
@@ -180,9 +180,9 @@ class RouterTest extends TestCase
 			\http_response_code(400);
 		});
 		$route = $this->router->match('GET', 'http://site.org');
-		self::assertEquals('not-found', $route->getName());
+		$this->assertEquals('not-found', $route->getName());
 		$route->run();
-		self::assertEquals(400, \http_response_code());
+		$this->assertEquals(400, \http_response_code());
 	}
 
 	/**
@@ -196,9 +196,9 @@ class RouterTest extends TestCase
 			});
 		});
 		$route = $this->router->match('GET', 'http://site.org');
-		self::assertEquals('collection-not-found', $route->getName());
+		$this->assertEquals('collection-not-found', $route->getName());
 		$route->run();
-		self::assertEquals(402, \http_response_code());
+		$this->assertEquals(402, \http_response_code());
 	}
 
 	/**
@@ -209,12 +209,12 @@ class RouterTest extends TestCase
 		$this->router->serve('http://foo.com', function (Collection $collection) {
 			$collection->get('/', 'Tests\Routing\Support\Shop');
 		});
-		self::assertEquals(
+		$this->assertEquals(
 			'Tests\Routing\Support\Shop::index',
 			$this->router->match('get', 'http://foo.com')->run()
 		);
 		$this->router->setDefaultRouteActionMethod('listProducts');
-		self::assertEquals(
+		$this->assertEquals(
 			'Tests\Routing\Support\Shop::listProducts',
 			$this->router->match('get', 'http://foo.com')->run()
 		);
@@ -223,15 +223,15 @@ class RouterTest extends TestCase
 	public function testRouteRunWithClass()
 	{
 		$this->prepare();
-		self::assertEquals(
+		$this->assertEquals(
 			'Tests\Routing\Support\Shop::index',
 			$this->router->match('GET', 'https://domain.tld:8081/shop')->run()
 		);
-		self::assertEquals(
+		$this->assertEquals(
 			'Tests\Routing\Support\Shop::listProducts',
 			$this->router->match('GET', 'https://domain.tld:8081/shop/products')->run()
 		);
-		self::assertEquals(
+		$this->assertEquals(
 			[22, 'foo-bar', 'en'],
 			$this->router->match('GET', 'https://domain.tld:8081/shop/products/foo-bar/22/en')
 				->run()
@@ -241,16 +241,16 @@ class RouterTest extends TestCase
 	public function testRouteRunWithClassNotExists()
 	{
 		$this->prepare();
-		self::expectException(Exception::class);
-		self::expectExceptionMessage('Class not exists: Foo');
+		$this->expectException(Exception::class);
+		$this->expectExceptionMessage('Class not exists: Foo');
 		$this->router->match('GET', 'https://domain.tld:8081/foo')->run();
 	}
 
 	public function testRouteRunWithClassMethodNotExists()
 	{
 		$this->prepare();
-		self::expectException(Exception::class);
-		self::expectExceptionMessage('Class method not exists: Tests\Routing\Support\Shop::bar');
+		$this->expectException(Exception::class);
+		$this->expectExceptionMessage('Class method not exists: Tests\Routing\Support\Shop::bar');
 		$this->router->match('GET', 'https://domain.tld:8081/bar')->run();
 	}
 
@@ -258,8 +258,8 @@ class RouterTest extends TestCase
 	{
 		$this->prepare();
 		$route = $this->router->match('GET', 'https://domain.tld:8081/shop/products/foo-bar/22/br');
-		self::expectException(\InvalidArgumentException::class);
-		self::expectExceptionMessage('Undefined action parameter: 2');
+		$this->expectException(\InvalidArgumentException::class);
+		$this->expectExceptionMessage('Undefined action parameter: 2');
 		$route->setActionParams([22, 'foo-bar']);
 		$route->run();
 	}
@@ -267,11 +267,11 @@ class RouterTest extends TestCase
 	public function testRoutePath()
 	{
 		$this->prepare();
-		self::assertEquals(
+		$this->assertEquals(
 			'/users/10/posts/20',
 			$this->router->getNamedRoute('user.post')->getPath(10, 20)
 		);
-		self::expectException(\InvalidArgumentException::class);
+		$this->expectException(\InvalidArgumentException::class);
 		$this->router->getNamedRoute('user.post')->getPath(10);
 	}
 
@@ -298,30 +298,30 @@ class RouterTest extends TestCase
 				]),
 			], ['x' => ['a', 'b']]);
 		});
-		self::assertEquals('/animals', $this->router->getNamedRoute('animals')->getPath());
-		self::assertEquals(
+		$this->assertEquals('/animals', $this->router->getNamedRoute('animals')->getPath());
+		$this->assertEquals(
 			['x' => 'foo', 'y' => 'bar'],
 			$this->router->getNamedRoute('animals')->getOptions()
 		);
-		self::assertEquals('/animals/cat', $this->router->getNamedRoute('animals.cat')->getPath());
-		self::assertEquals(
+		$this->assertEquals('/animals/cat', $this->router->getNamedRoute('animals.cat')->getPath());
+		$this->assertEquals(
 			['x' => 'xis'],
 			$this->router->getNamedRoute('animals.cat')->getOptions()
 		);
-		self::assertEquals('/animals/dog', $this->router->getNamedRoute('animals.dog')->getPath());
-		self::assertEquals(
+		$this->assertEquals('/animals/dog', $this->router->getNamedRoute('animals.dog')->getPath());
+		$this->assertEquals(
 			['x' => 'xis', 'y' => 'set'],
 			$this->router->getNamedRoute('animals.dog')->getOptions()
 		);
-		self::assertEquals('/users', $this->router->getNamedRoute('users')->getPath());
-		self::assertEquals(
+		$this->assertEquals('/users', $this->router->getNamedRoute('users')->getPath());
+		$this->assertEquals(
 			['x' => [0, 'b', ['c']]],
 			$this->router->getNamedRoute('users')->getOptions()
 		);
-		self::assertEquals('/users', $this->router->getNamedRoute('users.create')->getPath());
-		self::assertEquals('/users/25', $this->router->getNamedRoute('users.show')->getPath(25));
-		self::assertEquals('/users/{num}/panel', $this->router->getNamedRoute('panel')->getPath());
-		self::assertEquals(
+		$this->assertEquals('/users', $this->router->getNamedRoute('users.create')->getPath());
+		$this->assertEquals('/users/25', $this->router->getNamedRoute('users.show')->getPath(25));
+		$this->assertEquals('/users/{num}/panel', $this->router->getNamedRoute('panel')->getPath());
+		$this->assertEquals(
 			'/users/{num}/panel/config/update',
 			$this->router->getNamedRoute('panel.update')->getPath()
 		);
@@ -337,23 +337,23 @@ class RouterTest extends TestCase
 			$collection->delete('/', 'Home::delete');
 		});
 		$base_url = 'http://domain.tld:8080';
-		self::assertEquals(
+		$this->assertEquals(
 			'Home::get',
 			$this->router->match('GET', $base_url)->getAction()
 		);
-		self::assertEquals(
+		$this->assertEquals(
 			'Home::post',
 			$this->router->match('POST', $base_url)->getAction()
 		);
-		self::assertEquals(
+		$this->assertEquals(
 			'Home::put',
 			$this->router->match('PUT', $base_url)->getAction()
 		);
-		self::assertEquals(
+		$this->assertEquals(
 			'Home::patch',
 			$this->router->match('PATCH', $base_url)->getAction()
 		);
-		self::assertEquals(
+		$this->assertEquals(
 			'Home::delete',
 			$this->router->match('DELETE', $base_url)->getAction()
 		);
@@ -363,16 +363,16 @@ class RouterTest extends TestCase
 	{
 		$this->prepare();
 		$route = $this->router->match('GET', 'https://domain.tld:8080/users/25');
-		self::assertInstanceOf(Route::class, $route);
-		self::assertEquals('/users/{num}', $route->getPath());
-		self::assertEquals([25], $route->getActionParams());
-		self::assertEquals('User page: 25', $route->run());
+		$this->assertInstanceOf(Route::class, $route);
+		$this->assertEquals('/users/{num}', $route->getPath());
+		$this->assertEquals([25], $route->getActionParams());
+		$this->assertEquals('User page: 25', $route->run());
 		$route = $this->router->match('GET', 'https://domain.tld:8080/users/10/posts/15');
-		self::assertInstanceOf(Route::class, $route);
-		self::assertEquals('/users/{num}/posts/{num}', $route->getPath());
-		self::assertEquals('/users/7/posts/8', $route->getPath(7, 8));
-		self::assertEquals([10, 15], $route->getActionParams());
-		self::assertEquals('User 10, post: 15', $route->run());
+		$this->assertInstanceOf(Route::class, $route);
+		$this->assertEquals('/users/{num}/posts/{num}', $route->getPath());
+		$this->assertEquals('/users/7/posts/8', $route->getPath(7, 8));
+		$this->assertEquals([10, 15], $route->getActionParams());
+		$this->assertEquals('User 10, post: 15', $route->run());
 	}
 
 	/**
@@ -399,9 +399,9 @@ class RouterTest extends TestCase
 	public function testNamedRoute()
 	{
 		$this->prepare();
-		self::assertEquals('/contact', $this->router->getNamedRoute('ctt')->getPath());
-		self::assertEquals('/', $this->router->getNamedRoute('home')->getPath());
-		self::assertNull($this->router->getNamedRoute('unknown'));
+		$this->assertEquals('/contact', $this->router->getNamedRoute('ctt')->getPath());
+		$this->assertEquals('/', $this->router->getNamedRoute('home')->getPath());
+		$this->assertNull($this->router->getNamedRoute('unknown'));
 	}
 
 	public function testPlaceholders()
@@ -524,27 +524,27 @@ class RouterTest extends TestCase
 				$collection->get('/', 'any');
 			}
 		);
-		self::assertEquals(
+		$this->assertEquals(
 			'any',
 			$this->router->match('GET', 'http://example.com')->getAction()
 		);
-		self::assertEquals(
+		$this->assertEquals(
 			'none',
 			$this->router->match('GET', 'https://domain.tld')->getAction()
 		);
-		self::assertEquals(
+		$this->assertEquals(
 			'scheme-subdomain-port',
 			$this->router->match('GET', 'http://test.domain.tld:8081')->getAction()
 		);
-		self::assertEquals(
+		$this->assertEquals(
 			'scheme',
 			$this->router->match('GET', 'https://subdomain.domain.tld:8080')->getAction()
 		);
-		self::assertEquals(
+		$this->assertEquals(
 			'port',
 			$this->router->match('GET', 'http://subdomain.domain.tld:8081')->getAction()
 		);
-		self::assertEquals(
+		$this->assertEquals(
 			'any',
 			$this->router->match('GET', 'http://foo.bar.example.com')->getAction()
 		);
@@ -560,10 +560,10 @@ class RouterTest extends TestCase
 		});
 		$this->router->setAutoOptions(true);
 		$route = $this->router->match('options', 'http://domain.tld/users/25');
-		self::assertEquals('auto-allow-200', $route->getName());
+		$this->assertEquals('auto-allow-200', $route->getName());
 		$route->run();
-		self::assertEquals(200, \http_response_code());
-		self::assertContains(
+		$this->assertEquals(200, \http_response_code());
+		$this->assertContains(
 			'Allow: DELETE, GET, HEAD, OPTIONS, PATCH, PUT',
 			xdebug_get_headers()
 		);
@@ -579,10 +579,10 @@ class RouterTest extends TestCase
 		});
 		$this->router->setAutoOptions(true);
 		$route = $this->router->match('options', 'http://domain.tld/unknown');
-		self::assertEquals('not-found', $route->getName());
+		$this->assertEquals('not-found', $route->getName());
 		$route->run();
-		self::assertEquals(404, \http_response_code());
-		self::assertNotContains(
+		$this->assertEquals(404, \http_response_code());
+		$this->assertNotContains(
 			'Allow: DELETE, GET, HEAD, OPTIONS, PATCH, PUT',
 			xdebug_get_headers()
 		);
@@ -598,10 +598,10 @@ class RouterTest extends TestCase
 		});
 		$this->router->setAutoOptions(false);
 		$route = $this->router->match('options', 'http://domain.tld/users/25');
-		self::assertEquals('not-found', $route->getName());
+		$this->assertEquals('not-found', $route->getName());
 		$route->run();
-		self::assertEquals(404, \http_response_code());
-		self::assertNotContains(
+		$this->assertEquals(404, \http_response_code());
+		$this->assertNotContains(
 			'Allow: DELETE, GET, HEAD, OPTIONS, PATCH, PUT',
 			xdebug_get_headers()
 		);
@@ -620,13 +620,13 @@ class RouterTest extends TestCase
 		});
 		$this->router->setAutoOptions(true);
 		$route = $this->router->match('options', 'http://domain.tld/users/25');
-		self::assertNull($route->getName());
+		$this->assertNull($route->getName());
 		$route->run();
-		self::assertNotContains(
+		$this->assertNotContains(
 			'Allow: DELETE, GET, HEAD, OPTIONS, PATCH, PUT',
 			xdebug_get_headers()
 		);
-		self::assertContains(
+		$this->assertContains(
 			'Foo: bar',
 			xdebug_get_headers()
 		);
@@ -642,10 +642,10 @@ class RouterTest extends TestCase
 		});
 		$this->router->setAutoMethods(true);
 		$route = $this->router->match('put', 'http://domain.tld/users');
-		self::assertEquals('auto-allow-405', $route->getName());
+		$this->assertEquals('auto-allow-405', $route->getName());
 		$route->run();
-		self::assertEquals(405, \http_response_code());
-		self::assertContains(
+		$this->assertEquals(405, \http_response_code());
+		$this->assertContains(
 			'Allow: GET, HEAD, POST',
 			xdebug_get_headers()
 		);
@@ -661,10 +661,10 @@ class RouterTest extends TestCase
 		});
 		$this->router->setAutoMethods(true);
 		$route = $this->router->match('get', 'http://domain.tld/unknown');
-		self::assertEquals('not-found', $route->getName());
+		$this->assertEquals('not-found', $route->getName());
 		$route->run();
-		self::assertEquals(404, \http_response_code());
-		self::assertNotContains(
+		$this->assertEquals(404, \http_response_code());
+		$this->assertNotContains(
 			'Allow: GET, HEAD, PUT',
 			xdebug_get_headers()
 		);
@@ -680,10 +680,10 @@ class RouterTest extends TestCase
 		});
 		$this->router->setAutoMethods(false);
 		$route = $this->router->match('put', 'http://domain.tld/users');
-		self::assertEquals('not-found', $route->getName());
+		$this->assertEquals('not-found', $route->getName());
 		$route->run();
-		self::assertEquals(404, \http_response_code());
-		self::assertNotContains(
+		$this->assertEquals(404, \http_response_code());
+		$this->assertNotContains(
 			'Allow: GET, HEAD, POST',
 			xdebug_get_headers()
 		);
@@ -700,10 +700,10 @@ class RouterTest extends TestCase
 		$this->router->setAutoOptions(true);
 		$this->router->setAutoMethods(true);
 		$route = $this->router->match('options', 'http://domain.tld/users');
-		self::assertEquals('auto-allow-200', $route->getName());
+		$this->assertEquals('auto-allow-200', $route->getName());
 		$route->run();
-		self::assertEquals(200, \http_response_code());
-		self::assertContains(
+		$this->assertEquals(200, \http_response_code());
+		$this->assertContains(
 			'Allow: GET, HEAD, OPTIONS, POST',
 			xdebug_get_headers()
 		);
@@ -712,45 +712,45 @@ class RouterTest extends TestCase
 	protected function assertResource()
 	{
 		$route = $this->router->match('get', 'http://domain.tld/users');
-		self::assertEquals('users.index', $route->getName());
-		self::assertEquals('Tests\Routing\Support\Users::index', $route->run());
+		$this->assertEquals('users.index', $route->getName());
+		$this->assertEquals('Tests\Routing\Support\Users::index', $route->run());
 		$route = $this->router->match('post', 'http://domain.tld/users');
-		self::assertEquals('users.create', $route->getName());
-		self::assertEquals('Tests\Routing\Support\Users::create', $route->run());
+		$this->assertEquals('users.create', $route->getName());
+		$this->assertEquals('Tests\Routing\Support\Users::create', $route->run());
 		$route = $this->router->match('get', 'http://domain.tld/users/25');
-		self::assertEquals('users.show', $route->getName());
-		self::assertEquals('Tests\Routing\Support\Users::show/25', $route->run());
+		$this->assertEquals('users.show', $route->getName());
+		$this->assertEquals('Tests\Routing\Support\Users::show/25', $route->run());
 		$route = $this->router->match('patch', 'http://domain.tld/users/25');
-		self::assertEquals('users.update', $route->getName());
-		self::assertEquals('Tests\Routing\Support\Users::update/25', $route->run());
+		$this->assertEquals('users.update', $route->getName());
+		$this->assertEquals('Tests\Routing\Support\Users::update/25', $route->run());
 		$route = $this->router->match('put', 'http://domain.tld/users/25');
-		self::assertEquals('users.replace', $route->getName());
-		self::assertEquals('Tests\Routing\Support\Users::replace/25', $route->run());
+		$this->assertEquals('users.replace', $route->getName());
+		$this->assertEquals('Tests\Routing\Support\Users::replace/25', $route->run());
 		$route = $this->router->match('delete', 'http://domain.tld/users/25');
-		self::assertEquals('users.delete', $route->getName());
-		self::assertEquals('Tests\Routing\Support\Users::delete/25', $route->run());
+		$this->assertEquals('users.delete', $route->getName());
+		$this->assertEquals('Tests\Routing\Support\Users::delete/25', $route->run());
 	}
 
 	protected function assertResourceWithExcept()
 	{
 		$route = $this->router->match('get', 'http://domain.tld/users');
-		self::assertEquals('users.index', $route->getName());
-		self::assertEquals('Tests\Routing\Support\Users::index', $route->run());
+		$this->assertEquals('users.index', $route->getName());
+		$this->assertEquals('Tests\Routing\Support\Users::index', $route->run());
 		$route = $this->router->match('post', 'http://domain.tld/users');
-		self::assertEquals('not-found', $route->getName());
-		self::assertNull($route->run());
+		$this->assertEquals('not-found', $route->getName());
+		$this->assertNull($route->run());
 		$route = $this->router->match('get', 'http://domain.tld/users/25');
-		self::assertEquals('not-found', $route->getName());
-		self::assertNull($route->run());
+		$this->assertEquals('not-found', $route->getName());
+		$this->assertNull($route->run());
 		$route = $this->router->match('patch', 'http://domain.tld/users/25');
-		self::assertEquals('users.update', $route->getName());
-		self::assertEquals('Tests\Routing\Support\Users::update/25', $route->run());
+		$this->assertEquals('users.update', $route->getName());
+		$this->assertEquals('Tests\Routing\Support\Users::update/25', $route->run());
 		$route = $this->router->match('put', 'http://domain.tld/users/25');
-		self::assertEquals('not-found', $route->getName());
-		self::assertNull($route->run());
+		$this->assertEquals('not-found', $route->getName());
+		$this->assertNull($route->run());
 		$route = $this->router->match('delete', 'http://domain.tld/users/25');
-		self::assertEquals('users.delete', $route->getName());
-		self::assertEquals('Tests\Routing\Support\Users::delete/25', $route->run());
+		$this->assertEquals('users.delete', $route->getName());
+		$this->assertEquals('Tests\Routing\Support\Users::delete/25', $route->run());
 	}
 
 	public function testResource()
@@ -781,17 +781,17 @@ class RouterTest extends TestCase
 		});
 		$this->assertResource();
 		$route = $this->router->match('get', 'http://domain.tld/users/new');
-		self::assertEquals('users.web_new', $route->getName());
-		self::assertEquals('Tests\Routing\Support\Users::new', $route->run());
+		$this->assertEquals('users.web_new', $route->getName());
+		$this->assertEquals('Tests\Routing\Support\Users::new', $route->run());
 		$route = $this->router->match('get', 'http://domain.tld/users/25/edit');
-		self::assertEquals('users.web_edit', $route->getName());
-		self::assertEquals('Tests\Routing\Support\Users::edit/25', $route->run());
+		$this->assertEquals('users.web_edit', $route->getName());
+		$this->assertEquals('Tests\Routing\Support\Users::edit/25', $route->run());
 		$route = $this->router->match('post', 'http://domain.tld/users/25/delete');
-		self::assertEquals('users.web_delete', $route->getName());
-		self::assertEquals('Tests\Routing\Support\Users::delete/25', $route->run());
+		$this->assertEquals('users.web_delete', $route->getName());
+		$this->assertEquals('Tests\Routing\Support\Users::delete/25', $route->run());
 		$route = $this->router->match('post', 'http://domain.tld/users/25/update');
-		self::assertEquals('users.web_update', $route->getName());
-		self::assertEquals('Tests\Routing\Support\Users::update/25', $route->run());
+		$this->assertEquals('users.web_update', $route->getName());
+		$this->assertEquals('Tests\Routing\Support\Users::update/25', $route->run());
 	}
 
 	public function testWebResourceWithExcept()
@@ -806,17 +806,17 @@ class RouterTest extends TestCase
 		});
 		$this->assertResourceWithExcept();
 		$route = $this->router->match('get', 'http://domain.tld/users/new');
-		self::assertEquals('users.web_new', $route->getName());
-		self::assertEquals('Tests\Routing\Support\Users::new', $route->run());
+		$this->assertEquals('users.web_new', $route->getName());
+		$this->assertEquals('Tests\Routing\Support\Users::new', $route->run());
 		$route = $this->router->match('get', 'http://domain.tld/users/25/edit');
-		self::assertEquals('not-found', $route->getName());
-		self::assertNull($route->run());
+		$this->assertEquals('not-found', $route->getName());
+		$this->assertNull($route->run());
 		$route = $this->router->match('post', 'http://domain.tld/users/25/delete');
-		self::assertEquals('users.web_delete', $route->getName());
-		self::assertEquals('Tests\Routing\Support\Users::delete/25', $route->run());
+		$this->assertEquals('users.web_delete', $route->getName());
+		$this->assertEquals('Tests\Routing\Support\Users::delete/25', $route->run());
 		$route = $this->router->match('post', 'http://domain.tld/users/25/update');
-		self::assertEquals('not-found', $route->getName());
-		self::assertNull($route->run());
+		$this->assertEquals('not-found', $route->getName());
+		$this->assertNull($route->run());
 	}
 
 	/**
@@ -828,8 +828,8 @@ class RouterTest extends TestCase
 			$collection->redirect('shop', 'https://shop.com', 301);
 		});
 		$this->router->match('get', 'http://domain.tld/shop')->run();
-		self::assertContains('Location: https://shop.com', xdebug_get_headers());
-		self::assertEquals(301, \http_response_code());
+		$this->assertContains('Location: https://shop.com', xdebug_get_headers());
+		$this->assertEquals(301, \http_response_code());
 	}
 
 	public function testRoutes()
@@ -837,7 +837,7 @@ class RouterTest extends TestCase
 		$this->prepare();
 		foreach ($this->router->getRoutes() as $routes) {
 			foreach ($routes as $route) {
-				self::assertInstanceOf(Route::class, $route);
+				$this->assertInstanceOf(Route::class, $route);
 			}
 		}
 	}
@@ -857,29 +857,29 @@ class RouterTest extends TestCase
 				]),
 			]);
 		});
-		self::assertEquals('App\Home::index', $this->router->getNamedRoute('home')->getAction());
-		self::assertEquals(
+		$this->assertEquals('App\Home::index', $this->router->getNamedRoute('home')->getAction());
+		$this->assertEquals(
 			'App\Blog\Test\Blog',
 			$this->router->getNamedRoute('blog')->getAction()
 		);
-		self::assertEquals(
+		$this->assertEquals(
 			'App\Blog\Test\Posts::show/0',
 			$this->router->getNamedRoute('post')->getAction()
 		);
-		self::assertIsCallable($this->router->getNamedRoute('foo')->getAction());
+		$this->assertIsCallable($this->router->getNamedRoute('foo')->getAction());
 	}
 
 	public function testCollectionMagicMethods()
 	{
 		$this->router->serve('http://foo.com', function (Collection $collection) {
-			self::assertEquals('http://foo.com', $collection->origin);
-			self::assertEquals($this->router, $collection->router);
-			self::assertIsArray($collection->routes);
-			self::assertNull($collection->getRouteNotFound());
+			$this->assertEquals('http://foo.com', $collection->origin);
+			$this->assertEquals($this->router, $collection->router);
+			$this->assertIsArray($collection->routes);
+			$this->assertNull($collection->getRouteNotFound());
 			$collection->notFound('NotFound::index');
 		});
 		$this->router->match('get', 'http://foo.com/bla');
-		self::assertEquals('NotFound::index', $this->router->getMatchedRoute()->getAction());
+		$this->assertEquals('NotFound::index', $this->router->getMatchedRoute()->getAction());
 	}
 
 	public function testCollectionMagicMethodNotAllowed()
