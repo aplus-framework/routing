@@ -881,4 +881,44 @@ class RouterTest extends TestCase
 		$this->router->match('get', 'http://foo.com/bla');
 		self::assertEquals('NotFound::index', $this->router->getMatchedRoute()->getAction());
 	}
+
+	public function testCollectionMagicMethodNotAllowed()
+	{
+		$this->expectException(\BadMethodCallException::class);
+		$this->expectExceptionMessage(
+			'Method not allowed: setOrigin'
+		);
+		$this->router->serve('http://foo.com', function (Collection $collection) {
+			$collection->setOrigin('foo');
+		});
+	}
+
+	public function testCollectionMagicMethodNotFound()
+	{
+		$this->expectException(\BadMethodCallException::class);
+		$this->expectExceptionMessage(
+			'Method not found: foo'
+		);
+		$this->router->serve('http://foo.com', function (Collection $collection) {
+			$collection->foo();
+		});
+	}
+
+	public function testCollectionMagicPropertyNotAllowed()
+	{
+		$this->expectException(\LogicException::class);
+		$this->expectExceptionMessage('Property not allowed: namespace');
+		$this->router->serve('http://foo.com', function (Collection $collection) {
+			$collection->namespace;
+		});
+	}
+
+	public function testCollectionMagicPropertyNotFound()
+	{
+		$this->expectException(\LogicException::class);
+		$this->expectExceptionMessage('Property not found: foo');
+		$this->router->serve('http://foo.com', function (Collection $collection) {
+			$collection->foo;
+		});
+	}
 }

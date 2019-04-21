@@ -41,28 +41,32 @@ class Collection
 		$this->setOrigin($origin);
 	}
 
-	public function __call($name, $arguments)
+	public function __call($method, $arguments)
 	{
-		switch ($name) {
-			case 'getRouteNotFound':
-				return $this->getRouteNotFound();
-				break;
+		if ($method === 'getRouteNotFound') {
+			return $this->getRouteNotFound();
 		}
+		if (\method_exists($this, $method)) {
+			throw new \BadMethodCallException("Method not allowed: {$method}");
+		}
+		throw new \BadMethodCallException("Method not found: {$method}");
 	}
 
-	public function __get($name)
+	public function __get($property)
 	{
-		switch ($name) {
-			case 'origin':
-				return $this->origin;
-				break;
-			case 'router':
-				return $this->router;
-				break;
-			case 'routes':
-				return $this->routes;
-				break;
+		if ($property === 'origin') {
+			return $this->origin;
 		}
+		if ($property === 'router') {
+			return $this->router;
+		}
+		if ($property === 'routes') {
+			return $this->routes;
+		}
+		if (\property_exists($this, $property)) {
+			throw new \LogicException("Property not allowed: {$property}");
+		}
+		throw new \LogicException("Property not found: {$property}");
 	}
 
 	protected function setOrigin(string $origin)
