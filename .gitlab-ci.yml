@@ -20,8 +20,8 @@ test:php7.3:
     #- vendor/bin/phpmd tests/ text phpmd.xml
     # Run PHPUnit
     - vendor/bin/phpunit --colors=never
-    # ApiGen
-    - vendor/bin/apigen generate src --destination build/api/
+    # Run phpDocumentor
+    - phpdoc
   artifacts:
     paths:
       - build/coverage/
