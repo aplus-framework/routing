@@ -13,7 +13,7 @@ class RouterTest extends TestCase
 	 */
 	protected $router;
 
-	public function setup()
+	public function setup() : void
 	{
 		$this->router = new Router();
 	}
@@ -86,14 +86,20 @@ class RouterTest extends TestCase
 	public function testMatchHead()
 	{
 		$this->prepare();
-		$this->assertEquals('home', $this->router->match('head', 'http://domain.tld:81')->getName());
+		$this->assertEquals(
+			'home',
+			$this->router->match('head', 'http://domain.tld:81')->getName()
+		);
 	}
 
 	public function testMatchedURL()
 	{
 		$this->prepare();
 		$this->router->match('get', 'http://domain.tld:81/users/5/posts/12/?a=foo&e=5#id-x');
-		$this->assertEquals('http://domain.tld:81/users/5/posts/12', $this->router->getMatchedURL());
+		$this->assertEquals(
+			'http://domain.tld:81/users/5/posts/12',
+			$this->router->getMatchedURL()
+		);
 	}
 
 	public function testMatchedOrigin()
@@ -119,7 +125,10 @@ class RouterTest extends TestCase
 		$this->router->match('get', 'http://domain.tld:81/users/5/posts/12');
 		$this->assertInstanceOf(Route::class, $this->router->getMatchedRoute());
 		$this->assertEquals('user.post', $this->router->getMatchedRoute()->getName());
-		$this->assertEquals('/users/{num}/posts/{num}', $this->router->getMatchedRoute()->getPath());
+		$this->assertEquals(
+			'/users/{num}/posts/{num}',
+			$this->router->getMatchedRoute()->getPath()
+		);
 	}
 
 	public function testRouteURL()

@@ -10,7 +10,7 @@ class RouteActionTest extends TestCase
 	 */
 	protected $routeAction;
 
-	protected function setUp()
+	protected function setUp() : void
 	{
 		$this->routeAction = new RouteActionMock();
 	}
