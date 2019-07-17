@@ -1,11 +1,11 @@
 {
 	"name": "framework/routing",
 	"type": "library",
-	"description": "The Routing package",
+	"description": "The Framework Routing Library",
 	"keywords": [
 		"routing"
 	],
-	"homepage": "https://gitlab.com/the-framework/packages/routing",
+	"homepage": "https://the-framework.gitlab.io/libraries/routing.html",
 	"license": "proprietary",
 	"authors": [
 		{
@@ -52,9 +52,9 @@
 	},
 	"support": {
 		"email": "natanfelles@gmail.com",
-		"issues": "https://gitlab.com/the-framework/packages/routing/issues",
-		"wiki": "https://gitlab.com/the-framework/packages/packages/routing",
-		"source": "https://gitlab.com/the-framework/packages/routing",
-		"docs": "https://the-framework.gitlab.io/packages/routing"
+		"issues": "https://gitlab.com/the-framework/libraries/routing/issues",
+		"wiki": "https://gitlab.com/the-framework/libraries/routing/wikis/home",
+		"source": "https://gitlab.com/the-framework/libraries/routing",
+		"docs": "https://the-framework.gitlab.io/libraries/routing/docs/"
 	}
 }
