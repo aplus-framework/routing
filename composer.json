@@ -6,7 +6,7 @@
 		"routing"
 	],
 	"homepage": "https://the-framework.gitlab.io/libraries/routing.html",
-	"license": "proprietary",
+	"license": "MIT",
 	"authors": [
 		{
 			"name": "Natan Felles",
