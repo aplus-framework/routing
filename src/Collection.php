@@ -3,7 +3,7 @@
 /**
  * Class Collection.
  */
-class Collection
+class Collection implements \Countable
 {
 	/**
 	 * @var Router
@@ -411,5 +411,14 @@ class Collection
 			);
 		}
 		return $routes;
+	}
+
+	public function count() : int
+	{
+		$count = $this->notFound ? 1 : 0;
+		foreach ($this->routes as $routes) {
+			$count += \count($routes);
+		}
+		return $count;
 	}
 }
