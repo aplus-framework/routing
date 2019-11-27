@@ -461,6 +461,9 @@ class Router
 		return null;
 	}
 
+	/**
+	 * @return array|Route[]
+	 */
 	public function getRoutes() : array
 	{
 		$result = [];

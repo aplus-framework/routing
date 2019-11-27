@@ -413,6 +413,11 @@ class Collection implements \Countable
 		return $routes;
 	}
 
+	/**
+	 * Count routes in the Collection.
+	 *
+	 * @return int
+	 */
 	public function count() : int
 	{
 		$count = $this->notFound ? 1 : 0;
