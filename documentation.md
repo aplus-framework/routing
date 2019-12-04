@@ -64,9 +64,10 @@ The available placeholders are:
 | {alpha} | Accepts alphabetic characters |
 | {alphanum} | Accepts alphanumeric characters |
 | {any} | Accepts any characters |
+| {hex} | Accepts a hexadecimal string |
 | {int} | Accepts valid integers in PHP |
-| {num} | Accept numbers |
 | {md5} | Accept a md5 hash |
+| {num} | Accept numbers |
 | {port} | Accepts valid port number |
 | {scheme} | Accepts HTTP or HTTPS schema |
 | {segment} | Accepts a segment of a URL path |
