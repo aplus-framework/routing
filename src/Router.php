@@ -20,7 +20,7 @@ class Router
 	/**
 	 * @var array
 	 */
-	protected $placeholders = [
+	protected static $placeholders = [
 		'{alpha}' => '([a-zA-Z]+)',
 		'{alphanum}' => '([a-zA-Z0-9]+)',
 		'{any}' => '(.*)',
@@ -112,17 +112,17 @@ class Router
 	{
 		if (\is_array($placeholder)) {
 			foreach ($placeholder as $key => $value) {
-				$this->placeholders['{' . $key . '}'] = $value;
+				static::$placeholders['{' . $key . '}'] = $value;
 			}
 			return $this;
 		}
-		$this->placeholders['{' . $placeholder . '}'] = $pattern;
+		static::$placeholders['{' . $placeholder . '}'] = $pattern;
 		return $this;
 	}
 
 	public function getPlaceholders() : array
 	{
-		return $this->placeholders;
+		return static::$placeholders;
 	}
 
 	public function replacePlaceholders(string $string, bool $flip = false) : string
