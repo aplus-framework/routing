@@ -229,7 +229,7 @@ class Collection implements \Countable
 	 */
 	public function redirect(string $path, string $url, int $code = 302) : Route
 	{
-		return $this->add(['GET'], $path, function () use ($url, $code) {
+		return $this->add(['GET'], $path, static function () use ($url, $code) {
 			\header('Location: ' . $url, true, $code);
 		});
 	}

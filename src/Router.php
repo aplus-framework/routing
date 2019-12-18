@@ -85,7 +85,7 @@ class Router
 			$this,
 			$this->getMatchedOrigin(),
 			$this->getMatchedPath(),
-			$this->defaultRouteNotFound ?? function () {
+			$this->defaultRouteNotFound ?? static function () {
 				\http_response_code(404);
 			}
 		))->setName('not-found');
@@ -409,7 +409,7 @@ class Router
 				$this,
 				$this->getMatchedOrigin(),
 				$this->getMatchedPath(),
-				function () use ($allowed, $code) {
+				static function () use ($allowed, $code) {
 					\http_response_code($code);
 					\header('Allow: ' . \implode(', ', $allowed));
 				}
