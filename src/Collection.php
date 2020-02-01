@@ -305,7 +305,7 @@ class Collection implements \Countable
 		array $except = [],
 		string $placeholder = '{int}'
 	) : array {
-		$path = \rtrim($path, '/') . '/';
+		$path = $this->trimPath($path);
 		$class .= '::';
 		if ($except) {
 			$except = \array_flip($except);
@@ -377,7 +377,7 @@ class Collection implements \Countable
 		string $placeholder = '{int}'
 	) : array {
 		$routes = $this->resource($path, $class, $base_name, $except, $placeholder);
-		$path = \rtrim($path, '/') . '/';
+		$path = $this->trimPath($path);
 		$class .= '::';
 		if ($except) {
 			$except = \array_flip($except);
@@ -408,6 +408,95 @@ class Collection implements \Countable
 				$path . $placeholder . '/update',
 				$class . 'update/0',
 				$base_name . '.web_update'
+			);
+		}
+		return $routes;
+	}
+
+	protected function trimPath(string $path) : string
+	{
+		return \rtrim($path, '/') . '/';
+	}
+
+	/**
+	 * Adds many Routes that can be used by a User Interface.
+	 *
+	 * @param string $path        The URL path
+	 * @param string $class       The name of the class where the resource will point
+	 * @param string $base_name   The base name used as a Route name prefix
+	 * @param array  $except      Actions not added. Allowed values are: index, new, create, show,
+	 *                            edit, update, remove and delete
+	 * @param string $placeholder The placeholder. Normally it matchs an id, a number
+	 *
+	 * @return Route[] The Routes added to the Collection
+	 */
+	public function presenter(
+		string $path,
+		string $class,
+		string $base_name,
+		array $except = [],
+		string $placeholder = '{int}'
+	) : array {
+		$path = $this->trimPath($path);
+		$class .= '::';
+		if ($except) {
+			$except = \array_flip($except);
+		}
+		$routes = [];
+		if ( ! isset($except['index'])) {
+			$routes[] = $this->get(
+				$path,
+				$class . 'index',
+				$base_name . '.index'
+			);
+		}
+		if ( ! isset($except['new'])) {
+			$routes[] = $this->get(
+				$path,
+				$class . 'new',
+				$base_name . '.new'
+			);
+		}
+		if ( ! isset($except['create'])) {
+			$routes[] = $this->post(
+				$path,
+				$class . 'create',
+				$base_name . '.create'
+			);
+		}
+		if ( ! isset($except['show'])) {
+			$routes[] = $this->get(
+				$path . $placeholder,
+				$class . 'show/0',
+				$base_name . '.show'
+			);
+		}
+		if ( ! isset($except['edit'])) {
+			$routes[] = $this->get(
+				$path . $placeholder,
+				$class . 'edit/0',
+				$base_name . '.edit'
+			);
+		}
+		if ( ! isset($except['update'])) {
+			$routes[] = $this->post(
+				$path . $placeholder,
+				$class . 'update/0',
+				$base_name . '.update'
+			);
+		}
+		if ( ! isset($except['remove'])) {
+			$routes[] = $this->get(
+				$path . $placeholder,
+				$class . 'remove/0',
+				$base_name . '.remove'
+			);
+		}
+		if ( ! isset($except['delete'])) {
+			$routes[] = $this->post(
+				$path . $placeholder,
+				$class . 'delete/0',
+				$base_name . '.delete'
 			);
 		}
 		return $routes;

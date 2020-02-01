@@ -828,6 +828,30 @@ class RouterTest extends TestCase
 		$this->assertNull($route->run());
 	}
 
+	protected function assertPresenter()
+	{
+		$route = $this->router->match('get', 'http://domain.tld/admin/users');
+		$this->assertEquals('admin.users.index', $route->getName());
+		$this->assertEquals('Tests\Routing\Support\Users::index', $route->run());
+		$route = $this->router->match('post', 'http://domain.tld/admin/users');
+		$this->assertEquals('admin.users.create', $route->getName());
+		$this->assertEquals('Tests\Routing\Support\Users::create', $route->run());
+	}
+
+	public function testPresenter()
+	{
+		$this->router->serve('http://domain.tld', function (Collection $collection) {
+			$collection->presenter('admin/users', 'Tests\Routing\Support\Users', 'admin.users');
+			$collection->presenter(
+				'admin/users',
+				'Tests\Routing\Support\Users',
+				'admin.users',
+				['update']
+			);
+		});
+		$this->assertPresenter();
+	}
+
 	/**
 	 * @runInSeparateProcess
 	 */
