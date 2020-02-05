@@ -452,7 +452,7 @@ class Collection implements \Countable
 		}
 		if ( ! isset($except['new'])) {
 			$routes[] = $this->get(
-				$path,
+				$path . 'new',
 				$class . 'new',
 				$base_name . '.new'
 			);
@@ -473,28 +473,28 @@ class Collection implements \Countable
 		}
 		if ( ! isset($except['edit'])) {
 			$routes[] = $this->get(
-				$path . $placeholder,
+				$path . $placeholder . '/edit',
 				$class . 'edit/0',
 				$base_name . '.edit'
 			);
 		}
 		if ( ! isset($except['update'])) {
 			$routes[] = $this->post(
-				$path . $placeholder,
+				$path . $placeholder . '/update',
 				$class . 'update/0',
 				$base_name . '.update'
 			);
 		}
 		if ( ! isset($except['remove'])) {
 			$routes[] = $this->get(
-				$path . $placeholder,
+				$path . $placeholder . '/remove',
 				$class . 'remove/0',
 				$base_name . '.remove'
 			);
 		}
 		if ( ! isset($except['delete'])) {
 			$routes[] = $this->post(
-				$path . $placeholder,
+				$path . $placeholder . '/delete',
 				$class . 'delete/0',
 				$base_name . '.delete'
 			);
