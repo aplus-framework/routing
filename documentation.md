@@ -107,6 +107,27 @@ $routes->webResource('/users', 'App\Users', 'users');
 | POST | /users/{int}/delete | App\Users::delete/0 | users.web_delete |
 | POST | /users/{int}/update | App\Users::update/0 | users.web_update |
 
+### Presenters
+
+Presenters create routes to be used in a Graphical User Interface.
+
+```php
+$routes->presenter('/users', 'App\Users', 'users');
+```
+
+The routes are as follows:
+
+| HTTP Method | Path | PHP Method | Name |
+| --- | --- | --- | --- |
+| GET | /users | App\Users::index | users.index |
+| GET | /users | App\Users::new | users.new |
+| POST | /users | App\Users::create | users.create |
+| GET | /users/{int} | App\Users::show/0 | users.show |
+| GET | /users/{int}/edit | App\Users::edit/0 | users.edit |
+| POST | /users | App\Users::update/0 | users.update |
+| GET | /users/{int}/remove | App\Users::remove/0 | users.remove |
+| POST | /users | App\Users::delete/0 | users.delete |
+
 ### Groups
 
 Sometimes the route path can become repetitive and to simplify route creation 
