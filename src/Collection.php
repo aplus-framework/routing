@@ -5,28 +5,17 @@
  */
 class Collection implements \Countable
 {
-	/**
-	 * @var Router
-	 */
-	protected $router;
-	/**
-	 * @var string
-	 */
-	protected $origin;
+	protected Router $router;
+	protected string $origin;
 	/**
 	 * Array of HTTP Methods as keys and array of Routes as values.
-	 *
-	 * @var array
 	 */
-	protected $routes = [];
+	protected array $routes = [];
 	/**
-	 * @var Route|null
+	 * @var \Closure|string
 	 */
 	protected $notFound;
-	/**
-	 * @var string|null
-	 */
-	protected $namespace;
+	protected ?string $namespace = null;
 
 	/**
 	 * Collection constructor.

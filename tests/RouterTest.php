@@ -8,10 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class RouterTest extends TestCase
 {
-	/**
-	 * @var Router
-	 */
-	protected $router;
+	protected Router $router;
 
 	public function setup() : void
 	{

@@ -5,22 +5,12 @@
  */
 class Router
 {
-	/**
-	 * @var string|null
-	 */
-	protected $defaultRouteNamespace;
-	/**
-	 * @var string
-	 */
-	protected $defaultRouteActionMethod = 'index';
+	protected string $defaultRouteActionMethod = 'index';
 	/**
 	 * @var callable
 	 */
 	protected $defaultRouteNotFound;
-	/**
-	 * @var array
-	 */
-	protected static $placeholders = [
+	protected static array $placeholders = [
 		'{alpha}' => '([a-zA-Z]+)',
 		'{alphanum}' => '([a-zA-Z0-9]+)',
 		'{any}' => '(.*)',
@@ -38,35 +28,14 @@ class Router
 	/**
 	 * @var Collection[]
 	 */
-	protected $collections = [];
-	/**
-	 * @var Route|null
-	 */
-	protected $matchedRoute;
-	/**
-	 * @var string|null
-	 */
-	protected $matchedOrigin;
-	/**
-	 * @var array
-	 */
-	protected $matchedOriginParams = [];
-	/**
-	 * @var string|null
-	 */
-	protected $matchedPath;
-	/**
-	 * @var array
-	 */
-	protected $matchedPathParams = [];
-	/**
-	 * @var bool
-	 */
-	protected $autoOptions = false;
-	/**
-	 * @var bool
-	 */
-	protected $autoMethods = false;
+	protected array $collections = [];
+	protected ?Route $matchedRoute = null;
+	protected ?string $matchedOrigin = null;
+	protected array $matchedOriginParams = [];
+	protected ?string $matchedPath = null;
+	protected array $matchedPathParams = [];
+	protected bool $autoOptions = false;
+	protected bool $autoMethods = false;
 
 	public function getDefaultRouteActionMethod() : string
 	{

@@ -5,10 +5,7 @@ use PHPUnit\Framework\TestCase;
 
 class RouteActionTest extends TestCase
 {
-	/**
-	 * @var RouteActionMock
-	 */
-	protected $routeAction;
+	protected RouteActionMock $routeAction;
 
 	protected function setUp() : void
 	{

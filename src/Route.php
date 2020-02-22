@@ -8,31 +8,16 @@ class Route
 	/**
 	 * @var Router
 	 */
-	protected $router;
-	/**
-	 * @var string
-	 */
-	protected $origin;
-	/**
-	 * @var string
-	 */
-	protected $path;
+	protected Router $router;
+	protected string $origin;
+	protected string $path;
 	/**
 	 * @var \Closure|string
 	 */
 	protected $action;
-	/**
-	 * @var array
-	 */
-	protected $actionParams = [];
-	/**
-	 * @var string|null
-	 */
-	protected $name;
-	/**
-	 * @var array
-	 */
-	protected $options = [];
+	protected array $actionParams = [];
+	protected ?string $name = null;
+	protected array $options = [];
 
 	/**
 	 * Route constructor.
