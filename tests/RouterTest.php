@@ -407,7 +407,9 @@ class RouterTest extends TestCase
 		$this->prepare();
 		$this->assertEquals('/contact', $this->router->getNamedRoute('ctt')->getPath());
 		$this->assertEquals('/', $this->router->getNamedRoute('home')->getPath());
-		$this->assertNull($this->router->getNamedRoute('unknown'));
+		$this->expectException(\RuntimeException::class);
+		$this->expectExceptionMessage('Named route not found: unknown');
+		$this->router->getNamedRoute('unknown');
 	}
 
 	public function testPlaceholders()

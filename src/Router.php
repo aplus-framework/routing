@@ -414,7 +414,16 @@ class Router
 		return $allowed;
 	}
 
-	public function getNamedRoute(string $name) : ?Route
+	/**
+	 * Gets a named route.
+	 *
+	 * @param string $name
+	 *
+	 * @throws \RuntimeException if named route not found
+	 *
+	 * @return Route
+	 */
+	public function getNamedRoute(string $name) : Route
 	{
 		foreach ($this->getCollections() as $collection) {
 			foreach ($collection->routes as $routes) {
@@ -428,7 +437,7 @@ class Router
 				}
 			}
 		}
-		return null;
+		throw new \RuntimeException('Named route not found: ' . $name);
 	}
 
 	/**
