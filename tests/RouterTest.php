@@ -1,10 +1,14 @@
 <?php namespace Tests\Routing;
 
+use Framework\HTTP\Response;
 use Framework\Routing\Collection;
 use Framework\Routing\Exception;
 use Framework\Routing\Route;
 use Framework\Routing\Router;
 use PHPUnit\Framework\TestCase;
+use Tests\Routing\Support\FilterItalic;
+use Tests\Routing\Support\FilterStrong;
+use Tests\Routing\Support\StopBefore;
 
 class RouterTest extends TestCase
 {
@@ -39,6 +43,7 @@ class RouterTest extends TestCase
 				'Tests\Routing\Support\Shop::showProduct/1/0/2',
 				'shop.showProduct'
 			);
+			$collection->get('init', 'Tests\Routing\Support\StopInit::index');
 		});
 	}
 
@@ -954,7 +959,7 @@ class RouterTest extends TestCase
 		});
 	}
 
-	public function testBeforeAndAfterRouteActions()
+	/*public function testBeforeAndAfterRouteActions()
 	{
 		$this->router->serve('http://foo.com', function (Collection $collection) {
 			$collection->get('/before', 'Tests\Routing\Support\BeforeActionRoute::index');
@@ -967,6 +972,77 @@ class RouterTest extends TestCase
 		$this->assertEquals(
 			'Tests\Routing\Support\AfterActionRoute::afterAction',
 			$this->router->match('GET', 'http://foo.com/after')->run()
+		);
+	}*/
+
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testFilter()
+	{
+		$this->router->serve('http://localhost', function (Collection $routes) {
+			$routes->filters([
+				FilterItalic::class,
+				FilterStrong::class,
+			], [
+				$routes->get('/', function () {
+					echo 'Home';
+				}, 'home'),
+			]);
+		});
+		$request = new RequestMock();
+		$response = new Response($request);
+		\ob_start();
+		$this->router->match('GET', 'http://localhost/')->run($request, $response);
+		$response->send();
+		$contents = \ob_get_clean();
+		$this->assertEquals(
+			'<b><i>Before</i>Home</b>',
+			$contents
+		);
+	}
+
+	public function testFilterNotFound()
+	{
+		$this->router->serve('http://localhost', function (Collection $routes) {
+			$routes->filters([
+				\Unknown::class,
+			], [
+				$routes->get('/', function () {
+					echo 'Home';
+				}, 'home'),
+			]);
+		});
+		$request = new RequestMock();
+		$response = new Response($request);
+		$this->expectException(Exception::class);
+		$this->expectExceptionMessage('Filter class not found: Unknown');
+		$this->router->match('GET', 'http://localhost/')->run($request, $response);
+	}
+
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testBeforeFilterStop()
+	{
+		$this->router->serve('http://localhost', function (Collection $routes) {
+			$routes->filters([
+				StopBefore::class,
+			], [
+				$routes->get('/', function () {
+					echo 'Home';
+				}, 'home'),
+			]);
+		});
+		$request = new RequestMock();
+		$response = new Response($request);
+		\ob_start();
+		$this->router->match('GET', 'http://localhost/')->run($request, $response);
+		$response->send();
+		$contents = \ob_get_clean();
+		$this->assertEquals(
+			'',
+			$contents
 		);
 	}
 }
