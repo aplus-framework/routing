@@ -276,6 +276,26 @@ class Collection implements \Countable
 	}
 
 	/**
+	 * Set filters on many routes.
+	 *
+	 * @param array         $filters
+	 * @param array|Route[] $routes
+	 *
+	 * @return array
+	 */
+	public function filters(array $filters, array $routes) : array
+	{
+		foreach ($routes as $route) {
+			if (\is_array($route)) {
+				$this->filters($filters, $route);
+				continue;
+			}
+			$route->setFilters($filters);
+		}
+		return $routes;
+	}
+
+	/**
 	 * Adds many Routes that can be used as a REST Resource.
 	 *
 	 * @param string $path        The URL path

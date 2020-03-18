@@ -18,6 +18,7 @@ class Route
 	protected array $actionParams = [];
 	protected ?string $name = null;
 	protected array $options = [];
+	protected array $filters = [];
 
 	/**
 	 * Route constructor.
@@ -161,10 +162,22 @@ class Route
 		return $this;
 	}
 
+	public function setFilters(array $filters)
+	{
+		$this->filters = $filters;
+	}
+
+	public function getFilters() : array
+	{
+		return $this->filters;
+	}
+
 	/**
 	 * Run the Route Action.
 	 *
 	 * @param mixed ...$construct Class constructor parameters
+	 *
+	 * @throws Exception if class or method is not found
 	 *
 	 * @return mixed The action returned value
 	 */
@@ -172,7 +185,20 @@ class Route
 	{
 		$action = $this->getAction();
 		if ($action instanceof \Closure) {
-			return $action($this->getActionParams(), ...$construct);
+			foreach ($this->getFilters() as $filter) {
+				if ( ! \class_exists($filter)) {
+					throw new Exception("Filter class not found: {$filter}");
+				}
+				$response = (new $filter())->before(...$construct);
+				if ($response !== null) {
+					return $response;
+				}
+			}
+			$response = $action($this->getActionParams(), ...$construct);
+			foreach ($this->getFilters() as $filter) {
+				$response = (new $filter())->after(...$construct);
+			}
+			return $response;
 		}
 		if (\strpos($action, '::') === false) {
 			$action .= '::' . $this->router->getDefaultRouteActionMethod();
@@ -183,20 +209,29 @@ class Route
 			throw new Exception("Class not exists: {$classname}");
 		}
 		$class = new $classname(...$construct);
+		if (\method_exists($class, 'init')) {
+			$response = $class->init();
+			if ($response !== null) {
+				return $response;
+			}
+		}
 		if ( ! \method_exists($class, $action)) {
 			throw new Exception(
 				"Class method not exists: {$classname}::{$action}"
 			);
 		}
-		if (\method_exists($class, 'beforeAction')) {
-			$response = $class->beforeAction($action, $params);
+		foreach ($this->getFilters() as $filter) {
+			if ( ! \class_exists($filter)) {
+				throw new Exception("Filter class not found: {$filter}");
+			}
+			$response = (new $filter())->before(...$construct);
 			if ($response !== null) {
 				return $response;
 			}
 		}
 		$response = $class->{$action}(...$params);
-		if ($response === null && \method_exists($class, 'afterAction')) {
-			$response = $class->afterAction($action, $params);
+		foreach ($this->getFilters() as $filter) {
+			$response = (new $filter())->after(...$construct);
 		}
 		return $response;
 	}
