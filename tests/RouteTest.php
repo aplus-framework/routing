@@ -55,4 +55,12 @@ class RouteTest extends TestCase
 		$this->expectExceptionMessage('Filter class not found: Foo');
 		$this->route->run();
 	}
+
+	public function testOptionsFilters()
+	{
+		$this->route->setOptions([
+			'filters' => ['Foo', 'Bar'],
+		]);
+		$this->assertEquals(['Foo', 'Bar'], $this->route->getFilters());
+	}
 }

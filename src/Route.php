@@ -79,6 +79,9 @@ class Route
 	public function setOptions(array $options)
 	{
 		$this->options = $options;
+		if (isset($options['filters'])) {
+			$this->setFilters($options['filters']);
+		}
 		return $this;
 	}
 
