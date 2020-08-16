@@ -6,6 +6,7 @@ use Framework\Routing\Exception;
 use Framework\Routing\Route;
 use Framework\Routing\Router;
 use PHPUnit\Framework\TestCase;
+use Tests\Routing\Support\FilterBefore;
 use Tests\Routing\Support\FilterBlank;
 use Tests\Routing\Support\FilterItalic;
 use Tests\Routing\Support\FilterStrong;
@@ -1026,6 +1027,32 @@ class RouterTest extends TestCase
 		$contents = \ob_get_clean();
 		$this->assertEquals(
 			'<b><i>Before</i>Tests\Routing\Support\Shop::index</b>',
+			$contents
+		);
+	}
+
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testFilterBefore()
+	{
+		$this->router->serve('http://localhost', function (Collection $routes) {
+			$routes->filters([
+				FilterBefore::class,
+			], [
+				$routes->get('/', function () {
+					echo 'Home';
+				}, 'home'),
+			]);
+		});
+		$request = new RequestMock();
+		$response = new Response($request);
+		\ob_start();
+		$this->router->match('GET', 'http://localhost')->run($request, $response);
+		$response->send();
+		$contents = \ob_get_clean();
+		$this->assertEquals(
+			'Foo',
 			$contents
 		);
 	}

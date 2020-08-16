@@ -193,11 +193,17 @@ class Route
 					throw new Exception("Filter class not found: {$filter}");
 				}
 				$response = (new $filter())->before(...$construct);
+				if (\is_scalar($response)) {
+					echo $response;
+				}
 				if ($response !== null) {
 					return $response;
 				}
 			}
 			$response = $action($this->getActionParams(), ...$construct);
+			if (\is_scalar($response)) {
+				echo $response;
+			}
 			foreach ($this->getFilters() as $filter) {
 				$response = (new $filter())->after(...$construct);
 			}
