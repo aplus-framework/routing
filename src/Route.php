@@ -233,6 +233,9 @@ class Route
 			}
 		}
 		$response = $class->{$action}(...$params);
+		if (\is_scalar($response)) {
+			echo $response;
+		}
 		foreach ($this->getFilters() as $filter) {
 			$response = (new $filter())->after(...$construct);
 		}
