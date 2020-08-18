@@ -172,7 +172,10 @@ class Route
 	{
 		$action = $this->getAction();
 		if ($action instanceof \Closure) {
-			return $action($this->getActionParams(), ...$construct);
+			\ob_start();
+			$result = $action($this->getActionParams(), ...$construct);
+			$void = \ob_get_clean();
+			return $void . $result;
 		}
 		if (\strpos($action, '::') === false) {
 			$action .= '::' . $this->router->getDefaultRouteActionMethod();
@@ -189,16 +192,20 @@ class Route
 			);
 		}
 		if (\method_exists($class, 'beforeAction')) {
+			\ob_start();
 			$response = $class->beforeAction($action, $params);
-			if ($response !== null) {
+			$response .= \ob_get_clean();
+			if ($response !== '') {
 				return $response;
 			}
 		}
-		$response = $class->{$action}(...$params);
-		if ($response === null && \method_exists($class, 'afterAction')) {
-			$response = $class->afterAction($action, $params);
+		\ob_start();
+		$result = $class->{$action}(...$params);
+		if ($result === null && \method_exists($class, 'afterAction')) {
+			$result = $class->afterAction($action, $params);
 		}
-		return $response;
+		$void = \ob_get_clean();
+		return $void . $result;
 	}
 
 	/**
