@@ -161,19 +161,33 @@ class Route
 		return $this;
 	}
 
+	protected function checkResult($result) : void
+	{
+		if (\is_object($result)) {
+			if (\method_exists($result, '__toString')) {
+				return;
+			}
+		}
+		if (\is_scalar($result) || $result === null) {
+			return;
+		}
+		throw new \LogicException('Action return type must be scalar');
+	}
+
 	/**
 	 * Run the Route Action.
 	 *
 	 * @param mixed ...$construct Class constructor parameters
 	 *
-	 * @return mixed The action returned value
+	 * @return string The action returned value
 	 */
-	public function run(...$construct)
+	public function run(...$construct) : string
 	{
 		$action = $this->getAction();
 		if ($action instanceof \Closure) {
 			\ob_start();
 			$result = $action($this->getActionParams(), ...$construct);
+			$this->checkResult($result);
 			$void = \ob_get_clean();
 			return $void . $result;
 		}
@@ -201,6 +215,7 @@ class Route
 		}
 		\ob_start();
 		$result = $class->{$action}(...$params);
+		$this->checkResult($result);
 		if ($result === null && \method_exists($class, 'afterAction')) {
 			$result = $class->afterAction($action, $params);
 		}
