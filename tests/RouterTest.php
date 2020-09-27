@@ -56,6 +56,10 @@ class RouterTest extends TestCase
 			'/shop/products/hello-spirit/25/br',
 			$route->getPath(...$route->getActionParams())
 		);
+		$this->assertEquals(
+			[25, 'hello-spirit', 'br'],
+			$route->run()
+		);
 	}
 
 	public function testRouteActionParamsEmpty()
@@ -232,6 +236,11 @@ class RouterTest extends TestCase
 		$this->assertEquals(
 			'Tests\Routing\Support\Shop::listProducts',
 			$this->router->match('GET', 'https://domain.tld:8081/shop/products')->run()
+		);
+		$this->assertEquals(
+			[22, 'foo-bar', 'en'],
+			$this->router->match('GET', 'https://domain.tld:8081/shop/products/foo-bar/22/en')
+				->run()
 		);
 	}
 
@@ -737,16 +746,16 @@ class RouterTest extends TestCase
 		$this->assertEquals('Tests\Routing\Support\Users::index', $route->run());
 		$route = $this->router->match('post', 'http://domain.tld/users');
 		$this->assertEquals('not-found', $route->getName());
-		$this->assertEmpty($route->run());
+		$this->assertNull($route->run());
 		$route = $this->router->match('get', 'http://domain.tld/users/25');
 		$this->assertEquals('not-found', $route->getName());
-		$this->assertEmpty($route->run());
+		$this->assertNull($route->run());
 		$route = $this->router->match('patch', 'http://domain.tld/users/25');
 		$this->assertEquals('users.update', $route->getName());
 		$this->assertEquals('Tests\Routing\Support\Users::update/25', $route->run());
 		$route = $this->router->match('put', 'http://domain.tld/users/25');
 		$this->assertEquals('not-found', $route->getName());
-		$this->assertEmpty($route->run());
+		$this->assertNull($route->run());
 		$route = $this->router->match('delete', 'http://domain.tld/users/25');
 		$this->assertEquals('users.delete', $route->getName());
 		$this->assertEquals('Tests\Routing\Support\Users::delete/25', $route->run());
@@ -809,13 +818,13 @@ class RouterTest extends TestCase
 		$this->assertEquals('Tests\Routing\Support\Users::new', $route->run());
 		$route = $this->router->match('get', 'http://domain.tld/users/25/edit');
 		$this->assertEquals('not-found', $route->getName());
-		$this->assertEmpty($route->run());
+		$this->assertNull($route->run());
 		$route = $this->router->match('post', 'http://domain.tld/users/25/delete');
 		$this->assertEquals('users.web_delete', $route->getName());
 		$this->assertEquals('Tests\Routing\Support\Users::delete/25', $route->run());
 		$route = $this->router->match('post', 'http://domain.tld/users/25/update');
 		$this->assertEquals('not-found', $route->getName());
-		$this->assertEmpty($route->run());
+		$this->assertNull($route->run());
 	}
 
 	protected function assertPresenter()

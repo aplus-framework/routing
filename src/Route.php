@@ -161,35 +161,20 @@ class Route
 		return $this;
 	}
 
-	protected function checkResult($result) : void
-	{
-		if (\is_object($result)) {
-			if (\method_exists($result, '__toString')) {
-				return;
-			}
-		}
-		if (\is_scalar($result) || $result === null) {
-			return;
-		}
-		throw new \LogicException('Action return type must be scalar');
-	}
-
 	/**
 	 * Run the Route Action.
 	 *
 	 * @param mixed ...$construct Class constructor parameters
 	 *
-	 * @return string The action returned value
+	 * @throws Exception if class or method not exists
+	 *
+	 * @return mixed The action returned value
 	 */
-	public function run(...$construct) : string
+	public function run(...$construct)
 	{
 		$action = $this->getAction();
 		if ($action instanceof \Closure) {
-			\ob_start();
-			$result = $action($this->getActionParams(), ...$construct);
-			$this->checkResult($result);
-			$void = \ob_get_clean();
-			return $void . $result;
+			return $action($this->getActionParams(), ...$construct);
 		}
 		if (\strpos($action, '::') === false) {
 			$action .= '::' . $this->router->getDefaultRouteActionMethod();
@@ -206,21 +191,16 @@ class Route
 			);
 		}
 		if (\method_exists($class, 'beforeAction')) {
-			\ob_start();
 			$response = $class->beforeAction($action, $params);
-			$response .= \ob_get_clean();
-			if ($response !== '') {
+			if ($response !== null) {
 				return $response;
 			}
 		}
-		\ob_start();
-		$result = $class->{$action}(...$params);
-		$this->checkResult($result);
-		if ($result === null && \method_exists($class, 'afterAction')) {
-			$result = $class->afterAction($action, $params);
+		$response = $class->{$action}(...$params);
+		if ($response === null && \method_exists($class, 'afterAction')) {
+			$response = $class->afterAction($action, $params);
 		}
-		$void = \ob_get_clean();
-		return $void . $result;
+		return $response;
 	}
 
 	/**
