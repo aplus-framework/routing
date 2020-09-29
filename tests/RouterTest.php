@@ -42,6 +42,16 @@ class RouterTest extends TestCase
 		});
 	}
 
+	public function testEmptyOrigin()
+	{
+		$_SERVER['HTTPS'] = 'on';
+		$_SERVER['HTTP_HOST'] = 'localhost:8080';
+		$this->router->serve(null, function (Collection $routes) {
+			$routes->get('/', 'Home::index', 'home');
+		});
+		$this->assertEquals('Home::index', $this->router->getNamedRoute('home')->getAction());
+	}
+
 	public function testRouteActionParams()
 	{
 		$this->prepare();

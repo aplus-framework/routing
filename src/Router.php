@@ -135,16 +135,29 @@ class Router
 	/**
 	 * Serves a Collection of Routes to a specific Origin.
 	 *
-	 * @param string   $origin   URL Origin. A string in the following format:
-	 *                           {scheme}://{hostname}[:{port}]
-	 * @param callable $callable A function receiving an instance of Collection as the first
-	 *                           parameter
+	 * @param string|null $origin   URL Origin. A string in the following format:
+	 *                              {scheme}://{hostname}[:{port}]. Null to auto-detect.
+	 * @param callable    $callable A function receiving an instance of Collection as the first
+	 *                              parameter
 	 */
-	public function serve(string $origin, callable $callable) : void
+	public function serve(?string $origin, callable $callable) : void
 	{
+		if ($origin === null) {
+			$origin = $this->makeOrigin();
+		}
 		$collection = new Collection($this, $origin);
 		$callable($collection);
 		$this->addCollection($collection);
+	}
+
+	protected function makeOrigin() : string
+	{
+		$scheme = 'http';
+		if ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
+			|| ((int) $_SERVER['SERVER_PORT']) === 443) {
+			$scheme = 'https';
+		}
+		return $scheme . '://' . $_SERVER['HTTP_HOST'];
 	}
 
 	protected function addCollection(Collection $collection)
