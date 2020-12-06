@@ -1,5 +1,9 @@
 <?php namespace Framework\Routing;
 
+use Closure;
+use InvalidArgumentException;
+use RuntimeException;
+
 /**
  * Class Router.
  */
@@ -7,9 +11,12 @@ class Router
 {
 	protected string $defaultRouteActionMethod = 'index';
 	/**
-	 * @var callable
+	 * @var callable|Closure|string
 	 */
 	protected $defaultRouteNotFound;
+	/**
+	 * @var array|string[]
+	 */
 	protected static array $placeholders = [
 		'{alpha}' => '([a-zA-Z]+)',
 		'{alphanum}' => '([a-zA-Z0-9]+)',
@@ -31,8 +38,14 @@ class Router
 	protected array $collections = [];
 	protected ?Route $matchedRoute = null;
 	protected ?string $matchedOrigin = null;
+	/**
+	 * @var array|string[]
+	 */
 	protected array $matchedOriginParams = [];
 	protected ?string $matchedPath = null;
+	/**
+	 * @var array|string[]
+	 */
 	protected array $matchedPathParams = [];
 	protected bool $autoOptions = false;
 	protected bool $autoMethods = false;
@@ -42,6 +55,11 @@ class Router
 		return $this->defaultRouteActionMethod;
 	}
 
+	/**
+	 * @param string $action
+	 *
+	 * @return $this
+	 */
 	public function setDefaultRouteActionMethod(string $action)
 	{
 		$this->defaultRouteActionMethod = $action;
@@ -61,7 +79,7 @@ class Router
 	}
 
 	/**
-	 * @param \Closure|string $action
+	 * @param Closure|string $action
 	 *
 	 * @return $this
 	 */
@@ -72,8 +90,8 @@ class Router
 	}
 
 	/**
-	 * @param array|string $placeholder
-	 * @param string|null  $pattern
+	 * @param array|string|string[] $placeholder
+	 * @param string|null           $pattern
 	 *
 	 * @return $this
 	 */
@@ -89,6 +107,9 @@ class Router
 		return $this;
 	}
 
+	/**
+	 * @return array|string[]
+	 */
 	public function getPlaceholders() : array
 	{
 		return static::$placeholders;
@@ -103,13 +124,21 @@ class Router
 		return \strtr($string, $placeholders);
 	}
 
+	/**
+	 * @param string $string
+	 * @param mixed  ...$params
+	 *
+	 * @throws InvalidArgumentException if param not required, empty or invalid
+	 *
+	 * @return string
+	 */
 	public function fillPlaceholders(string $string, ...$params) : string
 	{
 		$string = $this->replacePlaceholders($string);
 		\preg_match_all('#\(([^)]+)\)#', $string, $matches);
 		if (empty($matches[0])) {
 			if ($params) {
-				throw new \InvalidArgumentException(
+				throw new InvalidArgumentException(
 					'String has no placeholders. Parameters not required'
 				);
 			}
@@ -117,10 +146,10 @@ class Router
 		}
 		foreach ($matches[0] as $index => $pattern) {
 			if ( ! isset($params[$index])) {
-				throw new \InvalidArgumentException("Placeholder parameter is empty: {$index}");
+				throw new InvalidArgumentException("Placeholder parameter is empty: {$index}");
 			}
 			if ( ! \preg_match('#' . $pattern . '#', $params[$index])) {
-				throw new \InvalidArgumentException("Placeholder parameter is invalid: {$index}");
+				throw new InvalidArgumentException("Placeholder parameter is invalid: {$index}");
 			}
 			$string = \substr_replace(
 				$string,
@@ -160,9 +189,15 @@ class Router
 		return $scheme . '://' . $_SERVER['HTTP_HOST'];
 	}
 
+	/**
+	 * @param Collection $collection
+	 *
+	 * @return $this
+	 */
 	protected function addCollection(Collection $collection)
 	{
 		$this->collections[] = $collection;
+		return $this;
 	}
 
 	/**
@@ -178,9 +213,15 @@ class Router
 		return $this->matchedRoute;
 	}
 
+	/**
+	 * @param Route $route
+	 *
+	 * @return $this
+	 */
 	protected function setMatchedRoute(Route $route)
 	{
 		$this->matchedRoute = $route;
+		return $this;
 	}
 
 	public function getMatchedPath() : ?string
@@ -188,19 +229,34 @@ class Router
 		return $this->matchedPath;
 	}
 
+	/**
+	 * @param string $path
+	 *
+	 * @return $this
+	 */
 	protected function setMatchedPath(string $path)
 	{
 		$this->matchedPath = $path;
+		return $this;
 	}
 
+	/**
+	 * @return array|string[]
+	 */
 	public function getMatchedPathParams() : array
 	{
 		return $this->matchedPathParams;
 	}
 
+	/**
+	 * @param array|string[] $params
+	 *
+	 * @return $this
+	 */
 	protected function setMatchedPathParams(array $params)
 	{
 		$this->matchedPathParams = $params;
+		return $this;
 	}
 
 	public function getMatchedURL() : ?string
@@ -215,21 +271,41 @@ class Router
 		return $this->matchedOrigin;
 	}
 
+	/**
+	 * @param string $origin
+	 *
+	 * @return $this
+	 */
 	protected function setMatchedOrigin(string $origin)
 	{
 		$this->matchedOrigin = $origin;
+		return $this;
 	}
 
+	/**
+	 * @return array|string[]
+	 */
 	public function getMatchedOriginParams() : array
 	{
 		return $this->matchedOriginParams;
 	}
 
+	/**
+	 * @param array|string[] $params
+	 *
+	 * @return $this
+	 */
 	protected function setMatchedOriginParams(array $params)
 	{
 		$this->matchedOriginParams = $params;
+		return $this;
 	}
 
+	/**
+	 * @param string $url
+	 *
+	 * @return array|mixed[]
+	 */
 	protected function parseURL(string $url) : array
 	{
 		$parsed = \parse_url($url);
@@ -244,7 +320,7 @@ class Router
 	}
 
 	/**
-	 * @param array $parsed_url
+	 * @param array|mixed[] $parsed_url
 	 *
 	 * @see parseURL
 	 *
@@ -281,11 +357,11 @@ class Router
 		)) {
 			\http_response_code(405);
 			\header('Allow: GET, DELETE, HEAD, OPTIONS, PATCH, POST, PUT');
-			throw new \InvalidArgumentException('Invalid HTTP method: ' . $method);
+			throw new InvalidArgumentException('Invalid HTTP method: ' . $method);
 		}
 		if ( ! \filter_var($url, \FILTER_VALIDATE_URL)) {
 			\http_response_code(400);
-			throw new \InvalidArgumentException('Invalid URL: ' . $url);
+			throw new InvalidArgumentException('Invalid URL: ' . $url);
 		}
 		$parsed_url = $this->parseURL($url);
 		$this->setMatchedPath($parsed_url['path']);
@@ -360,6 +436,11 @@ class Router
 		return null;
 	}
 
+	/**
+	 * @param bool $status
+	 *
+	 * @return $this
+	 */
 	public function setAutoOptions(bool $status)
 	{
 		$this->autoOptions = $status;
@@ -371,6 +452,11 @@ class Router
 		return $this->autoOptions;
 	}
 
+	/**
+	 * @param bool $status
+	 *
+	 * @return $this
+	 */
 	public function setAutoMethods(bool $status)
 	{
 		$this->autoMethods = $status;
@@ -398,6 +484,11 @@ class Router
 			))->setName('auto-allow-' . $code);
 	}
 
+	/**
+	 * @param Collection $collection
+	 *
+	 * @return array|string[]
+	 */
 	protected function getAllowedMethods(Collection $collection) : array
 	{
 		$allowed = [];
@@ -432,7 +523,7 @@ class Router
 	 *
 	 * @param string $name
 	 *
-	 * @throws \RuntimeException if named route not found
+	 * @throws RuntimeException if named route not found
 	 *
 	 * @return Route
 	 */
@@ -450,7 +541,7 @@ class Router
 				}
 			}
 		}
-		throw new \RuntimeException('Named route not found: ' . $name);
+		throw new RuntimeException('Named route not found: ' . $name);
 	}
 
 	/**
