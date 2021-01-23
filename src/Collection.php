@@ -20,9 +20,9 @@ class Collection implements \Countable
 	 */
 	protected array $routes = [];
 	/**
-	 * @var Closure|string
+	 * The Error 404 page.
 	 */
-	protected $notFound;
+	protected Closure | string | null $notFound = null;
 	protected ?string $namespace = null;
 
 	/**
@@ -110,7 +110,7 @@ class Collection implements \Countable
 	 * @param Closure|string $action the Route function to run when no Route path is found for
 	 *                               this collection
 	 */
-	public function notFound($action) : void
+	public function notFound(Closure | string $action) : void
 	{
 		$this->notFound = $action;
 	}
@@ -145,8 +145,12 @@ class Collection implements \Countable
 	 *
 	 * @return Route
 	 */
-	public function add(array $http_methods, string $path, $action, string $name = null) : Route
-	{
+	public function add(
+		array $http_methods,
+		string $path,
+		Closure | string $action,
+		string $name = null
+	) : Route {
 		$route = new Route($this->router, $this->origin, $path, $action);
 		if ($name) {
 			$route->setName($name);
@@ -166,7 +170,7 @@ class Collection implements \Countable
 	 *
 	 * @return Route The Route added to the Collection
 	 */
-	public function get(string $path, $action, string $name = null) : Route
+	public function get(string $path, Closure | string $action, string $name = null) : Route
 	{
 		return $this->add(['GET'], $path, $action, $name);
 	}
@@ -180,7 +184,7 @@ class Collection implements \Countable
 	 *
 	 * @return Route The Route added to the Collection
 	 */
-	public function post(string $path, $action, string $name = null) : Route
+	public function post(string $path, Closure | string $action, string $name = null) : Route
 	{
 		return $this->add(['POST'], $path, $action, $name);
 	}
@@ -194,7 +198,7 @@ class Collection implements \Countable
 	 *
 	 * @return Route The Route added to the Collection
 	 */
-	public function put(string $path, $action, string $name = null) : Route
+	public function put(string $path, Closure | string $action, string $name = null) : Route
 	{
 		return $this->add(['PUT'], $path, $action, $name);
 	}
@@ -208,7 +212,7 @@ class Collection implements \Countable
 	 *
 	 * @return Route The Route added to the Collection
 	 */
-	public function patch(string $path, $action, string $name = null) : Route
+	public function patch(string $path, Closure | string $action, string $name = null) : Route
 	{
 		return $this->add(['PATCH'], $path, $action, $name);
 	}
@@ -222,7 +226,7 @@ class Collection implements \Countable
 	 *
 	 * @return Route The Route added to the Collection
 	 */
-	public function delete(string $path, $action, string $name = null) : Route
+	public function delete(string $path, Closure | string $action, string $name = null) : Route
 	{
 		return $this->add(['DELETE'], $path, $action, $name);
 	}
@@ -236,7 +240,7 @@ class Collection implements \Countable
 	 *
 	 * @return Route The Route added to the Collection
 	 */
-	public function options(string $path, $action, string $name = null) : Route
+	public function options(string $path, Closure | string $action, string $name = null) : Route
 	{
 		return $this->add(['OPTIONS'], $path, $action, $name);
 	}

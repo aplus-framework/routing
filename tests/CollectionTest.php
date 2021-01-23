@@ -15,8 +15,8 @@ class CollectionTest extends TestCase
 
 	public function testCount()
 	{
-		$this->assertEquals(0, \count($this->collection));
+		$this->assertCount(0, $this->collection);
 		$this->collection->get('/foo', 'Foo');
-		$this->assertEquals(1, \count($this->collection));
+		$this->assertCount(1, $this->collection);
 	}
 }

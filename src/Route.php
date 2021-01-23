@@ -17,7 +17,7 @@ class Route
 	/**
 	 * @var Closure|string
 	 */
-	protected $action;
+	protected Closure | string $action;
 	/**
 	 * @var array|string[]
 	 */
@@ -31,14 +31,18 @@ class Route
 	/**
 	 * Route constructor.
 	 *
-	 * @param Router                  $router A Router instance
-	 * @param string                  $origin URL Origin. A string in the following format:
-	 *                                        {scheme}://{hostname}[:{port}]
-	 * @param string                  $path   URL Path. A string starting with '/'
-	 * @param callable|Closure|string $action The action
+	 * @param Router         $router A Router instance
+	 * @param string         $origin URL Origin. A string in the following format:
+	 *                               {scheme}://{hostname}[:{port}]
+	 * @param string         $path   URL Path. A string starting with '/'
+	 * @param Closure|string $action The action
 	 */
-	public function __construct(Router $router, string $origin, string $path, $action)
-	{
+	public function __construct(
+		Router $router,
+		string $origin,
+		string $path,
+		Closure | string $action
+	) {
 		$this->router = $router;
 		$this->setOrigin($origin);
 		$this->setPath($path);
@@ -145,10 +149,7 @@ class Route
 		return $this->path;
 	}
 
-	/**
-	 * @return Closure|string
-	 */
-	public function getAction()
+	public function getAction() : Closure | string
 	{
 		return $this->action;
 	}
@@ -156,17 +157,17 @@ class Route
 	/**
 	 * Sets the Route Action.
 	 *
-	 * @param callable|Closure|string $action A \Closure or a string in the format of the
-	 *                                        __METHOD__
-	 *                                        constant. Example: App\Blog::show/0/2/1. Where /0/2/1
-	 *                                        is the method parameters order
+	 * @param Closure|string $action A \Closure or a string in the format of the
+	 *                               __METHOD__
+	 *                               constant. Example: App\Blog::show/0/2/1. Where /0/2/1
+	 *                               is the method parameters order
 	 *
 	 * @see setActionParams
 	 * @see run
 	 *
 	 * @return $this
 	 */
-	public function setAction($action)
+	public function setAction(Closure | string $action)
 	{
 		$this->action = \is_string($action) ? \trim($action, '\\') : $action;
 		return $this;
