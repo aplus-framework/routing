@@ -213,7 +213,7 @@ class Route
 		if ($action instanceof Closure) {
 			return $action($this->getActionParams(), ...$construct);
 		}
-		if (\strpos($action, '::') === false) {
+		if ( ! \str_contains($action, '::')) {
 			$action .= '::' . $this->router->getDefaultRouteActionMethod();
 		}
 		[$classname, $action] = \explode('::', $action, 2);
@@ -221,6 +221,9 @@ class Route
 		if ( ! \class_exists($classname)) {
 			throw new Exception("Class not exists: {$classname}");
 		}
+		/**
+		 * @var RouteAction $class
+		 */
 		$class = new $classname(...$construct);
 		if ( ! \method_exists($class, $action)) {
 			throw new Exception(
