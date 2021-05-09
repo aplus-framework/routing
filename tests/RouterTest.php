@@ -17,17 +17,17 @@ class RouterTest extends TestCase
 
 	protected function prepare()
 	{
-		$this->router->serve('{scheme}://domain.tld:{num}', function (Collection $collection) {
-			$collection->get('/users/{num}', function (array $params) {
+		$this->router->serve('{scheme}://domain.tld:{num}', static function (Collection $collection) {
+			$collection->get('/users/{num}', static function (array $params) {
 				return "User page: {$params[0]}";
 			});
-			$collection->get('/users/{num}/posts/{num}', function (array $params) {
+			$collection->get('/users/{num}/posts/{num}', static function (array $params) {
 				return "User {$params[0]}, post: {$params[1]}";
 			})->setName('user.post');
-			$collection->get('contact', function () {
+			$collection->get('contact', static function () {
 				return 'Contact page';
 			}, 'ctt');
-			$collection->get('', function () {
+			$collection->get('', static function () {
 				return 'Home page';
 			})->setName('home');
 			$collection->get('foo', 'Foo');
@@ -46,7 +46,7 @@ class RouterTest extends TestCase
 	{
 		$_SERVER['HTTPS'] = 'on';
 		$_SERVER['HTTP_HOST'] = 'localhost:8080';
-		$this->router->serve(null, function (Collection $routes) {
+		$this->router->serve(null, static function (Collection $routes) {
 			$routes->get('/', 'Home::index', 'home');
 		});
 		$this->assertEquals('Home::index', $this->router->getNamedRoute('home')->getAction());
@@ -192,7 +192,7 @@ class RouterTest extends TestCase
 	 */
 	public function testCustomDefaultRouteNotFound()
 	{
-		$this->router->setDefaultRouteNotFound(function () {
+		$this->router->setDefaultRouteNotFound(static function () {
 			\http_response_code(400);
 		});
 		$route = $this->router->match('GET', 'http://site.org');
@@ -206,8 +206,8 @@ class RouterTest extends TestCase
 	 */
 	public function testCollectionRouteNotFound()
 	{
-		$this->router->serve('http://site.org', function (Collection $collection) {
-			$collection->notFound(function () {
+		$this->router->serve('http://site.org', static function (Collection $collection) {
+			$collection->notFound(static function () {
 				\http_response_code(402);
 			});
 		});
@@ -222,7 +222,7 @@ class RouterTest extends TestCase
 	 */
 	public function testDefaultRouteActionMethod()
 	{
-		$this->router->serve('http://foo.com', function (Collection $collection) {
+		$this->router->serve('http://foo.com', static function (Collection $collection) {
 			$collection->get('/', 'Tests\Routing\Support\Shop');
 		});
 		$this->assertEquals(
@@ -293,7 +293,7 @@ class RouterTest extends TestCase
 
 	public function testGroup()
 	{
-		$this->router->serve('{scheme}://domain.tld:{num}', function (Collection $collection) {
+		$this->router->serve('{scheme}://domain.tld:{num}', static function (Collection $collection) {
 			$collection->group('animals', [
 				$collection->get('', 'Animals::index', 'animals')->setOptions([
 					'x' => 'foo',
@@ -345,7 +345,7 @@ class RouterTest extends TestCase
 
 	public function testHTTPMethods()
 	{
-		$this->router->serve('{scheme}://domain.tld:{num}', function (Collection $collection) {
+		$this->router->serve('{scheme}://domain.tld:{num}', static function (Collection $collection) {
 			$collection->get('/', 'Home::get');
 			$collection->post('/', 'Home::post');
 			$collection->put('/', 'Home::put');
@@ -514,31 +514,31 @@ class RouterTest extends TestCase
 	{
 		$this->router->serve(
 			'http://subdomain.domain.tld:{port}',
-			function (Collection $collection) {
+			static function (Collection $collection) {
 				$collection->get('/', 'port');
 			}
 		);
 		$this->router->serve(
 			'{scheme}://subdomain.domain.tld:8080',
-			function (Collection $collection) {
+			static function (Collection $collection) {
 				$collection->get('/', 'scheme');
 			}
 		);
 		$this->router->serve(
 			'{scheme}://{subdomain}.domain.tld:{port}',
-			function (Collection $collection) {
+			static function (Collection $collection) {
 				$collection->get('/', 'scheme-subdomain-port');
 			}
 		);
 		$this->router->serve(
 			'https://domain.tld',
-			function (Collection $collection) {
+			static function (Collection $collection) {
 				$collection->get('/', 'none');
 			}
 		);
 		$this->router->serve(
 			'{any}',
-			function (Collection $collection) {
+			static function (Collection $collection) {
 				$collection->get('/', 'any');
 			}
 		);
@@ -573,7 +573,7 @@ class RouterTest extends TestCase
 	 */
 	public function testAutoOptions()
 	{
-		$this->router->serve('http://domain.tld', function (Collection $collection) {
+		$this->router->serve('http://domain.tld', static function (Collection $collection) {
 			$collection->resource('users', 'Tests\Routing\Support\Users', 'users');
 		});
 		$this->router->setAutoOptions(true);
@@ -592,7 +592,7 @@ class RouterTest extends TestCase
 	 */
 	public function testAutoOptionsNotFound()
 	{
-		$this->router->serve('http://domain.tld', function (Collection $collection) {
+		$this->router->serve('http://domain.tld', static function (Collection $collection) {
 			$collection->resource('users', 'Tests\Routing\Support\Users', 'users');
 		});
 		$this->router->setAutoOptions(true);
@@ -611,7 +611,7 @@ class RouterTest extends TestCase
 	 */
 	public function testAutoOptionsDisabled()
 	{
-		$this->router->serve('http://domain.tld', function (Collection $collection) {
+		$this->router->serve('http://domain.tld', static function (Collection $collection) {
 			$collection->resource('users', 'Tests\Routing\Support\Users', 'users');
 		});
 		$this->router->setAutoOptions(false);
@@ -630,9 +630,9 @@ class RouterTest extends TestCase
 	 */
 	public function testAutoOptionsWithOptionsRoute()
 	{
-		$this->router->serve('http://domain.tld', function (Collection $collection) {
+		$this->router->serve('http://domain.tld', static function (Collection $collection) {
 			$collection->resource('users', 'Tests\Routing\Support\Users', 'users');
-			$collection->options('users/{num}', function () {
+			$collection->options('users/{num}', static function () {
 				\header('Foo: bar');
 			});
 		});
@@ -655,7 +655,7 @@ class RouterTest extends TestCase
 	 */
 	public function testAutoMethods()
 	{
-		$this->router->serve('http://domain.tld', function (Collection $collection) {
+		$this->router->serve('http://domain.tld', static function (Collection $collection) {
 			$collection->resource('users', 'Tests\Routing\Support\Users', 'users');
 		});
 		$this->router->setAutoMethods(true);
@@ -674,7 +674,7 @@ class RouterTest extends TestCase
 	 */
 	public function testAutoMethodsNotFound()
 	{
-		$this->router->serve('http://domain.tld', function (Collection $collection) {
+		$this->router->serve('http://domain.tld', static function (Collection $collection) {
 			$collection->resource('users', 'Tests\Routing\Support\Users', 'users');
 		});
 		$this->router->setAutoMethods(true);
@@ -693,7 +693,7 @@ class RouterTest extends TestCase
 	 */
 	public function testAutoMethodsDisabled()
 	{
-		$this->router->serve('http://domain.tld', function (Collection $collection) {
+		$this->router->serve('http://domain.tld', static function (Collection $collection) {
 			$collection->resource('users', 'Tests\Routing\Support\Users', 'users');
 		});
 		$this->router->setAutoMethods(false);
@@ -712,7 +712,7 @@ class RouterTest extends TestCase
 	 */
 	public function testAutoMethodsWithAutoOptions()
 	{
-		$this->router->serve('http://domain.tld', function (Collection $collection) {
+		$this->router->serve('http://domain.tld', static function (Collection $collection) {
 			$collection->resource('users', 'Tests\Routing\Support\Users', 'users');
 		});
 		$this->router->setAutoOptions(true);
@@ -773,7 +773,7 @@ class RouterTest extends TestCase
 
 	public function testResource()
 	{
-		$this->router->serve('http://domain.tld', function (Collection $collection) {
+		$this->router->serve('http://domain.tld', static function (Collection $collection) {
 			$collection->resource('users', 'Tests\Routing\Support\Users', 'users');
 		});
 		$this->assertResource();
@@ -781,7 +781,7 @@ class RouterTest extends TestCase
 
 	public function testResourceWithExcept()
 	{
-		$this->router->serve('http://domain.tld', function (Collection $collection) {
+		$this->router->serve('http://domain.tld', static function (Collection $collection) {
 			$collection->resource(
 				'users',
 				'Tests\Routing\Support\Users',
@@ -794,7 +794,7 @@ class RouterTest extends TestCase
 
 	public function testWebResource()
 	{
-		$this->router->serve('http://domain.tld', function (Collection $collection) {
+		$this->router->serve('http://domain.tld', static function (Collection $collection) {
 			$collection->webResource('users', 'Tests\Routing\Support\Users', 'users');
 		});
 		$this->assertResource();
@@ -814,7 +814,7 @@ class RouterTest extends TestCase
 
 	public function testWebResourceWithExcept()
 	{
-		$this->router->serve('http://domain.tld', function (Collection $collection) {
+		$this->router->serve('http://domain.tld', static function (Collection $collection) {
 			$collection->webResource(
 				'users',
 				'Tests\Routing\Support\Users',
@@ -849,7 +849,7 @@ class RouterTest extends TestCase
 
 	public function testPresenter()
 	{
-		$this->router->serve('http://domain.tld', function (Collection $collection) {
+		$this->router->serve('http://domain.tld', static function (Collection $collection) {
 			$collection->presenter('admin/users', 'Tests\Routing\Support\Users', 'admin.users');
 			$collection->presenter(
 				'admin/users',
@@ -866,7 +866,7 @@ class RouterTest extends TestCase
 	 */
 	public function testRedirect()
 	{
-		$this->router->serve('http://domain.tld', function (Collection $collection) {
+		$this->router->serve('http://domain.tld', static function (Collection $collection) {
 			$collection->redirect('shop', 'https://shop.com', 301);
 		});
 		$this->router->match('get', 'http://domain.tld/shop')->run();
@@ -886,14 +886,14 @@ class RouterTest extends TestCase
 
 	public function testCollectionNamespace()
 	{
-		$this->router->serve('http://foo.com', function (Collection $collection) {
+		$this->router->serve('http://foo.com', static function (Collection $collection) {
 			$collection->namespace('App', [
 				$collection->get('/', 'Home::index', 'home'),
 				$collection->namespace('\Blog\Test\\', [
 					$collection->group('/blog', [
 						$collection->get('', 'Blog', 'blog'),
 						$collection->get('{num}', 'Posts::show/0', 'post'),
-						$collection->get('foo', function () {
+						$collection->get('foo', static function () {
 						}, 'foo'),
 					]),
 				]),
@@ -930,7 +930,7 @@ class RouterTest extends TestCase
 		$this->expectExceptionMessage(
 			'Method not allowed: setOrigin'
 		);
-		$this->router->serve('http://foo.com', function (Collection $collection) {
+		$this->router->serve('http://foo.com', static function (Collection $collection) {
 			$collection->setOrigin('foo');
 		});
 	}
@@ -941,7 +941,7 @@ class RouterTest extends TestCase
 		$this->expectExceptionMessage(
 			'Method not found: foo'
 		);
-		$this->router->serve('http://foo.com', function (Collection $collection) {
+		$this->router->serve('http://foo.com', static function (Collection $collection) {
 			$collection->foo();
 		});
 	}
@@ -950,7 +950,7 @@ class RouterTest extends TestCase
 	{
 		$this->expectException(\LogicException::class);
 		$this->expectExceptionMessage('Property not allowed: namespace');
-		$this->router->serve('http://foo.com', function (Collection $collection) {
+		$this->router->serve('http://foo.com', static function (Collection $collection) {
 			$collection->namespace;
 		});
 	}
@@ -959,14 +959,14 @@ class RouterTest extends TestCase
 	{
 		$this->expectException(\LogicException::class);
 		$this->expectExceptionMessage('Property not found: foo');
-		$this->router->serve('http://foo.com', function (Collection $collection) {
+		$this->router->serve('http://foo.com', static function (Collection $collection) {
 			$collection->foo;
 		});
 	}
 
 	public function testBeforeAndAfterRouteActions()
 	{
-		$this->router->serve('http://foo.com', function (Collection $collection) {
+		$this->router->serve('http://foo.com', static function (Collection $collection) {
 			$collection->get('/before', 'Tests\Routing\Support\BeforeActionRoute::index');
 			$collection->get('/after', 'Tests\Routing\Support\AfterActionRoute::index');
 		});
