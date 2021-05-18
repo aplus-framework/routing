@@ -545,6 +545,30 @@ class Router
 	}
 
 	/**
+	 * Tells if has a named route.
+	 *
+	 * @param string $name
+	 *
+	 * @return bool
+	 */
+	public function hasNamedRoute(string $name) : bool
+	{
+		foreach ($this->getCollections() as $collection) {
+			foreach ($collection->routes as $routes) {
+				foreach ($routes as $route) {
+					/**
+					 * @var Route $route
+					 */
+					if ($route->getName() === $name) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * @return array|Route[]
 	 */
 	public function getRoutes() : array

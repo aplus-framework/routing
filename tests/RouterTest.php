@@ -417,6 +417,8 @@ class RouterTest extends TestCase
 		$this->prepare();
 		$this->assertEquals('/contact', $this->router->getNamedRoute('ctt')->getPath());
 		$this->assertEquals('/', $this->router->getNamedRoute('home')->getPath());
+		$this->assertTrue($this->router->hasNamedRoute('home'));
+		$this->assertFalse($this->router->hasNamedRoute('unknown'));
 		$this->expectException(\RuntimeException::class);
 		$this->expectExceptionMessage('Named route not found: unknown');
 		$this->router->getNamedRoute('unknown');
