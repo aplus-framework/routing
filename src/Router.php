@@ -420,13 +420,16 @@ class Router
 	}
 
 	/**
-	 * @param bool $status
+	 * Enable/disable the feature of auto detect and show HTTP allowed methods
+	 * via the Allow header when the request has the OPTIONS method.
+	 *
+	 * @param bool $enabled true to enable, false to disable
 	 *
 	 * @return $this
 	 */
-	public function setAutoOptions(bool $status)
+	public function setAutoOptions(bool $enabled = true)
 	{
-		$this->autoOptions = $status;
+		$this->autoOptions = $enabled;
 		return $this;
 	}
 
@@ -436,13 +439,18 @@ class Router
 	}
 
 	/**
-	 * @param bool $status
+	 * Enable/disable the feature of auto detect and show HTTP allowed methods
+	 * via the Allow header when a route with the request method does not exist.
+	 *
+	 * A response with code 405 "Method Not Allowed" will trigger.
+	 *
+	 * @param bool $enabled true to enable, false to disable
 	 *
 	 * @return $this
 	 */
-	public function setAutoMethods(bool $status)
+	public function setAutoMethods(bool $enabled = true)
 	{
-		$this->autoMethods = $status;
+		$this->autoMethods = $enabled;
 		return $this;
 	}
 
@@ -454,15 +462,16 @@ class Router
 	protected function getRouteWithAllowHeader(Collection $collection, int $code) : ?Route
 	{
 		$allowed = $this->getAllowedMethods($collection);
+		$response = $this->response;
 		return empty($allowed)
 			? null
 			: (new Route(
 				$this,
 				$this->getMatchedOrigin(),
 				$this->getMatchedPath(),
-				static function () use ($allowed, $code) {
-					\http_response_code($code);
-					\header('Allow: ' . \implode(', ', $allowed));
+				static function () use ($allowed, $code, $response) {
+					$response->setStatusLine($code);
+					$response->setHeader('Allow', \implode(', ', $allowed));
 				}
 			))->setName('auto-allow-' . $code);
 	}
