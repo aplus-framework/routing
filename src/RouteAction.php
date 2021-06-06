@@ -5,6 +5,10 @@
  */
 abstract class RouteAction
 {
+	protected string $actionMethod;
+	protected array $actionParams;
+	protected bool $actionRun;
+
 	public function __call($method, $arguments)
 	{
 		if ($method === 'beforeAction') {
@@ -19,36 +23,45 @@ abstract class RouteAction
 		throw new \BadMethodCallException("Action method not found: {$method}");
 	}
 
+	public function __set($property, $value) : void
+	{
+		if (\in_array($property, [
+			'actionMethod',
+			'actionParams',
+			'actionRun',
+		])) {
+			$this->{$property} = $value;
+			return;
+		}
+		throw new \Error(
+			'Cannot access property ' . \get_class($this) . '::$' . $property
+		);
+	}
+
 	/**
 	 * Runs just before the action method and after the constructor.
 	 *
 	 * Used to prepare settings, filter input data, acts as a middleware between
 	 * the routing and the action method.
 	 *
-	 * @param string $action Route action, the method name
-	 * @param array  $params Route params, the method arguments
-	 *
-	 * @return mixed Returns a response to stop the route action execution or null to continue the
-	 *               process and call the action method
+	 * @return mixed|void Returns a response to stop the route action execution or null to continue the
+	 *                    process and call the action method
 	 */
-	protected function beforeAction(string $action, array $params = [])
+	protected function beforeAction()
 	{
 		// Prepare or intercept...
 	}
 
 	/**
-	 * Runs just after the action method and before the desconstructor.
+	 * Runs just after the action method and before the deconstruct.
 	 *
 	 * Used to finalize settings, filter output data, acts as a middleware between
 	 * the action method and the final response.
 	 *
-	 * @param string $action Route action, the method name
-	 * @param array  $params Route params, the method arguments
-	 *
-	 * @return mixed
+	 * @return mixed|void
 	 */
-	protected function afterAction(string $action, array $params = [])
+	protected function afterAction(mixed $response)
 	{
-		// Finalize...
+		return $response;
 	}
 }

@@ -230,15 +230,19 @@ class Route
 				"Class method not exists: {$classname}::{$action}"
 			);
 		}
+		$class->actionMethod = $action;
+		$class->actionParams = $params;
+		$class->actionRun = false;
+		$response = null;
 		if (\method_exists($class, 'beforeAction')) {
-			$response = $class->beforeAction($action, $params);
-			if ($response !== null) {
-				return $response;
-			}
+			$response = $class->beforeAction();
 		}
-		$response = $class->{$action}(...$params);
-		if ($response === null && \method_exists($class, 'afterAction')) {
-			$response = $class->afterAction($action, $params);
+		if ($response === null) {
+			$class->actionRun = true;
+			$response = $class->{$action}(...$params);
+		}
+		if (\method_exists($class, 'afterAction')) {
+			$response = $class->afterAction($response);
 		}
 		return $response;
 	}

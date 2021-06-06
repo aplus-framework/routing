@@ -13,13 +13,13 @@ class RouteActionMock extends RouteAction
 	{
 	}
 
-	protected function beforeAction(string $action, array $params = [])
+	protected function beforeAction()
 	{
-		return \func_get_args();
+		return 'before';
 	}
 
-	protected function afterAction(string $action, array $params = [])
+	protected function afterAction(mixed $response)
 	{
-		return \func_get_args();
+		return $response;
 	}
 }

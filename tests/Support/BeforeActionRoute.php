@@ -4,7 +4,7 @@ use Framework\Routing\RouteAction;
 
 class BeforeActionRoute extends RouteAction
 {
-	protected function beforeAction(string $action, array $params = [])
+	protected function beforeAction()
 	{
 		return __METHOD__;
 	}

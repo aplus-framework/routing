@@ -31,17 +31,24 @@ class RouteActionTest extends TestCase
 		$this->routeAction->bar();
 	}
 
+	public function testPropertyNotAllowed()
+	{
+		$this->expectException(\Error::class);
+		$this->expectExceptionMessage('Cannot access property Tests\Routing\RouteActionMock::$foo');
+		$this->routeAction->foo = 'bar';
+	}
+
 	public function testMagicActions()
 	{
-		$this->assertEquals(['method', []], $this->routeAction->beforeAction('method', []));
-		$this->assertEquals(['method', []], $this->routeAction->afterAction('method', []));
+		$this->assertEquals('before', $this->routeAction->beforeAction());
+		$this->assertEquals('after', $this->routeAction->afterAction('after'));
 	}
 
 	public function testNullMagicActions()
 	{
 		$action = new class() extends RouteAction {
 		};
-		$this->assertNull($action->beforeAction('method', []));
-		$this->assertNull($action->afterAction('method', []));
+		$this->assertNull($action->beforeAction());
+		$this->assertNull($action->afterAction(null));
 	}
 }

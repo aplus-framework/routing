@@ -8,7 +8,7 @@ class AfterActionRoute extends RouteAction
 	{
 	}
 
-	protected function afterAction(string $action, array $params = [])
+	protected function afterAction(mixed $response)
 	{
 		return __METHOD__;
 	}
