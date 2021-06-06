@@ -248,18 +248,19 @@ class Collection implements \Countable
 	}
 
 	/**
-	 * Adds a Route to match a URL path and automatically redirects to a URL.
+	 * Adds a GET Route to match a path and automatically redirects to a URL.
 	 *
-	 * @param string $path The URL path
-	 * @param string $url  The URL to redirect
-	 * @param int    $code The status code of the response
+	 * @param string   $path     The URL path
+	 * @param string   $location The URL to redirect
+	 * @param int|null $code     The status code of the response
 	 *
 	 * @return Route The Route added to the Collection
 	 */
-	public function redirect(string $path, string $url, int $code = 302) : Route
+	public function redirect(string $path, string $location, int $code = null) : Route
 	{
-		return $this->add(['GET'], $path, static function () use ($url, $code) {
-			\header('Location: ' . $url, true, $code);
+		$response = $this->router->getResponse();
+		return $this->add(['GET'], $path, static function () use ($response, $location, $code) {
+			$response->redirect($location, [], $code);
 		});
 	}
 

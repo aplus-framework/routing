@@ -14,7 +14,8 @@
 		}
 	],
 	"require": {
-		"php": ">=8.0"
+		"php": ">=8.0",
+		"natanfelles/http": "^3.4"
 	},
 	"require-dev": {
 		"ext-xdebug": "*",

@@ -1,6 +1,7 @@
 <?php namespace Framework\Routing;
 
 use Closure;
+use Framework\HTTP\Response;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -46,6 +47,20 @@ class Router
 	protected array $matchedPathParams = [];
 	protected bool $autoOptions = false;
 	protected bool $autoMethods = false;
+	protected Response $response;
+
+	public function __construct(Response $response)
+	{
+		$this->response = $response;
+	}
+
+	/**
+	 * @return \Framework\HTTP\Response
+	 */
+	public function getResponse() : Response
+	{
+		return $this->response;
+	}
 
 	public function getDefaultRouteActionMethod() : string
 	{
@@ -65,12 +80,36 @@ class Router
 
 	protected function getDefaultRouteNotFound() : Route
 	{
+		$router = $this;
 		return (new Route(
 			$this,
 			$this->getMatchedOrigin(),
 			$this->getMatchedPath(),
-			$this->defaultRouteNotFound ?? static function () {
-				\http_response_code(404);
+			$this->defaultRouteNotFound ?? static function () use ($router) {
+				$router->response->setStatusLine(404);
+				if ($router->response->getRequest()->isJSON()) {
+					return $router->response->setJSON([
+						'error' => [
+							'code' => 404,
+							'reason' => 'Not Found',
+						],
+					]);
+				}
+				return $router->response->setBody(
+					<<<HTML
+					<!doctype html>
+					<html lang="en">
+					<head>
+						<meta charset="utf-8">
+						<title>Error 404</title>
+					</head>
+					<body>
+					<h1>Error 404</h1>
+					<p>Page not found</p>
+					</body>
+					</html>
+					HTML
+				);
 			}
 		))->setName('not-found');
 	}
@@ -335,16 +374,14 @@ class Router
 	/**
 	 * Match HTTP Method and URL against Collections to process the request.
 	 *
-	 * @param string $method HTTP Method. One of: GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS
-	 * @param string $url    The requested URL
-	 *
 	 * @see serve
 	 *
 	 * @return Route Always returns a Route, even if it is the Route Not Found
 	 */
-	public function match(string $method, string $url) : Route
+	public function match() : Route
 	{
-		$method = \strtoupper($method);
+		$method = $this->response->getRequest()->getMethod();
+		$url = $this->response->getRequest()->getURL()->getAsString();
 		if ($method === 'HEAD') {
 			$method = 'GET';
 		} elseif ( ! \in_array(
