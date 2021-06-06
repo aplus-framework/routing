@@ -8,15 +8,9 @@ use InvalidArgumentException;
  */
 class Route
 {
-	/**
-	 * @var Router
-	 */
 	protected Router $router;
 	protected string $origin;
 	protected string $path;
-	/**
-	 * @var Closure|string
-	 */
 	protected Closure | string $action;
 	/**
 	 * @var array|string[]
@@ -52,11 +46,11 @@ class Route
 	/**
 	 * Gets the URL Origin.
 	 *
-	 * @param mixed $params Parameters to fill the URL Origin placeholders
+	 * @param string ...$params Parameters to fill the URL Origin placeholders
 	 *
 	 * @return string
 	 */
-	public function getOrigin(...$params) : string
+	public function getOrigin(string ...$params) : string
 	{
 		if ($params) {
 			return $this->router->fillPlaceholders($this->origin, ...$params);
@@ -137,11 +131,11 @@ class Route
 	/**
 	 * Gets the URL Path.
 	 *
-	 * @param mixed ...$params Parameters to fill the URL Path placeholders
+	 * @param string ...$params Parameters to fill the URL Path placeholders
 	 *
 	 * @return string
 	 */
-	public function getPath(...$params) : string
+	public function getPath(string ...$params) : string
 	{
 		if ($params) {
 			return $this->router->fillPlaceholders($this->path, ...$params);
@@ -201,13 +195,13 @@ class Route
 	/**
 	 * Run the Route Action.
 	 *
-	 * @param mixed $construct Class constructor parameters
+	 * @param mixed ...$construct Class constructor parameters
 	 *
 	 * @throws Exception if class or method not exists
 	 *
 	 * @return mixed The action returned value
 	 */
-	public function run(...$construct)
+	public function run(mixed ...$construct) : mixed
 	{
 		$action = $this->getAction();
 		if ($action instanceof Closure) {

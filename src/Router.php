@@ -10,10 +10,7 @@ use RuntimeException;
 class Router
 {
 	protected string $defaultRouteActionMethod = 'index';
-	/**
-	 * @var callable|Closure|string
-	 */
-	protected $defaultRouteNotFound;
+	protected Closure | string $defaultRouteNotFound;
 	/**
 	 * @var array|string[]
 	 */
@@ -83,7 +80,7 @@ class Router
 	 *
 	 * @return $this
 	 */
-	public function setDefaultRouteNotFound($action)
+	public function setDefaultRouteNotFound(Closure | string $action)
 	{
 		$this->defaultRouteNotFound = $action;
 		return $this;
@@ -95,7 +92,7 @@ class Router
 	 *
 	 * @return $this
 	 */
-	public function addPlaceholder($placeholder, string $pattern = null)
+	public function addPlaceholder(array | string $placeholder, string $pattern = null)
 	{
 		if (\is_array($placeholder)) {
 			foreach ($placeholder as $key => $value) {
@@ -126,13 +123,13 @@ class Router
 
 	/**
 	 * @param string $string
-	 * @param mixed  ...$params
+	 * @param string ...$params
 	 *
 	 * @throws InvalidArgumentException if param not required, empty or invalid
 	 *
 	 * @return string
 	 */
-	public function fillPlaceholders(string $string, ...$params) : string
+	public function fillPlaceholders(string $string, string ...$params) : string
 	{
 		$string = $this->replacePlaceholders($string);
 		\preg_match_all('#\(([^)]+)\)#', $string, $matches);
@@ -425,11 +422,9 @@ class Router
 			);
 			if ($matched) {
 				$this->setMatchedRoute($route);
-				//$this->setMatchedRoutePath($matches[0]);
 				unset($matches[0]);
 				$this->setMatchedPathParams(\array_values($matches));
 				$route->setActionParams($this->getMatchedPathParams());
-				//$this->matchedURL = $this->matchedOrigin . $this->matchedRoutePath;
 				return $route;
 			}
 		}

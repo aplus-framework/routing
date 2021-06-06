@@ -17,6 +17,8 @@ class Collection implements \Countable
 	protected string $origin;
 	/**
 	 * Array of HTTP Methods as keys and array of Routes as values.
+	 *
+	 * @var array<string, array>
 	 */
 	protected array $routes = [];
 	/**
