@@ -2,6 +2,7 @@
 
 use Closure;
 use Framework\HTTP\Response;
+use Framework\Language\Language;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -48,10 +49,16 @@ class Router
 	protected bool $autoOptions = false;
 	protected bool $autoMethods = false;
 	protected Response $response;
+	protected Language $language;
 
-	public function __construct(Response $response)
+	public function __construct(Response $response, Language $language = null)
 	{
 		$this->response = $response;
+		if ($language === null) {
+			$language = new Language('en');
+		}
+		$this->language = $language;
+		$this->language->addDirectory(__DIR__ . '/Languages');
 	}
 
 	/**
@@ -95,17 +102,20 @@ class Router
 						],
 					]);
 				}
+				$lang = $router->language->getCurrentLocale();
+				$title = $router->language->render('routing', 'error404');
+				$message = $router->language->render('routing', 'pageNotFound');
 				return $router->response->setBody(
 					<<<HTML
 					<!doctype html>
-					<html lang="en">
+					<html lang="{$lang}">
 					<head>
 						<meta charset="utf-8">
-						<title>Error 404</title>
+						<title>{$title}</title>
 					</head>
 					<body>
-					<h1>Error 404</h1>
-					<p>Page not found</p>
+					<h1>{$title}</h1>
+					<p>{$message}</p>
 					</body>
 					</html>
 
