@@ -340,14 +340,6 @@ class Router
 		$method = $this->response->getRequest()->getMethod();
 		if ($method === 'HEAD') {
 			$method = 'GET';
-		} elseif ( ! \in_array(
-			$method,
-			['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-			true
-		)) {
-			\http_response_code(405);
-			\header('Allow: GET, DELETE, HEAD, OPTIONS, PATCH, POST, PUT');
-			throw new InvalidArgumentException('Invalid HTTP method: ' . $method);
 		}
 		$url = $this->response->getRequest()->getURL();
 		$this->setMatchedPath($url->getPath());
