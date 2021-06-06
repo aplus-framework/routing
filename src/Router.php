@@ -108,6 +108,7 @@ class Router
 					<p>Page not found</p>
 					</body>
 					</html>
+
 					HTML
 				);
 			}
@@ -208,21 +209,11 @@ class Router
 	public function serve(?string $origin, callable $callable) : void
 	{
 		if ($origin === null) {
-			$origin = $this->makeOrigin();
+			$origin = $this->response->getRequest()->getURL()->getOrigin();
 		}
 		$collection = new Collection($this, $origin);
 		$callable($collection);
 		$this->addCollection($collection);
-	}
-
-	protected function makeOrigin() : string
-	{
-		$scheme = 'http';
-		if ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
-			|| ((int) $_SERVER['SERVER_PORT']) === 443) {
-			$scheme = 'https';
-		}
-		return $scheme . '://' . $_SERVER['HTTP_HOST'];
 	}
 
 	/**
@@ -338,40 +329,6 @@ class Router
 	}
 
 	/**
-	 * @param string $url
-	 *
-	 * @return array|mixed[]
-	 */
-	protected function parseURL(string $url) : array
-	{
-		$parsed = \parse_url($url);
-		$parsed = \array_replace([
-			'scheme' => 'http',
-			'host' => null,
-			'port' => null,
-			'path' => '/',
-		], $parsed);
-		$parsed['path'] = '/' . \trim($parsed['path'], '/');
-		return $parsed;
-	}
-
-	/**
-	 * @param array|mixed[] $parsed_url
-	 *
-	 * @see parseURL
-	 *
-	 * @return string
-	 */
-	protected function renderOrigin(array $parsed_url) : string
-	{
-		$origin = $parsed_url['scheme'] . '://' . $parsed_url['host'];
-		if (isset($parsed_url['port']) && ! \in_array($parsed_url['port'], [null, 80, 443], true)) {
-			$origin .= ':' . $parsed_url['port'];
-		}
-		return $origin;
-	}
-
-	/**
 	 * Match HTTP Method and URL against Collections to process the request.
 	 *
 	 * @see serve
@@ -381,7 +338,6 @@ class Router
 	public function match() : Route
 	{
 		$method = $this->response->getRequest()->getMethod();
-		$url = $this->response->getRequest()->getURL()->getAsString();
 		if ($method === 'HEAD') {
 			$method = 'GET';
 		} elseif ( ! \in_array(
@@ -393,19 +349,14 @@ class Router
 			\header('Allow: GET, DELETE, HEAD, OPTIONS, PATCH, POST, PUT');
 			throw new InvalidArgumentException('Invalid HTTP method: ' . $method);
 		}
-		if ( ! \filter_var($url, \FILTER_VALIDATE_URL)) {
-			\http_response_code(400);
-			throw new InvalidArgumentException('Invalid URL: ' . $url);
-		}
-		$parsed_url = $this->parseURL($url);
-		$this->setMatchedPath($parsed_url['path']);
-		$origin = $this->renderOrigin($parsed_url);
-		$this->setMatchedOrigin($origin);
-		$collection = $this->matchCollection($origin);
+		$url = $this->response->getRequest()->getURL();
+		$this->setMatchedPath($url->getPath());
+		$this->setMatchedOrigin($url->getOrigin());
+		$collection = $this->matchCollection($url->getOrigin());
 		if ( ! $collection) {
 			return $this->matchedRoute = $this->getDefaultRouteNotFound();
 		}
-		return $this->matchedRoute = $this->matchRoute($method, $collection, $parsed_url['path'])
+		return $this->matchedRoute = $this->matchRoute($method, $collection, $url->getPath())
 			?? $this->getAlternativeRoute($method, $collection);
 	}
 
