@@ -21,7 +21,13 @@ abstract class RouteAction
 	protected array $actionParams;
 	protected bool $actionRun;
 
-	public function __call($method, $arguments)
+	/**
+	 * @param string $method
+	 * @param array<int,mixed> $arguments
+	 *
+	 * @return mixed
+	 */
+	public function __call(string $method, array $arguments) : mixed
 	{
 		if ($method === 'beforeAction') {
 			return $this->beforeAction(...$arguments);
@@ -35,7 +41,7 @@ abstract class RouteAction
 		throw new \BadMethodCallException("Action method not found: {$method}");
 	}
 
-	public function __set($property, $value) : void
+	public function __set(string $property, mixed $value) : void
 	{
 		if (\in_array($property, [
 			'actionMethod',
