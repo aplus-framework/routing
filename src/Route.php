@@ -273,6 +273,11 @@ class Route
 			$action_params = $this->getActionParams();
 			$params = \array_values($params);
 			foreach ($params as $index => $param) {
+				if ( ! \is_numeric($param)) {
+					throw new InvalidArgumentException(
+						'Action parameter is not numeric on index ' . $index
+					);
+				}
 				$param = (int) $param;
 				if ( ! \array_key_exists($param, $action_params)) {
 					throw new InvalidArgumentException("Undefined action parameter: {$param}");
