@@ -15,6 +15,9 @@ namespace Framework\Routing;
 abstract class RouteAction
 {
 	protected string $actionMethod;
+	/**
+	 * @var array<int,string>
+	 */
 	protected array $actionParams;
 	protected bool $actionRun;
 

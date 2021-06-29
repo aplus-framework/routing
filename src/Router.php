@@ -24,7 +24,7 @@ class Router
 	protected string $defaultRouteActionMethod = 'index';
 	protected Closure | string $defaultRouteNotFound;
 	/**
-	 * @var array|string[]
+	 * @var array<string,string>
 	 */
 	protected static array $placeholders = [
 		'{alpha}' => '([a-zA-Z]+)',
@@ -42,18 +42,18 @@ class Router
 		'{title}' => '([a-zA-Z0-9_-]+)',
 	];
 	/**
-	 * @var Collection[]
+	 * @var array<int,Collection>
 	 */
 	protected array $collections = [];
 	protected ?Route $matchedRoute = null;
 	protected ?string $matchedOrigin = null;
 	/**
-	 * @var array|string[]
+	 * @var array<int,string>
 	 */
 	protected array $matchedOriginParams = [];
 	protected ?string $matchedPath = null;
 	/**
-	 * @var array|string[]
+	 * @var array<int,string>
 	 */
 	protected array $matchedPathParams = [];
 	protected bool $autoOptions = false;
@@ -72,7 +72,7 @@ class Router
 	}
 
 	/**
-	 * @return \Framework\HTTP\Response
+	 * @return Response
 	 */
 	#[Pure]
 	public function getResponse() : Response
@@ -149,8 +149,8 @@ class Router
 	}
 
 	/**
-	 * @param array|string|string[] $placeholder
-	 * @param string|null           $pattern
+	 * @param array<string,string>|string $placeholder
+	 * @param string|null $pattern
 	 *
 	 * @return static
 	 */
@@ -167,7 +167,7 @@ class Router
 	}
 
 	/**
-	 * @return array|string[]
+	 * @return array<string,string>
 	 */
 	#[Pure]
 	public function getPlaceholders() : array
@@ -225,10 +225,10 @@ class Router
 	/**
 	 * Serves a Collection of Routes to a specific Origin.
 	 *
-	 * @param string|null $origin   URL Origin. A string in the following format:
-	 *                              {scheme}://{hostname}[:{port}]. Null to auto-detect.
-	 * @param callable    $callable A function receiving an instance of Collection as the first
-	 *                              parameter
+	 * @param string|null $origin URL Origin. A string in the following format:
+	 * {scheme}://{hostname}[:{port}]. Null to auto-detect.
+	 * @param callable $callable A function receiving an instance of Collection
+	 * as the first parameter
 	 */
 	public function serve(?string $origin, callable $callable) : void
 	{
@@ -252,7 +252,7 @@ class Router
 	}
 
 	/**
-	 * @return Collection[]
+	 * @return array<int,Collection>
 	 */
 	#[Pure]
 	public function getCollections() : array
@@ -295,7 +295,7 @@ class Router
 	}
 
 	/**
-	 * @return array|string[]
+	 * @return array<int,string>
 	 */
 	#[Pure]
 	public function getMatchedPathParams() : array
@@ -304,7 +304,7 @@ class Router
 	}
 
 	/**
-	 * @param array|string[] $params
+	 * @param array<int,string> $params
 	 *
 	 * @return static
 	 */
@@ -340,7 +340,7 @@ class Router
 	}
 
 	/**
-	 * @return array|string[]
+	 * @return array<int,string>
 	 */
 	#[Pure]
 	public function getMatchedOriginParams() : array
@@ -349,7 +349,7 @@ class Router
 	}
 
 	/**
-	 * @param array|string[] $params
+	 * @param array<int,string> $params
 	 *
 	 * @return static
 	 */
@@ -504,7 +504,7 @@ class Router
 	/**
 	 * @param Collection $collection
 	 *
-	 * @return array|string[]
+	 * @return array<int,string>
 	 */
 	protected function getAllowedMethods(Collection $collection) : array
 	{
@@ -587,7 +587,7 @@ class Router
 	}
 
 	/**
-	 * @return array|Route[]
+	 * @return array<string,array>
 	 */
 	#[Pure]
 	public function getRoutes() : array

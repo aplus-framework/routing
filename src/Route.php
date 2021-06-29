@@ -23,22 +23,22 @@ class Route
 	protected string $path;
 	protected Closure | string $action;
 	/**
-	 * @var array|string[]
+	 * @var array<int,string>
 	 */
 	protected array $actionParams = [];
 	protected ?string $name = null;
 	/**
-	 * @var array|mixed[]
+	 * @var array<string,mixed>
 	 */
 	protected array $options = [];
 
 	/**
 	 * Route constructor.
 	 *
-	 * @param Router         $router A Router instance
-	 * @param string         $origin URL Origin. A string in the following format:
+	 * @param Router $router A Router instance
+	 * @param string $origin URL Origin. A string in the following format:
 	 *                               {scheme}://{hostname}[:{port}]
-	 * @param string         $path   URL Path. A string starting with '/'
+	 * @param string $path URL Path. A string starting with '/'
 	 * @param Closure|string $action The action
 	 */
 	public function __construct(
@@ -82,8 +82,8 @@ class Route
 	/**
 	 * Gets the URL.
 	 *
-	 * @param array|string[] $origin_params Parameters to fill the URL Origin placeholders
-	 * @param array|string[] $path_params   Parameters to fill the URL Path placeholders
+	 * @param array<int,string> $origin_params Parameters to fill the URL Origin placeholders
+	 * @param array<int,string> $path_params Parameters to fill the URL Path placeholders
 	 *
 	 * @return string
 	 */
@@ -93,7 +93,7 @@ class Route
 	}
 
 	/**
-	 * @return array|mixed[]
+	 * @return array<string,mixed>
 	 */
 	#[Pure]
 	public function getOptions() : array
@@ -102,7 +102,7 @@ class Route
 	}
 
 	/**
-	 * @param array|mixed[] $options
+	 * @param array<string,mixed> $options
 	 *
 	 * @return static
 	 */
@@ -165,9 +165,8 @@ class Route
 	 * Sets the Route Action.
 	 *
 	 * @param Closure|string $action A \Closure or a string in the format of the
-	 *                               __METHOD__
-	 *                               constant. Example: App\Blog::show/0/2/1. Where /0/2/1
-	 *                               is the method parameters order
+	 * __METHOD__ constant. Example: App\Blog::show/0/2/1. Where /0/2/1 is the
+	 * method parameters order
 	 *
 	 * @see setActionParams
 	 * @see run
@@ -181,7 +180,7 @@ class Route
 	}
 
 	/**
-	 * @return array|string[]
+	 * @return array<int,string>
 	 */
 	#[Pure]
 	public function getActionParams() : array
@@ -192,8 +191,8 @@ class Route
 	/**
 	 * Sets the Action parameters.
 	 *
-	 * @param array|string[] $params The parameters. Note that the indexes set the order of how the
-	 *                               parameters are passed to the Action
+	 * @param array<int,string> $params The parameters. Note that the indexes set
+	 * the order of how the parameters are passed to the Action
 	 *
 	 * @see setAction
 	 *

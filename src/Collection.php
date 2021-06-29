@@ -16,9 +16,9 @@ use LogicException;
 /**
  * Class Collection.
  *
- * @property-read  string        $origin
- * @property-read  Router        $router
- * @property-read  array|array[] $routes
+ * @property-read string $origin
+ * @property-read Router $router
+ * @property-read array<string,array> $routes
  */
 class Collection implements \Countable
 {
@@ -41,7 +41,7 @@ class Collection implements \Countable
 	 *
 	 * @param Router $router A Router instance
 	 * @param string $origin URL Origin. A string in the following format:
-	 *                       {scheme}://{hostname}[:{port}]
+	 * {scheme}://{hostname}[:{port}]
 	 */
 	public function __construct(Router $router, string $origin)
 	{
@@ -50,8 +50,8 @@ class Collection implements \Countable
 	}
 
 	/**
-	 * @param string        $method
-	 * @param array|mixed[] $arguments
+	 * @param string $method
+	 * @param array<int,mixed> $arguments
 	 *
 	 * @throws BadMethodCallException for method not allowed or method not found
 	 *
@@ -73,9 +73,9 @@ class Collection implements \Countable
 	 *
 	 * @throws LogicException for property not allowed or property not found
 	 *
-	 * @return array[]|Router|string
+	 * @return mixed
 	 */
-	public function __get(string $property)
+	public function __get(string $property) : mixed
 	{
 		if ($property === 'origin') {
 			return $this->origin;
@@ -105,7 +105,7 @@ class Collection implements \Countable
 
 	/**
 	 * @param string $http_method
-	 * @param Route  $route
+	 * @param Route $route
 	 *
 	 * @return static
 	 */
@@ -118,8 +118,8 @@ class Collection implements \Countable
 	/**
 	 * Sets the action to the Collection Route Not Found.
 	 *
-	 * @param Closure|string $action the Route function to run when no Route path is found for
-	 *                               this collection
+	 * @param Closure|string $action the Route function to run when no Route
+	 * path is found for this collection
 	 */
 	public function notFound(Closure | string $action) : void
 	{
@@ -132,7 +132,7 @@ class Collection implements \Countable
 	 * @see notFound
 	 *
 	 * @return Route|null The Route containing the Not Found Action or null if
-	 *                    the Action was not set
+	 * the Action was not set
 	 */
 	protected function getRouteNotFound() : ?Route
 	{
@@ -149,10 +149,10 @@ class Collection implements \Countable
 	/**
 	 * Adds a Route to match many HTTP Methods.
 	 *
-	 * @param array|string[] $http_methods The HTTP Methods
-	 * @param string         $path         The URL path
-	 * @param Closure|string $action       The Route action
-	 * @param string|null    $name         The Route name
+	 * @param array<int,string> $http_methods The HTTP Methods
+	 * @param string $path The URL path
+	 * @param Closure|string $action The Route action
+	 * @param string|null $name The Route name
 	 *
 	 * @return Route
 	 */
@@ -175,9 +175,9 @@ class Collection implements \Countable
 	/**
 	 * Adds a Route to match the HTTP Method GET.
 	 *
-	 * @param string         $path   The URL path
+	 * @param string $path The URL path
 	 * @param Closure|string $action The Route action
-	 * @param string|null    $name   The Route name
+	 * @param string|null $name The Route name
 	 *
 	 * @return Route The Route added to the Collection
 	 */
@@ -189,9 +189,9 @@ class Collection implements \Countable
 	/**
 	 * Adds a Route to match the HTTP Method POST.
 	 *
-	 * @param string         $path   The URL path
+	 * @param string $path The URL path
 	 * @param Closure|string $action The Route action
-	 * @param string|null    $name   The Route name
+	 * @param string|null $name The Route name
 	 *
 	 * @return Route The Route added to the Collection
 	 */
@@ -203,9 +203,9 @@ class Collection implements \Countable
 	/**
 	 * Adds a Route to match the HTTP Method PUT.
 	 *
-	 * @param string         $path   The URL path
+	 * @param string $path The URL path
 	 * @param Closure|string $action The Route action
-	 * @param string|null    $name   The Route name
+	 * @param string|null $name The Route name
 	 *
 	 * @return Route The Route added to the Collection
 	 */
@@ -217,9 +217,9 @@ class Collection implements \Countable
 	/**
 	 * Adds a Route to match the HTTP Method PATCH.
 	 *
-	 * @param string         $path   The URL path
+	 * @param string $path The URL path
 	 * @param Closure|string $action The Route action
-	 * @param string|null    $name   The Route name
+	 * @param string|null $name The Route name
 	 *
 	 * @return Route The Route added to the Collection
 	 */
@@ -231,9 +231,9 @@ class Collection implements \Countable
 	/**
 	 * Adds a Route to match the HTTP Method DELETE.
 	 *
-	 * @param string         $path   The URL path
+	 * @param string $path The URL path
 	 * @param Closure|string $action The Route action
-	 * @param string|null    $name   The Route name
+	 * @param string|null $name The Route name
 	 *
 	 * @return Route The Route added to the Collection
 	 */
@@ -245,9 +245,9 @@ class Collection implements \Countable
 	/**
 	 * Adds a Route to match the HTTP Method OPTIONS.
 	 *
-	 * @param string         $path   The URL path
+	 * @param string $path The URL path
 	 * @param Closure|string $action The Route action
-	 * @param string|null    $name   The Route name
+	 * @param string|null $name The Route name
 	 *
 	 * @return Route The Route added to the Collection
 	 */
@@ -259,9 +259,9 @@ class Collection implements \Countable
 	/**
 	 * Adds a GET Route to match a path and automatically redirects to a URL.
 	 *
-	 * @param string   $path     The URL path
-	 * @param string   $location The URL to redirect
-	 * @param int|null $code     The status code of the response
+	 * @param string $path The URL path
+	 * @param string $location The URL to redirect
+	 * @param int|null $code The status code of the response
 	 *
 	 * @return Route The Route added to the Collection
 	 */
@@ -276,11 +276,11 @@ class Collection implements \Countable
 	/**
 	 * Groups many Routes into a URL path.
 	 *
-	 * @param string          $base_path The URL path to group in
-	 * @param array[]|Route[] $routes    The Routes to be grouped
-	 * @param array|mixed[]   $options   Custom options passed to the Routes
+	 * @param string $base_path The URL path to group in
+	 * @param array<int,Route> $routes The Routes to be grouped
+	 * @param array<string,mixed> $options Custom options passed to the Routes
 	 *
-	 * @return array[]|Route[] The same $routes with updated paths and options
+	 * @return array<int,Route> The same $routes with updated paths and options
 	 */
 	public function group(string $base_path, array $routes, array $options = []) : array
 	{
@@ -305,10 +305,10 @@ class Collection implements \Countable
 	/**
 	 * Updates Routes actions, which are strings, prepending a namespace.
 	 *
-	 * @param string          $namespace The namespace
-	 * @param array[]|Route[] $routes    The Routes
+	 * @param string $namespace The namespace
+	 * @param array<int,array|Route> $routes The Routes
 	 *
-	 * @return array[]|Route[] The same $routes with updated actions
+	 * @return array<int,array|Route> The same $routes with updated actions
 	 */
 	public function namespace(string $namespace, array $routes) : array
 	{
@@ -328,14 +328,14 @@ class Collection implements \Countable
 	/**
 	 * Adds many Routes that can be used as a REST Resource.
 	 *
-	 * @param string         $path        The URL path
-	 * @param string         $class       The name of the class where the resource will point
-	 * @param string         $base_name   The base name used as a Route name prefix
-	 * @param array|string[] $except      Actions not added. Allowed values are: index, create,
-	 *                                    show, update, replace and delete
-	 * @param string         $placeholder The placeholder. Normally it matchs an id, a number
+	 * @param string $path The URL path
+	 * @param string $class The name of the class where the resource will point
+	 * @param string $base_name The base name used as a Route name prefix
+	 * @param array<int,string> $except Actions not added. Allowed values are:
+	 * index, create, show, update, replace and delete
+	 * @param string $placeholder The placeholder. Normally it matches an id, a number
 	 *
-	 * @return Route[] The Routes added to the Collection
+	 * @return array<int,Route> The Routes added to the Collection
 	 */
 	public function resource(
 		string $path,
@@ -398,15 +398,15 @@ class Collection implements \Countable
 	/**
 	 * Adds many Routes that can be used by a Web User Interface and as a REST Resource.
 	 *
-	 * @param string         $path        The URL path
-	 * @param string         $class       The name of the class where the resource will point
-	 * @param string         $base_name   The base name used as a Route name prefix
-	 * @param array|string[] $except      Actions not added. Allowed values are: index, create,
-	 *                                    show, update, replace, delete, web_new, web_edit,
-	 *                                    web_delete and web_update
-	 * @param string         $placeholder The placeholder. Normally it matchs an id, a number
+	 * @param string $path The URL path
+	 * @param string $class The name of the class where the resource will point
+	 * @param string $base_name The base name used as a Route name prefix
+	 * @param array<int,string> $except Actions not added. Allowed values are:
+	 * index, create, show, update, replace, delete, web_new, web_edit,
+	 * web_delete and web_update
+	 * @param string $placeholder The placeholder. Normally it matches an id, a number
 	 *
-	 * @return Route[] The Routes added to the Collection
+	 * @return array<int,Route> The Routes added to the Collection
 	 */
 	public function webResource(
 		string $path,
@@ -460,14 +460,14 @@ class Collection implements \Countable
 	/**
 	 * Adds many Routes that can be used by a User Interface.
 	 *
-	 * @param string         $path        The URL path
-	 * @param string         $class       The name of the class where the resource will point
-	 * @param string         $base_name   The base name used as a Route name prefix
-	 * @param array|string[] $except      Actions not added. Allowed values are: index, new,
-	 *                                    create, show, edit, update, remove and delete
-	 * @param string         $placeholder The placeholder. Normally it matchs an id, a number
+	 * @param string $path The URL path
+	 * @param string $class The name of the class where the resource will point
+	 * @param string $base_name The base name used as a Route name prefix
+	 * @param array<int,string> $except Actions not added. Allowed values are:
+	 * index, new, create, show, edit, update, remove and delete
+	 * @param string $placeholder The placeholder. Normally it matches an id, a number
 	 *
-	 * @return Route[] The Routes added to the Collection
+	 * @return array<int,Route> The Routes added to the Collection
 	 */
 	public function presenter(
 		string $path,
