@@ -259,7 +259,7 @@ class Route
 	 *
 	 * @throws InvalidArgumentException for undefined action parameter
 	 *
-	 * @return array|mixed[]
+	 * @return array<int,mixed>
 	 */
 	protected function extractActionAndParams(string $action) : array
 	{
