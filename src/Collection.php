@@ -277,10 +277,10 @@ class Collection implements \Countable
 	 * Groups many Routes into a URL path.
 	 *
 	 * @param string $base_path The URL path to group in
-	 * @param array<int,Route> $routes The Routes to be grouped
+	 * @param array<int,array|Route> $routes The Routes to be grouped
 	 * @param array<string,mixed> $options Custom options passed to the Routes
 	 *
-	 * @return array<int,Route> The same $routes with updated paths and options
+	 * @return array<int,array|Route> The same $routes with updated paths and options
 	 */
 	public function group(string $base_path, array $routes, array $options = []) : array
 	{
