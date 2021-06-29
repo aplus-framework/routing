@@ -95,9 +95,9 @@ class Collection implements \Countable
 	/**
 	 * @param string $origin
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	protected function setOrigin(string $origin)
+	protected function setOrigin(string $origin) : static
 	{
 		$this->origin = \ltrim($origin, '/');
 		return $this;
@@ -107,9 +107,9 @@ class Collection implements \Countable
 	 * @param string $http_method
 	 * @param Route  $route
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	protected function addRoute(string $http_method, Route $route)
+	protected function addRoute(string $http_method, Route $route) : static
 	{
 		$this->routes[\strtoupper($http_method)][] = $route;
 		return $this;

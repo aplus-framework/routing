@@ -86,9 +86,9 @@ class Router
 	/**
 	 * @param string $action
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function setDefaultRouteActionMethod(string $action)
+	public function setDefaultRouteActionMethod(string $action) : static
 	{
 		$this->defaultRouteActionMethod = $action;
 		return $this;
@@ -137,9 +137,9 @@ class Router
 	/**
 	 * @param Closure|string $action
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function setDefaultRouteNotFound(Closure | string $action)
+	public function setDefaultRouteNotFound(Closure | string $action) : static
 	{
 		$this->defaultRouteNotFound = $action;
 		return $this;
@@ -149,9 +149,9 @@ class Router
 	 * @param array|string|string[] $placeholder
 	 * @param string|null           $pattern
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function addPlaceholder(array | string $placeholder, string $pattern = null)
+	public function addPlaceholder(array | string $placeholder, string $pattern = null) : static
 	{
 		if (\is_array($placeholder)) {
 			foreach ($placeholder as $key => $value) {
@@ -238,9 +238,9 @@ class Router
 	/**
 	 * @param Collection $collection
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	protected function addCollection(Collection $collection)
+	protected function addCollection(Collection $collection) : static
 	{
 		$this->collections[] = $collection;
 		return $this;
@@ -262,9 +262,9 @@ class Router
 	/**
 	 * @param Route $route
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	protected function setMatchedRoute(Route $route)
+	protected function setMatchedRoute(Route $route) : static
 	{
 		$this->matchedRoute = $route;
 		return $this;
@@ -278,9 +278,9 @@ class Router
 	/**
 	 * @param string $path
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	protected function setMatchedPath(string $path)
+	protected function setMatchedPath(string $path) : static
 	{
 		$this->matchedPath = $path;
 		return $this;
@@ -297,9 +297,9 @@ class Router
 	/**
 	 * @param array|string[] $params
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	protected function setMatchedPathParams(array $params)
+	protected function setMatchedPathParams(array $params) : static
 	{
 		$this->matchedPathParams = $params;
 		return $this;
@@ -320,9 +320,9 @@ class Router
 	/**
 	 * @param string $origin
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	protected function setMatchedOrigin(string $origin)
+	protected function setMatchedOrigin(string $origin) : static
 	{
 		$this->matchedOrigin = $origin;
 		return $this;
@@ -339,9 +339,9 @@ class Router
 	/**
 	 * @param array|string[] $params
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	protected function setMatchedOriginParams(array $params)
+	protected function setMatchedOriginParams(array $params) : static
 	{
 		$this->matchedOriginParams = $params;
 		return $this;
@@ -436,9 +436,9 @@ class Router
 	 *
 	 * @param bool $enabled true to enable, false to disable
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function setAutoOptions(bool $enabled = true)
+	public function setAutoOptions(bool $enabled = true) : static
 	{
 		$this->autoOptions = $enabled;
 		return $this;
@@ -457,9 +457,9 @@ class Router
 	 *
 	 * @param bool $enabled true to enable, false to disable
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function setAutoMethods(bool $enabled = true)
+	public function setAutoMethods(bool $enabled = true) : static
 	{
 		$this->autoMethods = $enabled;
 		return $this;

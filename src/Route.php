@@ -70,9 +70,9 @@ class Route
 	/**
 	 * @param string $origin
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	protected function setOrigin(string $origin)
+	protected function setOrigin(string $origin) : static
 	{
 		$this->origin = \ltrim($origin, '/');
 		return $this;
@@ -102,9 +102,9 @@ class Route
 	/**
 	 * @param array|mixed[] $options
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function setOptions(array $options)
+	public function setOptions(array $options) : static
 	{
 		$this->options = $options;
 		return $this;
@@ -118,9 +118,9 @@ class Route
 	/**
 	 * @param string $name
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function setName(string $name)
+	public function setName(string $name) : static
 	{
 		$this->name = $name;
 		return $this;
@@ -129,9 +129,9 @@ class Route
 	/**
 	 * @param string $path
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function setPath(string $path)
+	public function setPath(string $path) : static
 	{
 		$this->path = '/' . \trim($path, '/');
 		return $this;
@@ -168,9 +168,9 @@ class Route
 	 * @see setActionParams
 	 * @see run
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function setAction(Closure | string $action)
+	public function setAction(Closure | string $action) : static
 	{
 		$this->action = \is_string($action) ? \trim($action, '\\') : $action;
 		return $this;
@@ -192,9 +192,9 @@ class Route
 	 *
 	 * @see setAction
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function setActionParams(array $params)
+	public function setActionParams(array $params) : static
 	{
 		\ksort($params);
 		$this->actionParams = $params;
