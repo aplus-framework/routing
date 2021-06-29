@@ -3,25 +3,30 @@
 	"type": "library",
 	"description": "The Framework Routing Library",
 	"keywords": [
-		"routing"
+		"routing",
+		"router",
+		"resource",
+		"presenter",
+		"REST"
 	],
 	"homepage": "https://the-framework.gitlab.io/libraries/routing.html",
 	"license": "MIT",
 	"authors": [
 		{
 			"name": "Natan Felles",
-			"email": "natanfelles@gmail.com"
+			"email": "natanfelles@gmail.com",
+			"homepage": "https://natanfelles.github.io"
 		}
 	],
 	"require": {
 		"php": ">=8.0",
-		"natanfelles/http": "^3.4",
-		"natanfelles/language": "^1.2"
+		"natanfelles/http": "^3.8",
+		"natanfelles/language": "^1.4"
 	},
 	"require-dev": {
 		"ext-xdebug": "*",
-		"ergebnis/composer-normalize": "^2.13",
-		"natanfelles/coding-standard": "^1.2",
+		"ergebnis/composer-normalize": "^2.15",
+		"natanfelles/coding-standard": "^1.7",
 		"phpmd/phpmd": "^2.10",
 		"phpstan/phpstan": "^0.12",
 		"phpunit/phpunit": "^9.5"
