@@ -215,7 +215,7 @@ class Router
 			$string = \substr_replace(
 				$string,
 				$params[$index],
-				\strpos($string, $pattern),
+				(int) \strpos($string, $pattern),
 				\strlen($pattern)
 			);
 		}
@@ -391,6 +391,7 @@ class Router
 			$route = $this->getRouteWithAllowHeader($collection, 405);
 		}
 		if (empty($route)) {
+			// @phpstan-ignore-next-line
 			$route = $collection->getRouteNotFound() ?? $this->getDefaultRouteNotFound();
 		}
 		return $route;
