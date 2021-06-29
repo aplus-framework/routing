@@ -263,7 +263,7 @@ class Route
 	 */
 	protected function extractActionAndParams(string $action) : array
 	{
-		if (\strpos($action, '/') === false) {
+		if ( ! \str_contains($action, '/')) {
 			return [$action, []];
 		}
 		$params = \explode('/', $action);
