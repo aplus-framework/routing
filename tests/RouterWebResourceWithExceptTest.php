@@ -1,4 +1,13 @@
-<?php namespace Tests\Routing;
+<?php
+/*
+ * This file is part of The Framework Routing Library.
+ *
+ * (c) Natan Felles <natanfelles@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+namespace Tests\Routing;
 
 use Framework\HTTP\Response;
 use Framework\Routing\Collection;
@@ -12,7 +21,7 @@ class RouterWebResourceWithExceptTest extends RouterWebResourceTest
 {
 	protected function setUp() : void
 	{
-		$this->collection = static function (Collection $collection) {
+		$this->collection = static function (Collection $collection) : void {
 			$collection->webResource(
 				'users',
 				'Tests\Routing\Support\Users',

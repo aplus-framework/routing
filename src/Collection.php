@@ -1,4 +1,13 @@
-<?php namespace Framework\Routing;
+<?php
+/*
+ * This file is part of The Framework Routing Library.
+ *
+ * (c) Natan Felles <natanfelles@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+namespace Framework\Routing;
 
 use BadMethodCallException;
 use Closure;
@@ -259,7 +268,7 @@ class Collection implements \Countable
 	public function redirect(string $path, string $location, int $code = null) : Route
 	{
 		$response = $this->router->getResponse();
-		return $this->add(['GET'], $path, static function () use ($response, $location, $code) {
+		return $this->add(['GET'], $path, static function () use ($response, $location, $code) : void {
 			$response->redirect($location, [], $code);
 		});
 	}

@@ -1,4 +1,13 @@
-<?php namespace Framework\Routing;
+<?php
+/*
+ * This file is part of The Framework Routing Library.
+ *
+ * (c) Natan Felles <natanfelles@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+namespace Framework\Routing;
 
 use Closure;
 use Framework\HTTP\Response;
@@ -107,19 +116,19 @@ class Router
 				$message = $router->language->render('routing', 'pageNotFound');
 				return $router->response->setBody(
 					<<<HTML
-					<!doctype html>
-					<html lang="{$lang}">
-					<head>
-						<meta charset="utf-8">
-						<title>{$title}</title>
-					</head>
-					<body>
-					<h1>{$title}</h1>
-					<p>{$message}</p>
-					</body>
-					</html>
+						<!doctype html>
+						<html lang="{$lang}">
+						<head>
+							<meta charset="utf-8">
+							<title>{$title}</title>
+						</head>
+						<body>
+						<h1>{$title}</h1>
+						<p>{$message}</p>
+						</body>
+						</html>
 
-					HTML
+						HTML
 				);
 			}
 		))->setName('not-found');
@@ -471,7 +480,7 @@ class Router
 				$this,
 				$this->getMatchedOrigin(),
 				$this->getMatchedPath(),
-				static function () use ($allowed, $code, $response) {
+				static function () use ($allowed, $code, $response) : void {
 					$response->setStatusLine($code);
 					$response->setHeader('Allow', \implode(', ', $allowed));
 				}
