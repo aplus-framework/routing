@@ -13,6 +13,7 @@ use Closure;
 use Framework\HTTP\Response;
 use Framework\Language\Language;
 use InvalidArgumentException;
+use JetBrains\PhpStorm\Pure;
 use RuntimeException;
 
 /**
@@ -73,11 +74,13 @@ class Router
 	/**
 	 * @return \Framework\HTTP\Response
 	 */
+	#[Pure]
 	public function getResponse() : Response
 	{
 		return $this->response;
 	}
 
+	#[Pure]
 	public function getDefaultRouteActionMethod() : string
 	{
 		return $this->defaultRouteActionMethod;
@@ -166,11 +169,13 @@ class Router
 	/**
 	 * @return array|string[]
 	 */
+	#[Pure]
 	public function getPlaceholders() : array
 	{
 		return static::$placeholders;
 	}
 
+	#[Pure]
 	public function replacePlaceholders(string $string, bool $flip = false) : string
 	{
 		$placeholders = $this->getPlaceholders();
@@ -249,11 +254,13 @@ class Router
 	/**
 	 * @return Collection[]
 	 */
+	#[Pure]
 	public function getCollections() : array
 	{
 		return $this->collections;
 	}
 
+	#[Pure]
 	public function getMatchedRoute() : ?Route
 	{
 		return $this->matchedRoute;
@@ -270,6 +277,7 @@ class Router
 		return $this;
 	}
 
+	#[Pure]
 	public function getMatchedPath() : ?string
 	{
 		return $this->matchedPath;
@@ -289,6 +297,7 @@ class Router
 	/**
 	 * @return array|string[]
 	 */
+	#[Pure]
 	public function getMatchedPathParams() : array
 	{
 		return $this->matchedPathParams;
@@ -305,6 +314,7 @@ class Router
 		return $this;
 	}
 
+	#[Pure]
 	public function getMatchedURL() : ?string
 	{
 		return $this->getMatchedOrigin() ?
@@ -312,6 +322,7 @@ class Router
 			: null;
 	}
 
+	#[Pure]
 	public function getMatchedOrigin() : ?string
 	{
 		return $this->matchedOrigin;
@@ -331,6 +342,7 @@ class Router
 	/**
 	 * @return array|string[]
 	 */
+	#[Pure]
 	public function getMatchedOriginParams() : array
 	{
 		return $this->matchedOriginParams;
@@ -444,6 +456,7 @@ class Router
 		return $this;
 	}
 
+	#[Pure]
 	public function isAutoOptions() : bool
 	{
 		return $this->autoOptions;
@@ -465,6 +478,7 @@ class Router
 		return $this;
 	}
 
+	#[Pure]
 	public function isAutoMethods() : bool
 	{
 		return $this->autoMethods;
@@ -554,6 +568,7 @@ class Router
 	 *
 	 * @return bool
 	 */
+	#[Pure]
 	public function hasNamedRoute(string $name) : bool
 	{
 		foreach ($this->getCollections() as $collection) {
@@ -574,6 +589,7 @@ class Router
 	/**
 	 * @return array|Route[]
 	 */
+	#[Pure]
 	public function getRoutes() : array
 	{
 		$result = [];

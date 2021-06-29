@@ -11,6 +11,7 @@ namespace Framework\Routing;
 
 use Closure;
 use InvalidArgumentException;
+use JetBrains\PhpStorm\Pure;
 
 /**
  * Class Route.
@@ -94,6 +95,7 @@ class Route
 	/**
 	 * @return array|mixed[]
 	 */
+	#[Pure]
 	public function getOptions() : array
 	{
 		return $this->options;
@@ -110,6 +112,7 @@ class Route
 		return $this;
 	}
 
+	#[Pure]
 	public function getName() : ?string
 	{
 		return $this->name;
@@ -152,6 +155,7 @@ class Route
 		return $this->path;
 	}
 
+	#[Pure]
 	public function getAction() : Closure | string
 	{
 		return $this->action;
@@ -179,6 +183,7 @@ class Route
 	/**
 	 * @return array|string[]
 	 */
+	#[Pure]
 	public function getActionParams() : array
 	{
 		return $this->actionParams;
