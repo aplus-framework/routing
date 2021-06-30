@@ -210,7 +210,8 @@ class Route
 	 *
 	 * @param mixed ...$construct Class constructor parameters
 	 *
-	 * @throws Exception if class or method not exists
+	 * @throws RoutingException if class is not an instance of RouteAction or
+	 * action method not exists
 	 *
 	 * @return mixed The action returned value
 	 */
