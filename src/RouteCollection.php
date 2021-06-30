@@ -14,13 +14,13 @@ use Closure;
 use LogicException;
 
 /**
- * Class Collection.
+ * Class RouteCollection.
  *
  * @property-read string $origin
  * @property-read Router $router
  * @property-read array<string,array> $routes
  */
-class Collection implements \Countable
+class RouteCollection implements \Countable
 {
 	protected Router $router;
 	protected string $origin;

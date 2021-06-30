@@ -9,7 +9,7 @@
  */
 namespace Tests\Routing;
 
-use Framework\Routing\Collection;
+use Framework\Routing\RouteCollection;
 
 /**
  * Class RouterWebResourceTest.
@@ -20,7 +20,7 @@ class RouterWebResourceTest extends RouterResourceTest
 {
 	protected function setUp() : void
 	{
-		$this->collection = static function (Collection $collection) : void {
+		$this->collection = static function (RouteCollection $collection) : void {
 			$collection->webResource('users', 'Tests\Routing\Support\Users', 'users');
 		};
 	}

@@ -10,7 +10,7 @@
 namespace Tests\Routing;
 
 use Framework\HTTP\Response;
-use Framework\Routing\Collection;
+use Framework\Routing\RouteCollection;
 
 /**
  * Class RouterResourceWithExceptTest.
@@ -21,7 +21,7 @@ class RouterResourceWithExceptTest extends RouterResourceTest
 {
 	protected function setUp() : void
 	{
-		$this->collection = static function (Collection $collection) : void {
+		$this->collection = static function (RouteCollection $collection) : void {
 			$collection->resource(
 				'users',
 				'Tests\Routing\Support\Users',

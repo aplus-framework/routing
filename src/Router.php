@@ -42,7 +42,7 @@ class Router
 		'{title}' => '([a-zA-Z0-9_-]+)',
 	];
 	/**
-	 * @var array<int,Collection>
+	 * @var array<int,RouteCollection>
 	 */
 	protected array $collections = [];
 	protected ?Route $matchedRoute = null;
@@ -223,11 +223,11 @@ class Router
 	}
 
 	/**
-	 * Serves a Collection of Routes to a specific Origin.
+	 * Serves a RouteCollection to a specific Origin.
 	 *
 	 * @param string|null $origin URL Origin. A string in the following format:
 	 * {scheme}://{hostname}[:{port}]. Null to auto-detect.
-	 * @param callable $callable A function receiving an instance of Collection
+	 * @param callable $callable A function receiving an instance of RouteCollection
 	 * as the first parameter
 	 */
 	public function serve(?string $origin, callable $callable) : void
@@ -235,24 +235,24 @@ class Router
 		if ($origin === null) {
 			$origin = $this->response->getRequest()->getURL()->getOrigin();
 		}
-		$collection = new Collection($this, $origin);
+		$collection = new RouteCollection($this, $origin);
 		$callable($collection);
 		$this->addCollection($collection);
 	}
 
 	/**
-	 * @param Collection $collection
+	 * @param RouteCollection $collection
 	 *
 	 * @return static
 	 */
-	protected function addCollection(Collection $collection) : static
+	protected function addCollection(RouteCollection $collection) : static
 	{
 		$this->collections[] = $collection;
 		return $this;
 	}
 
 	/**
-	 * @return array<int,Collection>
+	 * @return array<int,RouteCollection>
 	 */
 	#[Pure]
 	public function getCollections() : array
@@ -360,7 +360,7 @@ class Router
 	}
 
 	/**
-	 * Match HTTP Method and URL against Collections to process the request.
+	 * Match HTTP Method and URL against RouteCollections to process the request.
 	 *
 	 * @see serve
 	 *
@@ -383,7 +383,7 @@ class Router
 			?? $this->getAlternativeRoute($method, $collection);
 	}
 
-	protected function getAlternativeRoute(string $method, Collection $collection) : Route
+	protected function getAlternativeRoute(string $method, RouteCollection $collection) : Route
 	{
 		if ($method === 'OPTIONS' && $this->isAutoOptions()) {
 			$route = $this->getRouteWithAllowHeader($collection, 200);
@@ -397,7 +397,7 @@ class Router
 		return $route;
 	}
 
-	protected function matchCollection(string $origin) : ?Collection
+	protected function matchCollection(string $origin) : ?RouteCollection
 	{
 		foreach ($this->getCollections() as $collection) {
 			$pattern = $this->replacePlaceholders($collection->origin);
@@ -416,7 +416,7 @@ class Router
 		return null;
 	}
 
-	protected function matchRoute(string $method, Collection $collection, string $path) : ?Route
+	protected function matchRoute(string $method, RouteCollection $collection, string $path) : ?Route
 	{
 		$routes = $collection->routes;
 		if (empty($routes[$method])) {
@@ -485,7 +485,7 @@ class Router
 		return $this->autoMethods;
 	}
 
-	protected function getRouteWithAllowHeader(Collection $collection, int $code) : ?Route
+	protected function getRouteWithAllowHeader(RouteCollection $collection, int $code) : ?Route
 	{
 		$allowed = $this->getAllowedMethods($collection);
 		$response = $this->response;
@@ -503,11 +503,11 @@ class Router
 	}
 
 	/**
-	 * @param Collection $collection
+	 * @param RouteCollection $collection
 	 *
 	 * @return array<int,string>
 	 */
-	protected function getAllowedMethods(Collection $collection) : array
+	protected function getAllowedMethods(RouteCollection $collection) : array
 	{
 		$allowed = [];
 		foreach ($collection->routes as $method => $routes) {

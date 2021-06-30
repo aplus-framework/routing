@@ -9,17 +9,17 @@
  */
 namespace Tests\Routing;
 
-use Framework\Routing\Collection;
+use Framework\Routing\RouteCollection;
 use Framework\Routing\Router;
 use PHPUnit\Framework\TestCase;
 
-class CollectionTest extends TestCase
+class RouteCollectionTest extends TestCase
 {
-	protected Collection $collection;
+	protected RouteCollection $collection;
 
 	protected function setUp() : void
 	{
-		$this->collection = new Collection(new Router(), 'localhost');
+		$this->collection = new RouteCollection(new Router(), 'localhost');
 	}
 
 	public function testCount() : void
