@@ -31,9 +31,9 @@ class RouteCollection implements \Countable
 	 */
 	protected array $routes = [];
 	/**
-	 * The Error 404 page.
+	 * The Error 404 page action.
 	 */
-	protected Closure | string $notFound;
+	protected Closure | string $notFoundAction;
 
 	/**
 	 * Collection constructor.
@@ -122,7 +122,7 @@ class RouteCollection implements \Countable
 	 */
 	public function notFound(Closure | string $action) : void
 	{
-		$this->notFound = $action;
+		$this->notFoundAction = $action;
 	}
 
 	/**
@@ -135,13 +135,13 @@ class RouteCollection implements \Countable
 	 */
 	protected function getRouteNotFound() : ?Route
 	{
-		return ! isset($this->notFound)
+		return ! isset($this->notFoundAction)
 			? null
 			: (new Route(
 				$this->router,
 				$this->router->getMatchedOrigin(),
 				$this->router->getMatchedPath(),
-				$this->notFound
+				$this->notFoundAction
 			))->setName('collection-not-found');
 	}
 
