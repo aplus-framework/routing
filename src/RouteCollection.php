@@ -34,7 +34,6 @@ class RouteCollection implements \Countable
 	 * The Error 404 page.
 	 */
 	protected Closure | string $notFound;
-	protected ?string $namespace = null;
 
 	/**
 	 * Collection constructor.
