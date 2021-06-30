@@ -9,9 +9,9 @@
  */
 namespace Tests\Routing;
 
-use Framework\Routing\RouteAction;
+use Framework\Routing\RouteActions;
 
-class RouteActionMock extends RouteAction
+class RouteActionsMock extends RouteActions
 {
 	public function show($id)
 	{

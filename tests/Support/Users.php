@@ -9,7 +9,9 @@
  */
 namespace Tests\Routing\Support;
 
-class Users
+use Framework\Routing\RouteActions;
+
+class Users extends RouteActions
 {
 	public function index()
 	{

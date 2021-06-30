@@ -9,53 +9,53 @@
  */
 namespace Tests\Routing;
 
-use Framework\Routing\RouteAction;
+use Framework\Routing\RouteActions;
 use PHPUnit\Framework\TestCase;
 
-class RouteActionTest extends TestCase
+class RouteActionsTest extends TestCase
 {
-	protected RouteActionMock $routeAction;
+	protected RouteActionsMock $routeActions;
 
 	protected function setUp() : void
 	{
-		$this->routeAction = new RouteActionMock();
+		$this->routeActions = new RouteActionsMock();
 	}
 
 	public function testAction() : void
 	{
-		$this->assertEquals([25], $this->routeAction->show(25));
+		$this->assertEquals([25], $this->routeActions->show(25));
 	}
 
 	public function testActionNotAllowed() : void
 	{
 		$this->expectException(\BadMethodCallException::class);
 		$this->expectExceptionMessage('Action method not allowed: foo');
-		$this->routeAction->foo();
+		$this->routeActions->foo();
 	}
 
 	public function testActionNotFound() : void
 	{
 		$this->expectException(\BadMethodCallException::class);
 		$this->expectExceptionMessage('Action method not found: bar');
-		$this->routeAction->bar();
+		$this->routeActions->bar();
 	}
 
 	public function testPropertyNotAllowed() : void
 	{
 		$this->expectException(\Error::class);
-		$this->expectExceptionMessage('Cannot access property Tests\Routing\RouteActionMock::$foo');
-		$this->routeAction->foo = 'bar';
+		$this->expectExceptionMessage('Cannot access property Tests\Routing\RouteActionsMock::$foo');
+		$this->routeActions->foo = 'bar';
 	}
 
 	public function testMagicActions() : void
 	{
-		$this->assertEquals('before', $this->routeAction->beforeAction());
-		$this->assertEquals('after', $this->routeAction->afterAction('after'));
+		$this->assertEquals('before', $this->routeActions->beforeAction());
+		$this->assertEquals('after', $this->routeActions->afterAction('after'));
 	}
 
 	public function testNullMagicActions() : void
 	{
-		$action = new class() extends RouteAction {
+		$action = new class() extends RouteActions {
 		};
 		$this->assertNull($action->beforeAction());
 		$this->assertNull($action->afterAction(null));

@@ -9,9 +9,9 @@
  */
 namespace Tests\Routing\Support;
 
-use Framework\Routing\RouteAction;
+use Framework\Routing\RouteActions;
 
-class Shop extends RouteAction
+class Shop extends RouteActions
 {
 	public function index()
 	{
