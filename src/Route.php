@@ -232,26 +232,25 @@ class Route
 		 * @var RouteAction $class
 		 */
 		$class = new $classname(...$construct);
+		if ( ! $class instanceof RouteAction) {
+			throw new RoutingException(
+				'Class ' . $class::class . ' is not an instance of ' . RouteAction::class
+			);
+		}
 		if ( ! \method_exists($class, $action)) {
 			throw new RoutingException(
-				"Class method not exists: {$classname}::{$action}"
+				"Class action method not exists: {$classname}::{$action}"
 			);
 		}
 		$class->actionMethod = $action; // @phpstan-ignore-line
 		$class->actionParams = $params; // @phpstan-ignore-line
 		$class->actionRun = false; // @phpstan-ignore-line
-		$response = null;
-		if (\method_exists($class, 'beforeAction')) {
-			$response = $class->beforeAction(); // @phpstan-ignore-line
-		}
+		$response = $class->beforeAction(); // @phpstan-ignore-line
 		if ($response === null) {
-			$class->actionRun = true; // @phpstan-ignore-line
 			$response = $class->{$action}(...$params);
+			$class->actionRun = true; // @phpstan-ignore-line
 		}
-		if (\method_exists($class, 'afterAction')) {
-			$response = $class->afterAction($response); // @phpstan-ignore-line
-		}
-		return $response;
+		return $class->afterAction($response); // @phpstan-ignore-line
 	}
 
 	/**
