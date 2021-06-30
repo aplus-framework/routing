@@ -229,12 +229,12 @@ class Route
 			throw new RoutingException("Class not exists: {$classname}");
 		}
 		/**
-		 * @var RouteAction $class
+		 * @var RouteActions $class
 		 */
 		$class = new $classname(...$construct);
-		if ( ! $class instanceof RouteAction) {
+		if ( ! $class instanceof RouteActions) {
 			throw new RoutingException(
-				'Class ' . $class::class . ' is not an instance of ' . RouteAction::class
+				'Class ' . $class::class . ' is not an instance of ' . RouteActions::class
 			);
 		}
 		if ( ! \method_exists($class, $action)) {

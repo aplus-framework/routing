@@ -10,9 +10,9 @@
 namespace Framework\Routing;
 
 /**
- * Class RouteAction.
+ * Class RouteActions.
  */
-abstract class RouteAction
+abstract class RouteActions
 {
 	protected string $actionMethod;
 	/**
