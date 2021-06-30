@@ -276,11 +276,14 @@ class Route
 				if ( ! \is_numeric($param)) {
 					throw new InvalidArgumentException(
 						'Action parameter is not numeric on index ' . $index
+						. $this->onNamedRoutePart()
 					);
 				}
 				$param = (int) $param;
 				if ( ! \array_key_exists($param, $action_params)) {
-					throw new InvalidArgumentException("Undefined action parameter: {$param}");
+					throw new InvalidArgumentException(
+						"Undefined action parameter: {$param}" . $this->onNamedRoutePart()
+					);
 				}
 				$params[$index] = $action_params[$param];
 			}
@@ -289,5 +292,13 @@ class Route
 			$action,
 			$params,
 		];
+	}
+
+	#[Pure]
+	protected function onNamedRoutePart() : string
+	{
+		$route_name = $this->getName();
+		$part = $route_name ? "named route '{$route_name}'" : 'unnamed route';
+		return ', on ' . $part;
 	}
 }
