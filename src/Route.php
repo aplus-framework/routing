@@ -11,6 +11,7 @@ namespace Framework\Routing;
 
 use Closure;
 use InvalidArgumentException;
+use JetBrains\PhpStorm\ArrayShape;
 use JetBrains\PhpStorm\Pure;
 
 /**
@@ -261,8 +262,10 @@ class Route
 	 *
 	 * @return array<int,mixed>
 	 */
-	protected function extractActionAndParams(string $action) : array
-	{
+	#[ArrayShape([0 => 'string', 1 => 'array'])]
+	protected function extractActionAndParams(
+		string $action
+	) : array {
 		if ( ! \str_contains($action, '/')) {
 			return [$action, []];
 		}
