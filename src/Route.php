@@ -226,14 +226,14 @@ class Route
 		[$classname, $action] = \explode('::', $action, 2);
 		[$action, $params] = $this->extractActionAndParams($action);
 		if ( ! \class_exists($classname)) {
-			throw new Exception("Class not exists: {$classname}");
+			throw new RoutingException("Class not exists: {$classname}");
 		}
 		/**
 		 * @var RouteAction $class
 		 */
 		$class = new $classname(...$construct);
 		if ( ! \method_exists($class, $action)) {
-			throw new Exception(
+			throw new RoutingException(
 				"Class method not exists: {$classname}::{$action}"
 			);
 		}

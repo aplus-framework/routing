@@ -12,9 +12,9 @@ namespace Tests\Routing;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
 use Framework\Routing\Collection;
-use Framework\Routing\Exception;
 use Framework\Routing\Route;
 use Framework\Routing\Router;
+use Framework\Routing\RoutingException;
 use PHPUnit\Framework\TestCase;
 
 class RouterTest extends TestCase
@@ -309,7 +309,7 @@ class RouterTest extends TestCase
 		$this->prepare([
 			'REQUEST_URI' => '/foo',
 		]);
-		$this->expectException(Exception::class);
+		$this->expectException(RoutingException::class);
 		$this->expectExceptionMessage('Class not exists: Foo');
 		$this->router->match()->run();
 	}
@@ -319,7 +319,7 @@ class RouterTest extends TestCase
 		$this->prepare([
 			'REQUEST_URI' => '/bar',
 		]);
-		$this->expectException(Exception::class);
+		$this->expectException(RoutingException::class);
 		$this->expectExceptionMessage('Class method not exists: Tests\Routing\Support\Shop::bar');
 		$this->router->match()->run();
 	}

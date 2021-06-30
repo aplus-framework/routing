@@ -9,6 +9,6 @@
  */
 namespace Framework\Routing;
 
-class Exception extends \Exception
+class RoutingException extends \RuntimeException
 {
 }
