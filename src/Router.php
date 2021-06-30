@@ -99,28 +99,28 @@ class Router
 
 	protected function getDefaultRouteNotFound() : Route
 	{
-		$router = $this;
 		return (new Route(
 			$this,
 			$this->getMatchedOrigin(),
 			$this->getMatchedPath(),
-			$this->defaultRouteNotFound ?? static function () use ($router) {
-				$router->response->setStatusLine(404);
-				if ($router->response->getRequest()->isJSON()) {
-					return $router->response->setJSON([
+			$this->defaultRouteNotFound ?? function () {
+				$this->response->setStatusLine(404);
+				if ($this->response->getRequest()->isJSON()) {
+					return $this->response->setJSON([
 						'error' => [
 							'code' => 404,
 							'reason' => 'Not Found',
 						],
 					]);
 				}
-				$lang = $router->language->getCurrentLocale();
-				$title = $router->language->render('routing', 'error404');
-				$message = $router->language->render('routing', 'pageNotFound');
-				return $router->response->setBody(
+				$lang = $this->language->getCurrentLocale();
+				$dir = $this->language->getCurrentLocaleDirection();
+				$title = $this->language->render('routing', 'error404');
+				$message = $this->language->render('routing', 'pageNotFound');
+				return $this->response->setBody(
 					<<<HTML
 						<!doctype html>
-						<html lang="{$lang}">
+						<html lang="{$lang}" dir="{$dir}">
 						<head>
 							<meta charset="utf-8">
 							<title>{$title}</title>
@@ -176,8 +176,10 @@ class Router
 	}
 
 	#[Pure]
-	public function replacePlaceholders(string $string, bool $flip = false) : string
-	{
+	public function replacePlaceholders(
+		string $string,
+		bool $flip = false
+	) : string {
 		$placeholders = $this->getPlaceholders();
 		if ($flip) {
 			$placeholders = \array_flip($placeholders);
@@ -416,8 +418,11 @@ class Router
 		return null;
 	}
 
-	protected function matchRoute(string $method, RouteCollection $collection, string $path) : ?Route
-	{
+	protected function matchRoute(
+		string $method,
+		RouteCollection $collection,
+		string $path
+	) : ?Route {
 		$routes = $collection->routes;
 		if (empty($routes[$method])) {
 			return null;
@@ -570,8 +575,9 @@ class Router
 	 * @return bool
 	 */
 	#[Pure]
-	public function hasNamedRoute(string $name) : bool
-	{
+	public function hasNamedRoute(
+		string $name
+	) : bool {
 		foreach ($this->getCollections() as $collection) {
 			foreach ($collection->routes as $routes) {
 				foreach ($routes as $route) {
