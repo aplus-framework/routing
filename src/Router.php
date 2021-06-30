@@ -392,7 +392,7 @@ class Router
 		} elseif ($this->isAutoMethods()) {
 			$route = $this->getRouteWithAllowHeader($collection, 405);
 		}
-		if (empty($route)) {
+		if ( ! isset($route)) {
 			// @phpstan-ignore-next-line
 			$route = $collection->getRouteNotFound() ?? $this->getDefaultRouteNotFound();
 		}
