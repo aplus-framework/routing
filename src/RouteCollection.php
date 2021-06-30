@@ -33,7 +33,7 @@ class RouteCollection implements \Countable
 	/**
 	 * The Error 404 page.
 	 */
-	protected Closure | string | null $notFound = null;
+	protected Closure | string $notFound;
 	protected ?string $namespace = null;
 
 	/**
@@ -136,7 +136,7 @@ class RouteCollection implements \Countable
 	 */
 	protected function getRouteNotFound() : ?Route
 	{
-		return empty($this->notFound)
+		return ! isset($this->notFound)
 			? null
 			: (new Route(
 				$this->router,
