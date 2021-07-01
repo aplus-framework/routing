@@ -78,14 +78,14 @@ abstract class RouteActions
 	 * Used to finalize settings, filter output data, acts as a middleware between
 	 * the action method and the final response.
 	 *
-	 * @param mixed $response The returned value directly from beforeAction or
+	 * @param mixed $result The returned value directly from beforeAction or
 	 * from the action method, if it was executed. Use the $actionRun property
 	 * to know if the action method was executed.
 	 *
 	 * @return mixed
 	 */
-	protected function afterAction(mixed $response) : mixed
+	protected function afterAction(mixed $result) : mixed
 	{
-		return $response;
+		return $result;
 	}
 }
