@@ -10,9 +10,11 @@
 namespace Framework\Routing;
 
 use Closure;
+use Framework\HTTP\Response;
 use InvalidArgumentException;
 use JetBrains\PhpStorm\ArrayShape;
 use JetBrains\PhpStorm\Pure;
+use JsonException;
 
 /**
  * Class Route.
@@ -211,16 +213,20 @@ class Route
 	 *
 	 * @param mixed ...$construct Class constructor parameters
 	 *
-	 * @throws RoutingException if class is not an instance of RouteAction or
-	 * action method not exists
+	 * @throws JsonException if the action result is an array, or an instance of
+	 * JsonSerializable, and the Response cannot be set as JSON
+	 * @throws RoutingException if class is not an instance of RouteAction,
+	 * action method not exists or if the result of the action method has not
+	 * a valid type
 	 *
-	 * @return mixed The action returned value
+	 * @return Response The Response with the action result appended on the body
 	 */
-	public function run(mixed ...$construct) : mixed
+	public function run(mixed ...$construct) : Response
 	{
 		$action = $this->getAction();
 		if ($action instanceof Closure) {
-			return $action($this->getActionParams(), ...$construct);
+			$result = $action($this->getActionParams(), ...$construct);
+			return $this->makeResponse($result);
 		}
 		if ( ! \str_contains($action, '::')) {
 			$action .= '::' . $this->router->getDefaultRouteActionMethod();
@@ -246,13 +252,60 @@ class Route
 		}
 		$class->actionMethod = $action; // @phpstan-ignore-line
 		$class->actionParams = $params; // @phpstan-ignore-line
-		$response = $class->beforeAction(); // @phpstan-ignore-line
+		$result = $class->beforeAction(); // @phpstan-ignore-line
 		$class->actionRun = false; // @phpstan-ignore-line
-		if ($response === null) {
-			$response = $class->{$action}(...$params);
+		if ($result === null) {
+			$result = $class->{$action}(...$params);
 			$class->actionRun = true; // @phpstan-ignore-line
 		}
-		return $class->afterAction($response); // @phpstan-ignore-line
+		$result = $class->afterAction($result); // @phpstan-ignore-line
+		return $this->makeResponse($result);
+	}
+
+	/**
+	 * Make the final Response used in the 'run' method.
+	 *
+	 * @throws JsonException if the $result is an array, or an instance of
+	 * JsonSerializable, and the Response cannot be set as JSON
+	 * @throws RoutingException if the $result type is invalid
+	 */
+	protected function makeResponse(mixed $result) : Response
+	{
+		$result = $this->makeResponseBodyPart($result);
+		return $this->router->getResponse()->appendBody($result);
+	}
+
+	/**
+	 * Make a string to be appended in the Response body based in the route
+	 * action result.
+	 *
+	 * @param mixed $result The return value of the matched route action
+	 *
+	 * @throws JsonException if the $result is an array, or an instance of
+	 * JsonSerializable, and the Response cannot be set as JSON
+	 * @throws RoutingException if the $result type is invalid
+	 *
+	 * @return string
+	 */
+	protected function makeResponseBodyPart(mixed $result) : string
+	{
+		if ($result === null || $result instanceof Response) {
+			return '';
+		}
+		if (\is_scalar($result)) {
+			return (string) $result;
+		}
+		if (\is_object($result) && \method_exists($result, '__toString')) {
+			return (string) $result;
+		}
+		if (\is_array($result) || $result instanceof \JsonSerializable) {
+			$this->router->getResponse()->setJSON($result);
+			return '';
+		}
+		$type = \get_debug_type($result);
+		throw new RoutingException(
+			"Invalid action return type '{$type}'" . $this->onNamedRoutePart()
+		);
 	}
 
 	/**
