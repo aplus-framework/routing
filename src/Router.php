@@ -194,6 +194,7 @@ class Router
 	 * @param string ...$params
 	 *
 	 * @throws InvalidArgumentException if param not required, empty or invalid
+	 * @throws RuntimeException if a pattern position is not found
 	 *
 	 * @return string
 	 */
@@ -211,15 +212,21 @@ class Router
 		}
 		foreach ($matches[0] as $index => $pattern) {
 			if ( ! isset($params[$index])) {
-				throw new InvalidArgumentException("Placeholder parameter is empty: {$index}");
+				throw new InvalidArgumentException("Placeholder parameter is not set: {$index}");
 			}
 			if ( ! \preg_match('#' . $pattern . '#', $params[$index])) {
 				throw new InvalidArgumentException("Placeholder parameter is invalid: {$index}");
 			}
+			$pos = \strpos($string, $pattern);
+			if ($pos === false) {
+				throw new RuntimeException(
+					"Pattern position not found on placeholder parameter: {$index}"
+				);
+			}
 			$string = \substr_replace(
 				$string,
 				$params[$index],
-				(int) \strpos($string, $pattern),
+				$pos,
 				\strlen($pattern)
 			);
 		}
