@@ -298,7 +298,11 @@ class Route
 		if (\is_object($result) && \method_exists($result, '__toString')) {
 			return (string) $result;
 		}
-		if (\is_array($result) || $result instanceof \JsonSerializable) {
+		if (
+			\is_array($result)
+			|| $result instanceof \stdClass
+			|| $result instanceof \JsonSerializable
+		) {
 			$this->router->getResponse()->setJSON($result);
 			return '';
 		}
