@@ -41,6 +41,7 @@ class Router
 		'{subdomain}' => '([^.]+)',
 		//'{subdomain}' => '([A-Za-z0-9](?:[a-zA-Z0-9\-]{0,61}[A-Za-z0-9])?)',
 		'{title}' => '([a-zA-Z0-9_-]+)',
+		'{uuid}' => '([0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}+)',
 	];
 	/**
 	 * @var array<int,RouteCollection>
