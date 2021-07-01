@@ -246,8 +246,8 @@ class Route
 		}
 		$class->actionMethod = $action; // @phpstan-ignore-line
 		$class->actionParams = $params; // @phpstan-ignore-line
-		$class->actionRun = false; // @phpstan-ignore-line
 		$response = $class->beforeAction(); // @phpstan-ignore-line
+		$class->actionRun = false; // @phpstan-ignore-line
 		if ($response === null) {
 			$response = $class->{$action}(...$params);
 			$class->actionRun = true; // @phpstan-ignore-line

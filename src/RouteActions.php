@@ -18,8 +18,8 @@ abstract class RouteActions
 	/**
 	 * @var array<int,string>
 	 */
-	protected array $actionParams;
-	protected bool $actionRun;
+	protected array $actionParams = [];
+	protected bool $actionRun = false;
 
 	/**
 	 * @param string $method
