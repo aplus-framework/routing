@@ -65,7 +65,8 @@ interface ResourceInterface
 	 * fail, return a 400 (Bad Request) with the validation errors in the body.
 	 *
 	 * NOTE: The HTTP PATCH method allow items to be updated by parts. E.g.
-	 * it is possible to update only one, or more, fields in a database table.
+	 * it is possible to update only one, or more, fields in a database table
+	 * row.
 	 *
 	 * @param string $id
 	 *
@@ -83,7 +84,7 @@ interface ResourceInterface
 	 * fail, return a 400 (Bad Request) with the validation errors in the body.
 	 *
 	 * NOTE: The HTTP PUT method requires an entire resource to be updated. E.g.
-	 * all fields in a database table must be updated/replaced.
+	 * all fields in a database table row must be updated/replaced.
 	 *
 	 * @param string $id
 	 *
