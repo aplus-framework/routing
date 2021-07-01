@@ -26,7 +26,7 @@ interface PresenterInterface
 	 *
 	 * @return mixed
 	 */
-	public function index();
+	public function index() : mixed;
 
 	/**
 	 * Handles a GET request for /new.
@@ -36,7 +36,7 @@ interface PresenterInterface
 	 *
 	 * @return mixed
 	 */
-	public function new();
+	public function new() : mixed;
 
 	/**
 	 * Handles a POST request for /.
@@ -46,18 +46,18 @@ interface PresenterInterface
 	 *
 	 * @return mixed
 	 */
-	public function create();
+	public function create() : mixed;
 
 	/**
 	 * Handles a GET request for /$id.
 	 *
 	 * Usage: Show a specific item based on the $id.
 	 *
-	 * @param $id
+	 * @param string $id
 	 *
 	 * @return mixed
 	 */
-	public function show($id);
+	public function show(string $id) : mixed;
 
 	/**
 	 * Handles a GET request for /$id/edit.
@@ -65,11 +65,11 @@ interface PresenterInterface
 	 * Usage: Show a form to edit a specific item based on the $id.
 	 * The POST action must go to the 'update' method.
 	 *
-	 * @param $id
+	 * @param string $id
 	 *
 	 * @return mixed
 	 */
-	public function edit($id);
+	public function edit(string $id) : mixed;
 
 	/**
 	 * Handles a POST request for /$id/update.
@@ -77,11 +77,11 @@ interface PresenterInterface
 	 * Usage: Try to update an item based on the $id. After the process, back
 	 * to the 'edit' method and show a message.
 	 *
-	 * @param $id
+	 * @param string $id
 	 *
 	 * @return mixed
 	 */
-	public function update($id);
+	public function update(string $id) : mixed;
 
 	/**
 	 * Handles a GET request for /$id/remove.
@@ -90,11 +90,11 @@ interface PresenterInterface
 	 * $id. The confirmation action must call a POST request to the 'delete'
 	 * method.
 	 *
-	 * @param $id
+	 * @param string $id
 	 *
 	 * @return mixed
 	 */
-	public function remove($id);
+	public function remove(string $id) : mixed;
 
 	/**
 	 * Handles a POST request for /$id/delete.
@@ -103,9 +103,9 @@ interface PresenterInterface
 	 * 'index' method and show a success message. On fail, back to the 'remove'
 	 * method and show the error message.
 	 *
-	 * @param $id
+	 * @param string $id
 	 *
 	 * @return mixed
 	 */
-	public function delete($id);
+	public function delete(string $id) : mixed;
 }

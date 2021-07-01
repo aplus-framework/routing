@@ -28,7 +28,7 @@ interface ResourceInterface
 	 *
 	 * @return mixed
 	 */
-	public function index();
+	public function index() : mixed;
 
 	/**
 	 * Handles a POST request for /.
@@ -41,7 +41,7 @@ interface ResourceInterface
 	 *
 	 * @return mixed
 	 */
-	public function create();
+	public function create() : mixed;
 
 	/**
 	 * Handles a GET request for /$id.
@@ -49,13 +49,13 @@ interface ResourceInterface
 	 * Usage: Show a specific item, based on the $id, in the body. If the item
 	 * does not exists, return an 404 (Not Found) status code.
 	 *
-	 * @param $id
+	 * @param string $id
 	 *
 	 * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/GET
 	 *
 	 * @return mixed
 	 */
-	public function show($id);
+	public function show(string $id) : mixed;
 
 	/**
 	 * Handles a PATCH request for /$id.
@@ -67,13 +67,13 @@ interface ResourceInterface
 	 * NOTE: The HTTP PATCH method allow items to be updated by parts. E.g.
 	 * it is possible to update only one, or more, fields in a database table.
 	 *
-	 * @param $id
+	 * @param string $id
 	 *
 	 * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/PATCH
 	 *
 	 * @return mixed
 	 */
-	public function update($id);
+	public function update(string $id) : mixed;
 
 	/**
 	 * Handles a PUT request for /$id.
@@ -85,13 +85,13 @@ interface ResourceInterface
 	 * NOTE: The HTTP PUT method requires an entire resource to be updated. E.g.
 	 * all fields in a database table must be updated/replaced.
 	 *
-	 * @param $id
+	 * @param string $id
 	 *
 	 * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/PUT
 	 *
 	 * @return mixed
 	 */
-	public function replace($id);
+	public function replace(string $id) : mixed;
 
 	/**
 	 * Handles a DELETE request for /$id.
@@ -99,11 +99,11 @@ interface ResourceInterface
 	 * Usage: Delete an item based on the $id. On success, must return a 204
 	 * (No Content) status code.
 	 *
-	 * @param $id
+	 * @param string $id
 	 *
 	 * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/DELETE
 	 *
 	 * @return mixed
 	 */
-	public function delete($id);
+	public function delete(string $id) : mixed;
 }
