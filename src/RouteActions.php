@@ -30,7 +30,7 @@ abstract class RouteActions
 	public function __call(string $method, array $arguments) : mixed
 	{
 		if ($method === 'beforeAction') {
-			return $this->beforeAction(...$arguments);
+			return $this->beforeAction();
 		}
 		if ($method === 'afterAction') {
 			return $this->afterAction(...$arguments);
@@ -62,12 +62,14 @@ abstract class RouteActions
 	 * Used to prepare settings, filter input data, acts as a middleware between
 	 * the routing and the action method.
 	 *
-	 * @return mixed|void Returns a response to stop the route action execution or null to continue the
-	 *                    process and call the action method
+	 * @return mixed Returns a response (any value, except null) to prevent the
+	 * route action execution or null to continue the process and call the
+	 * action method
 	 */
-	protected function beforeAction()
+	protected function beforeAction() : mixed
 	{
 		// Prepare or intercept...
+		return null;
 	}
 
 	/**
@@ -76,9 +78,13 @@ abstract class RouteActions
 	 * Used to finalize settings, filter output data, acts as a middleware between
 	 * the action method and the final response.
 	 *
-	 * @return mixed|void
+	 * @param mixed $response The returned value directly from beforeAction or
+	 * from the action method, if it was executed. Use the $actionRun property
+	 * to know if the action method was executed.
+	 *
+	 * @return mixed
 	 */
-	protected function afterAction(mixed $response)
+	protected function afterAction(mixed $response) : mixed
 	{
 		return $response;
 	}
