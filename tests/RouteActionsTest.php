@@ -11,53 +11,54 @@ namespace Tests\Routing;
 
 use Framework\Routing\RouteActions;
 use PHPUnit\Framework\TestCase;
+use Tests\Routing\Support\WithRouteActions;
 
 class RouteActionsTest extends TestCase
 {
-	protected RouteActionsMock $routeActions;
+	protected RouteActions $actions;
 
 	protected function setUp() : void
 	{
-		$this->routeActions = new RouteActionsMock();
+		$this->actions = new WithRouteActions();
 	}
 
-	public function testAction() : void
+	public function testBeforeAction() : void
 	{
-		$this->assertEquals([25], $this->routeActions->show(25));
+		self::assertNull($this->actions->beforeAction());
 	}
 
-	public function testActionNotAllowed() : void
+	public function testAfterAction() : void
 	{
-		$this->expectException(\BadMethodCallException::class);
-		$this->expectExceptionMessage('Action method not allowed: foo');
-		$this->routeActions->foo();
+		self::assertSame('foo', $this->actions->afterAction('foo'));
 	}
 
-	public function testActionNotFound() : void
+	public function testActionMethodNotAllowed() : void
 	{
 		$this->expectException(\BadMethodCallException::class);
-		$this->expectExceptionMessage('Action method not found: bar');
-		$this->routeActions->bar();
+		$this->expectExceptionMessage(
+			'Action method not allowed: ' . WithRouteActions::class . '::notAllowed'
+		);
+		$this->actions->notAllowed();
 	}
 
-	public function testPropertyNotAllowed() : void
+	public function testActionMethodNotFound() : void
 	{
+		$this->expectException(\BadMethodCallException::class);
+		$this->expectExceptionMessage(
+			'Action method not found: ' . WithRouteActions::class . '::bazz'
+		);
+		$this->actions->bazz();
+	}
+
+	public function testSetProperties() : void
+	{
+		$this->actions->actionMethod = 'index';
+		$this->actions->actionParams = [];
+		$this->actions->actionRun = true;
 		$this->expectException(\Error::class);
-		$this->expectExceptionMessage('Cannot access property Tests\Routing\RouteActionsMock::$foo');
-		$this->routeActions->foo = 'bar';
-	}
-
-	public function testMagicActions() : void
-	{
-		$this->assertEquals('before', $this->routeActions->beforeAction());
-		$this->assertEquals('after', $this->routeActions->afterAction('after'));
-	}
-
-	public function testNullMagicActions() : void
-	{
-		$action = new class() extends RouteActions {
-		};
-		$this->assertNull($action->beforeAction());
-		$this->assertNull($action->afterAction(null));
+		$this->expectExceptionMessage(
+			'Cannot access property ' . WithRouteActions::class . '::$foo'
+		);
+		$this->actions->foo = 'bar';
 	}
 }

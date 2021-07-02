@@ -35,10 +35,13 @@ abstract class RouteActions
 		if ($method === 'afterAction') {
 			return $this->afterAction(...$arguments);
 		}
+		$class = static::class;
 		if (\method_exists($this, $method)) {
-			throw new \BadMethodCallException("Action method not allowed: {$method}");
+			throw new \BadMethodCallException(
+				"Action method not allowed: {$class}::{$method}"
+			);
 		}
-		throw new \BadMethodCallException("Action method not found: {$method}");
+		throw new \BadMethodCallException("Action method not found: {$class}::{$method}");
 	}
 
 	public function __set(string $property, mixed $value) : void
@@ -52,7 +55,7 @@ abstract class RouteActions
 			return;
 		}
 		throw new \Error(
-			'Cannot access property ' . \get_class($this) . '::$' . $property
+			'Cannot access property ' . static::class . '::$' . $property
 		);
 	}
 

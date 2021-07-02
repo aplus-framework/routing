@@ -13,6 +13,7 @@ use Framework\Routing\RouteActions;
 
 class WithRouteActions extends RouteActions
 {
+	protected string $foo = 'not-allowed-to-set';
 	/**
 	 * @var array<int,mixed>
 	 */
@@ -26,5 +27,10 @@ class WithRouteActions extends RouteActions
 	public function index(string ...$params) : string
 	{
 		return \implode(', ', [...$params, ...$this->construct]);
+	}
+
+	protected function notAllowed() : void
+	{
+		//
 	}
 }
