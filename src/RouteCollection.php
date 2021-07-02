@@ -11,14 +11,14 @@ namespace Framework\Routing;
 
 use BadMethodCallException;
 use Closure;
-use LogicException;
+use Error;
 
 /**
  * Class RouteCollection.
  *
  * @property-read string $origin
  * @property-read Router $router
- * @property-read array<string,array> $routes
+ * @property-read array<string, Route[]> $routes
  */
 class RouteCollection implements \Countable
 {
@@ -27,7 +27,7 @@ class RouteCollection implements \Countable
 	/**
 	 * Array of HTTP Methods as keys and array of Routes as values.
 	 *
-	 * @var array<string, array>
+	 * @var array<string, Route[]>
 	 */
 	protected array $routes = [];
 	/**
@@ -61,16 +61,19 @@ class RouteCollection implements \Countable
 		if ($method === 'getRouteNotFound') {
 			return $this->getRouteNotFound();
 		}
+		$class = static::class;
 		if (\method_exists($this, $method)) {
-			throw new BadMethodCallException("Method not allowed: {$method}");
+			throw new BadMethodCallException(
+				"Method not allowed: {$class}::{$method}"
+			);
 		}
-		throw new BadMethodCallException("Method not found: {$method}");
+		throw new BadMethodCallException("Method not found: {$class}::{$method}");
 	}
 
 	/**
 	 * @param string $property
 	 *
-	 * @throws LogicException for property not allowed or property not found
+	 * @throws Error if cannot access property
 	 *
 	 * @return mixed
 	 */
@@ -85,10 +88,9 @@ class RouteCollection implements \Countable
 		if ($property === 'routes') {
 			return $this->routes;
 		}
-		if (\property_exists($this, $property)) {
-			throw new LogicException("Property not allowed: {$property}");
-		}
-		throw new LogicException("Property not found: {$property}");
+		throw new Error(
+			'Cannot access property ' . static::class . '::$' . $property
+		);
 	}
 
 	/**
@@ -547,7 +549,7 @@ class RouteCollection implements \Countable
 	 */
 	public function count() : int
 	{
-		$count = $this->notFound ? 1 : 0;
+		$count = isset($this->notFoundAction) ? 1 : 0;
 		foreach ($this->routes as $routes) {
 			$count += \count($routes);
 		}
