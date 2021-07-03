@@ -14,13 +14,6 @@ namespace Framework\Routing;
  */
 abstract class RouteActions
 {
-	protected string $actionMethod;
-	/**
-	 * @var array<int,string>
-	 */
-	protected array $actionParams = [];
-	protected bool $actionRun = false;
-
 	/**
 	 * @param string $method
 	 * @param array<int,mixed> $arguments
@@ -30,7 +23,7 @@ abstract class RouteActions
 	public function __call(string $method, array $arguments) : mixed
 	{
 		if ($method === 'beforeAction') {
-			return $this->beforeAction();
+			return $this->beforeAction(...$arguments);
 		}
 		if ($method === 'afterAction') {
 			return $this->afterAction(...$arguments);
@@ -44,32 +37,20 @@ abstract class RouteActions
 		throw new \BadMethodCallException("Action method not found: {$class}::{$method}");
 	}
 
-	public function __set(string $property, mixed $value) : void
-	{
-		if (\in_array($property, [
-			'actionMethod',
-			'actionParams',
-			'actionRun',
-		])) {
-			$this->{$property} = $value;
-			return;
-		}
-		throw new \Error(
-			'Cannot access property ' . static::class . '::$' . $property
-		);
-	}
-
 	/**
 	 * Runs just before the action method and after the constructor.
 	 *
 	 * Used to prepare settings, filter input data, acts as a middleware between
 	 * the routing and the action method.
 	 *
+	 * @param string $method The action method
+	 * @param array $arguments The action method arguments
+	 *
 	 * @return mixed Returns a response (any value, except null) to prevent the
 	 * route action execution or null to continue the process and call the
 	 * action method
 	 */
-	protected function beforeAction() : mixed
+	protected function beforeAction(string $method, array $arguments) : mixed
 	{
 		// Prepare or intercept...
 		return null;
@@ -81,14 +62,20 @@ abstract class RouteActions
 	 * Used to finalize settings, filter output data, acts as a middleware between
 	 * the action method and the final response.
 	 *
+	 * @param string $method The action method
+	 * @param array $arguments The action method arguments
+	 * @param bool $run Indicates if the action method was executed
 	 * @param mixed $result The returned value directly from beforeAction or
-	 * from the action method, if it was executed. Use the $actionRun property
-	 * to know if the action method was executed.
+	 * from the action method, if it was executed
 	 *
 	 * @return mixed
 	 */
-	protected function afterAction(mixed $result) : mixed
-	{
+	protected function afterAction(
+		string $method,
+		array $arguments,
+		bool $run,
+		mixed $result
+	) : mixed {
 		return $result;
 	}
 }

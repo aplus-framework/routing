@@ -13,6 +13,9 @@ use Framework\Routing\RouteActions;
 use PHPUnit\Framework\TestCase;
 use Tests\Routing\Support\WithRouteActions;
 
+/**
+ * Class RouteActionsTest.
+ */
 class RouteActionsTest extends TestCase
 {
 	protected RouteActions $actions;
@@ -24,12 +27,12 @@ class RouteActionsTest extends TestCase
 
 	public function testBeforeAction() : void
 	{
-		self::assertNull($this->actions->beforeAction());
+		self::assertNull($this->actions->beforeAction('method', []));
 	}
 
 	public function testAfterAction() : void
 	{
-		self::assertSame('foo', $this->actions->afterAction('foo'));
+		self::assertSame('result', $this->actions->afterAction('method', [], false, 'result'));
 	}
 
 	public function testActionMethodNotAllowed() : void
@@ -48,17 +51,5 @@ class RouteActionsTest extends TestCase
 			'Action method not found: ' . WithRouteActions::class . '::bazz'
 		);
 		$this->actions->bazz();
-	}
-
-	public function testSetProperties() : void
-	{
-		$this->actions->actionMethod = 'index';
-		$this->actions->actionParams = [];
-		$this->actions->actionRun = true;
-		$this->expectException(\Error::class);
-		$this->expectExceptionMessage(
-			'Cannot access property ' . WithRouteActions::class . '::$foo'
-		);
-		$this->actions->foo = 'bar';
 	}
 }

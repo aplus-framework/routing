@@ -252,15 +252,13 @@ class Route
 				"Class action method not exists: {$classname}::{$action}"
 			);
 		}
-		$class->actionMethod = $action; // @phpstan-ignore-line
-		$class->actionParams = $params; // @phpstan-ignore-line
-		$result = $class->beforeAction(); // @phpstan-ignore-line
-		$class->actionRun = false; // @phpstan-ignore-line
+		$result = $class->beforeAction($action, $params); // @phpstan-ignore-line
+		$run = false;
 		if ($result === null) {
 			$result = $class->{$action}(...$params);
-			$class->actionRun = true; // @phpstan-ignore-line
+			$run = true;
 		}
-		$result = $class->afterAction($result); // @phpstan-ignore-line
+		$result = $class->afterAction($action, $params, $run, $result); // @phpstan-ignore-line
 		return $this->makeResponse($result);
 	}
 

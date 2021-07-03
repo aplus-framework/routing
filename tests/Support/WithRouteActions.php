@@ -13,7 +13,6 @@ use Framework\Routing\RouteActions;
 
 class WithRouteActions extends RouteActions
 {
-	protected string $foo = 'not-allowed-to-set';
 	/**
 	 * @var array<int,mixed>
 	 */
