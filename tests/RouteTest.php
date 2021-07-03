@@ -60,7 +60,7 @@ class RouteTest extends TestCase
 		);
 		self::assertSame(
 			'{scheme}://domain.tld/users/25',
-			$this->route->getURL([], ['25'])
+			$this->route->getURL([], [25])
 		);
 		self::assertSame(
 			'http://domain.tld/users/25',

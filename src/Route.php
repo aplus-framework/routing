@@ -92,6 +92,8 @@ class Route
 	 */
 	public function getURL(array $origin_params = [], array $path_params = []) : string
 	{
+		$origin_params = static::toArrayOfStrings($origin_params);
+		$path_params = static::toArrayOfStrings($path_params);
 		return $this->getOrigin(...$origin_params) . $this->getPath(...$path_params);
 	}
 
@@ -360,5 +362,20 @@ class Route
 		$route_name = $this->getName();
 		$part = $route_name ? "named route '{$route_name}'" : 'unnamed route';
 		return ', on ' . $part;
+	}
+
+	/**
+	 * @param array<int,mixed> $array
+	 *
+	 * @return array<int,string>
+	 */
+	protected static function toArrayOfStrings(array $array) : array
+	{
+		if ($array === []) {
+			return [];
+		}
+		return \array_map(static function (mixed $value) : string {
+			return (string) $value;
+		}, $array);
 	}
 }
