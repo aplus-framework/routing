@@ -28,7 +28,7 @@ class Route
 	/**
 	 * @var array<int,string>
 	 */
-	protected array $actionParams = [];
+	protected array $actionArguments = [];
 	protected ?string $name = null;
 	/**
 	 * @var array<string,mixed>
@@ -59,14 +59,14 @@ class Route
 	/**
 	 * Gets the URL Origin.
 	 *
-	 * @param string ...$params Parameters to fill the URL Origin placeholders
+	 * @param string ...$arguments Arguments to fill the URL Origin placeholders
 	 *
 	 * @return string
 	 */
-	public function getOrigin(string ...$params) : string
+	public function getOrigin(string ...$arguments) : string
 	{
-		if ($params) {
-			return $this->router->fillPlaceholders($this->origin, ...$params);
+		if ($arguments) {
+			return $this->router->fillPlaceholders($this->origin, ...$arguments);
 		}
 		return $this->origin;
 	}
@@ -85,16 +85,16 @@ class Route
 	/**
 	 * Gets the URL.
 	 *
-	 * @param array<int,string> $origin_params Parameters to fill the URL Origin placeholders
-	 * @param array<int,string> $path_params Parameters to fill the URL Path placeholders
+	 * @param array<int,string> $origin_args Arguments to fill the URL Origin placeholders
+	 * @param array<int,string> $path_args Arguments to fill the URL Path placeholders
 	 *
 	 * @return string
 	 */
-	public function getURL(array $origin_params = [], array $path_params = []) : string
+	public function getURL(array $origin_args = [], array $path_args = []) : string
 	{
-		$origin_params = static::toArrayOfStrings($origin_params);
-		$path_params = static::toArrayOfStrings($path_params);
-		return $this->getOrigin(...$origin_params) . $this->getPath(...$path_params);
+		$origin_args = static::toArrayOfStrings($origin_args);
+		$path_args = static::toArrayOfStrings($path_args);
+		return $this->getOrigin(...$origin_args) . $this->getPath(...$path_args);
 	}
 
 	/**
@@ -148,14 +148,14 @@ class Route
 	/**
 	 * Gets the URL Path.
 	 *
-	 * @param string ...$params Parameters to fill the URL Path placeholders
+	 * @param string ...$arguments Arguments to fill the URL Path placeholders
 	 *
 	 * @return string
 	 */
-	public function getPath(string ...$params) : string
+	public function getPath(string ...$arguments) : string
 	{
-		if ($params) {
-			return $this->router->fillPlaceholders($this->path, ...$params);
+		if ($arguments) {
+			return $this->router->fillPlaceholders($this->path, ...$arguments);
 		}
 		return $this->path;
 	}
@@ -188,25 +188,25 @@ class Route
 	 * @return array<int,string>
 	 */
 	#[Pure]
-	public function getActionParams() : array
+	public function getActionArguments() : array
 	{
-		return $this->actionParams;
+		return $this->actionArguments;
 	}
 
 	/**
 	 * Sets the Action parameters.
 	 *
-	 * @param array<int,string> $params The parameters. Note that the indexes set
-	 * the order of how the parameters are passed to the Action
+	 * @param array<int,string> $arguments The arguments. Note that the indexes set
+	 * the order of how the arguments are passed to the Action
 	 *
 	 * @see setAction
 	 *
 	 * @return static
 	 */
-	public function setActionParams(array $params) : static
+	public function setActionArguments(array $arguments) : static
 	{
-		\ksort($params);
-		$this->actionParams = $params;
+		\ksort($arguments);
+		$this->actionArguments = $arguments;
 		return $this;
 	}
 
@@ -227,14 +227,14 @@ class Route
 	{
 		$action = $this->getAction();
 		if ($action instanceof Closure) {
-			$result = $action($this->getActionParams(), ...$construct);
+			$result = $action($this->getActionArguments(), ...$construct);
 			return $this->makeResponse($result);
 		}
 		if ( ! \str_contains($action, '::')) {
 			$action .= '::' . $this->router->getDefaultRouteActionMethod();
 		}
 		[$classname, $action] = \explode('::', $action, 2);
-		[$action, $params] = $this->extractActionAndParams($action);
+		[$method, $arguments] = $this->extractMethodAndArguments($action);
 		if ( ! \class_exists($classname)) {
 			throw new RoutingException("Class not exists: {$classname}");
 		}
@@ -247,18 +247,18 @@ class Route
 				'Class ' . $class::class . ' is not an instance of ' . RouteActions::class
 			);
 		}
-		if ( ! \method_exists($class, $action)) {
+		if ( ! \method_exists($class, $method)) {
 			throw new RoutingException(
-				"Class action method not exists: {$classname}::{$action}"
+				"Class action method not exists: {$classname}::{$method}"
 			);
 		}
-		$result = $class->beforeAction($action, $params); // @phpstan-ignore-line
+		$result = $class->beforeAction($method, $arguments); // @phpstan-ignore-line
 		$run = false;
 		if ($result === null) {
-			$result = $class->{$action}(...$params);
+			$result = $class->{$method}(...$arguments);
 			$run = true;
 		}
-		$result = $class->afterAction($action, $params, $run, $result); // @phpstan-ignore-line
+		$result = $class->afterAction($method, $arguments, $run, $result); // @phpstan-ignore-line
 		return $this->makeResponse($result);
 	}
 
@@ -313,44 +313,45 @@ class Route
 	}
 
 	/**
-	 * @param string $action An action part like: index/0/2/1
+	 * @param string $part An action part like: index/0/2/1
 	 *
-	 * @throws InvalidArgumentException for undefined action parameter
+	 * @throws InvalidArgumentException for undefined action argument
 	 *
-	 * @return array<int,mixed>
+	 * @return array<int,mixed> The action method in the first index, the action
+	 * arguments in the second
 	 */
 	#[ArrayShape([0 => 'string', 1 => 'array'])]
-	protected function extractActionAndParams(
-		string $action
+	protected function extractMethodAndArguments(
+		string $part
 	) : array {
-		if ( ! \str_contains($action, '/')) {
-			return [$action, []];
+		if ( ! \str_contains($part, '/')) {
+			return [$part, []];
 		}
-		$params = \explode('/', $action);
-		$action = $params[0];
-		unset($params[0]);
-		if ($params) {
-			$action_params = $this->getActionParams();
-			$params = \array_values($params);
-			foreach ($params as $index => $param) {
-				if ( ! \is_numeric($param)) {
+		$arguments = \explode('/', $part);
+		$method = $arguments[0];
+		unset($arguments[0]);
+		if ($arguments) {
+			$actionArguments = $this->getActionArguments();
+			$arguments = \array_values($arguments);
+			foreach ($arguments as $index => $arg) {
+				if ( ! \is_numeric($arg)) {
 					throw new InvalidArgumentException(
-						'Action parameter is not numeric on index ' . $index
+						'Action argument is not numeric on index ' . $index
 						. $this->onNamedRoutePart()
 					);
 				}
-				$param = (int) $param;
-				if ( ! \array_key_exists($param, $action_params)) {
+				$arg = (int) $arg;
+				if ( ! \array_key_exists($arg, $actionArguments)) {
 					throw new InvalidArgumentException(
-						"Undefined action parameter: {$param}" . $this->onNamedRoutePart()
+						"Undefined action argument: {$arg}" . $this->onNamedRoutePart()
 					);
 				}
-				$params[$index] = $action_params[$param];
+				$arguments[$index] = $actionArguments[$arg];
 			}
 		}
 		return [
-			$action,
-			$params,
+			$method,
+			$arguments,
 		];
 	}
 

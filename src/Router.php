@@ -52,12 +52,12 @@ class Router
 	/**
 	 * @var array<int,string>
 	 */
-	protected array $matchedOriginParams = [];
+	protected array $matchedOriginArguments = [];
 	protected ?string $matchedPath = null;
 	/**
 	 * @var array<int,string>
 	 */
-	protected array $matchedPathParams = [];
+	protected array $matchedPathArguments = [];
 	protected bool $autoOptions = false;
 	protected bool $autoMethods = false;
 	protected Response $response;
@@ -309,27 +309,27 @@ class Router
 	 * @return array<int,string>
 	 */
 	#[Pure]
-	public function getMatchedPathParams() : array
+	public function getMatchedPathArguments() : array
 	{
-		return $this->matchedPathParams;
+		return $this->matchedPathArguments;
 	}
 
 	/**
-	 * @param array<int,string> $params
+	 * @param array<int,string> $arguments
 	 *
 	 * @return static
 	 */
-	protected function setMatchedPathParams(array $params) : static
+	protected function setMatchedPathArguments(array $arguments) : static
 	{
-		$this->matchedPathParams = $params;
+		$this->matchedPathArguments = $arguments;
 		return $this;
 	}
 
 	#[Pure]
 	public function getMatchedURL() : ?string
 	{
-		return $this->getMatchedOrigin() ?
-			$this->getMatchedOrigin() . $this->getMatchedPath()
+		return $this->getMatchedOrigin()
+			? $this->getMatchedOrigin() . $this->getMatchedPath()
 			: null;
 	}
 
@@ -354,19 +354,19 @@ class Router
 	 * @return array<int,string>
 	 */
 	#[Pure]
-	public function getMatchedOriginParams() : array
+	public function getMatchedOriginArguments() : array
 	{
-		return $this->matchedOriginParams;
+		return $this->matchedOriginArguments;
 	}
 
 	/**
-	 * @param array<int,string> $params
+	 * @param array<int,string> $arguments
 	 *
 	 * @return static
 	 */
-	protected function setMatchedOriginParams(array $params) : static
+	protected function setMatchedOriginArguments(array $arguments) : static
 	{
-		$this->matchedOriginParams = $params;
+		$this->matchedOriginArguments = $arguments;
 		return $this;
 	}
 
@@ -420,7 +420,7 @@ class Router
 			if ($matched) {
 				$this->setMatchedOrigin($matches[0]);
 				unset($matches[0]);
-				$this->setMatchedOriginParams(\array_values($matches));
+				$this->setMatchedOriginArguments(\array_values($matches));
 				return $collection;
 			}
 		}
@@ -449,8 +449,8 @@ class Router
 			if ($matched) {
 				$this->setMatchedRoute($route);
 				unset($matches[0]);
-				$this->setMatchedPathParams(\array_values($matches));
-				$route->setActionParams($this->getMatchedPathParams());
+				$this->setMatchedPathArguments(\array_values($matches));
+				$route->setActionArguments($this->getMatchedPathArguments());
 				return $route;
 			}
 		}

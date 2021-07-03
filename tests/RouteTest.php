@@ -105,12 +105,12 @@ class RouteTest extends TestCase
 		self::assertSame('Users::show/0', $this->route->getAction());
 	}
 
-	public function testActionParams() : void
+	public function testActionArguments() : void
 	{
-		self::assertSame([], $this->route->getActionParams());
+		self::assertSame([], $this->route->getActionArguments());
 		self::assertInstanceOf(
 			Route::class,
-			$this->route->setActionParams([
+			$this->route->setActionArguments([
 				0 => '10',
 				2 => 'hello-world',
 				1 => 'foo',
@@ -120,16 +120,16 @@ class RouteTest extends TestCase
 			0 => '10',
 			1 => 'foo',
 			2 => 'hello-world',
-		], $this->route->getActionParams());
+		], $this->route->getActionArguments());
 	}
 
 	protected function assertsForRunWithAction(Route $route) : void
 	{
-		self::assertInstanceOf(Route::class, $route->setActionParams(['foo', 'bar']));
+		self::assertInstanceOf(Route::class, $route->setActionArguments(['foo', 'bar']));
 		self::assertInstanceOf(Response::class, $route->run());
 		self::assertSame('foo, bar', $this->response->getBody());
 		$this->response->setBody('');
-		self::assertInstanceOf(Route::class, $route->setActionParams(['param1', 'param2']));
+		self::assertInstanceOf(Route::class, $route->setActionArguments(['param1', 'param2']));
 		self::assertInstanceOf(Response::class, $route->run('construct1', 'construct2'));
 		self::assertSame('param1, param2, construct1, construct2', $this->response->getBody());
 	}
@@ -191,10 +191,10 @@ class RouteTest extends TestCase
 			'/',
 			'\Tests\Routing\Support\WithRouteActions::foo/0/a'
 		);
-		$route->setActionParams(['param1', 'param2']);
+		$route->setActionArguments(['arg1', 'arg2']);
 		$this->expectException(\InvalidArgumentException::class);
 		$this->expectExceptionMessage(
-			'Action parameter is not numeric on index 1, on unnamed route'
+			'Action argument is not numeric on index 1, on unnamed route'
 		);
 		$route->run();
 	}
@@ -207,10 +207,10 @@ class RouteTest extends TestCase
 			'/',
 			'\Tests\Routing\Support\WithRouteActions::foo/0/1/2'
 		);
-		$route->setActionParams(['param1', 'param2']);
+		$route->setActionArguments(['arg1', 'arg2']);
 		$this->expectException(\InvalidArgumentException::class);
 		$this->expectExceptionMessage(
-			'Undefined action parameter: 2, on unnamed route'
+			'Undefined action argument: 2, on unnamed route'
 		);
 		$route->run();
 	}
