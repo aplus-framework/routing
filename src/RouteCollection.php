@@ -345,7 +345,7 @@ class RouteCollection implements \Countable
 		array $except = [],
 		string $placeholder = '{int}'
 	) : array {
-		$path = $this->trimPath($path);
+		$path = \rtrim($path, '/') . '/';
 		$class .= '::';
 		if ($except) {
 			$except = \array_flip($except);
@@ -397,68 +397,6 @@ class RouteCollection implements \Countable
 	}
 
 	/**
-	 * Adds many Routes that can be used by a Web User Interface and as a REST Resource.
-	 *
-	 * @param string $path The URL path
-	 * @param string $class The name of the class where the resource will point
-	 * @param string $base_name The base name used as a Route name prefix
-	 * @param array<int,string> $except Actions not added. Allowed values are:
-	 * index, create, show, update, replace, delete, web_new, web_edit,
-	 * web_delete and web_update
-	 * @param string $placeholder The placeholder. Normally it matches an id, a number
-	 *
-	 * @return array<int,Route> The Routes added to the Collection
-	 */
-	public function webResource(
-		string $path,
-		string $class,
-		string $base_name,
-		array $except = [],
-		string $placeholder = '{int}'
-	) : array {
-		$routes = $this->resource($path, $class, $base_name, $except, $placeholder);
-		$path = $this->trimPath($path);
-		$class .= '::';
-		if ($except) {
-			$except = \array_flip($except);
-		}
-		if ( ! isset($except['web_new'])) {
-			$routes[] = $this->get(
-				$path . 'new',
-				$class . 'new',
-				$base_name . '.web_new'
-			);
-		}
-		if ( ! isset($except['web_edit'])) {
-			$routes[] = $this->get(
-				$path . $placeholder . '/edit',
-				$class . 'edit/0',
-				$base_name . '.web_edit'
-			);
-		}
-		if ( ! isset($except['web_delete'])) {
-			$routes[] = $this->post(
-				$path . $placeholder . '/delete',
-				$class . 'delete/0',
-				$base_name . '.web_delete'
-			);
-		}
-		if ( ! isset($except['web_update'])) {
-			$routes[] = $this->post(
-				$path . $placeholder . '/update',
-				$class . 'update/0',
-				$base_name . '.web_update'
-			);
-		}
-		return $routes;
-	}
-
-	protected function trimPath(string $path) : string
-	{
-		return \rtrim($path, '/') . '/';
-	}
-
-	/**
 	 * Adds many Routes that can be used by a User Interface.
 	 *
 	 * @param string $path The URL path
@@ -477,7 +415,7 @@ class RouteCollection implements \Countable
 		array $except = [],
 		string $placeholder = '{int}'
 	) : array {
-		$path = $this->trimPath($path);
+		$path = \rtrim($path, '/') . '/';
 		$class .= '::';
 		if ($except) {
 			$except = \array_flip($except);
