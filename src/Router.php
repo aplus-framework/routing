@@ -66,10 +66,7 @@ class Router
 	public function __construct(Response $response, Language $language = null)
 	{
 		$this->response = $response;
-		if ($language === null) {
-			$language = new Language('en');
-		}
-		$this->language = $language;
+		$this->language = $language ?? new Language('en');
 		$this->language->addDirectory(__DIR__ . '/Languages');
 	}
 
