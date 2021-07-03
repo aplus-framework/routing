@@ -188,41 +188,41 @@ class Router
 
 	/**
 	 * @param string $string
-	 * @param string ...$params
+	 * @param string ...$arguments
 	 *
 	 * @throws InvalidArgumentException if param not required, empty or invalid
 	 * @throws RuntimeException if a pattern position is not found
 	 *
 	 * @return string
 	 */
-	public function fillPlaceholders(string $string, string ...$params) : string
+	public function fillPlaceholders(string $string, string ...$arguments) : string
 	{
 		$string = $this->replacePlaceholders($string);
 		\preg_match_all('#\(([^)]+)\)#', $string, $matches);
 		if (empty($matches[0])) {
-			if ($params) {
+			if ($arguments) {
 				throw new InvalidArgumentException(
-					'String has no placeholders. Parameters not required'
+					'String has no placeholders. Arguments not required'
 				);
 			}
 			return $string;
 		}
 		foreach ($matches[0] as $index => $pattern) {
-			if ( ! isset($params[$index])) {
-				throw new InvalidArgumentException("Placeholder parameter is not set: {$index}");
+			if ( ! isset($arguments[$index])) {
+				throw new InvalidArgumentException("Placeholder argument is not set: {$index}");
 			}
-			if ( ! \preg_match('#' . $pattern . '#', $params[$index])) {
-				throw new InvalidArgumentException("Placeholder parameter is invalid: {$index}");
+			if ( ! \preg_match('#' . $pattern . '#', $arguments[$index])) {
+				throw new InvalidArgumentException("Placeholder argument is invalid: {$index}");
 			}
 			$pos = \strpos($string, $pattern);
 			if ($pos === false) {
 				throw new RuntimeException(
-					"Pattern position not found on placeholder parameter: {$index}"
+					"Pattern position not found on placeholder argument: {$index}"
 				);
 			}
 			$string = \substr_replace(
 				$string,
-				$params[$index],
+				$arguments[$index],
 				$pos,
 				\strlen($pattern)
 			);
