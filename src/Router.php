@@ -561,9 +561,6 @@ class Router
 		foreach ($this->getCollections() as $collection) {
 			foreach ($collection->routes as $routes) {
 				foreach ($routes as $route) {
-					/**
-					 * @var Route $route
-					 */
 					if ($route->getName() === $name) {
 						return $route;
 					}
@@ -587,9 +584,6 @@ class Router
 		foreach ($this->getCollections() as $collection) {
 			foreach ($collection->routes as $routes) {
 				foreach ($routes as $route) {
-					/**
-					 * @var Route $route
-					 */
 					if ($route->getName() === $name) {
 						return true;
 					}
@@ -600,7 +594,8 @@ class Router
 	}
 
 	/**
-	 * @return array<string,array>
+	 * @return array<string,Route[]> The HTTP Methods as keys and its Routes as
+	 * values
 	 */
 	#[Pure]
 	public function getRoutes() : array
