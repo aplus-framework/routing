@@ -20,7 +20,7 @@
 	],
 	"require": {
 		"php": ">=8.0",
-		"natanfelles/http": "^3.8",
+		"natanfelles/http": "^3.9",
 		"natanfelles/language": "^1.4"
 	},
 	"require-dev": {

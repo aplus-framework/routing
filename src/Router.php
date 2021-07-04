@@ -103,12 +103,14 @@ class Router
 			$this->getMatchedOrigin(),
 			$this->getMatchedPath(),
 			$this->defaultRouteNotFound ?? function () {
-				$this->response->setStatusLine(404);
+				$this->response->setStatusLine($this->response::CODE_NOT_FOUND);
 				if ($this->response->getRequest()->isJSON()) {
 					return $this->response->setJSON([
 						'error' => [
-							'code' => 404,
-							'reason' => 'Not Found',
+							'code' => $this->response::CODE_NOT_FOUND,
+							'reason' => $this->response::getResponseReason(
+								$this->response::CODE_NOT_FOUND
+							),
 						],
 					]);
 				}
@@ -394,9 +396,12 @@ class Router
 	protected function getAlternativeRoute(string $method, RouteCollection $collection) : Route
 	{
 		if ($method === 'OPTIONS' && $this->isAutoOptions()) {
-			$route = $this->getRouteWithAllowHeader($collection, 200);
+			$route = $this->getRouteWithAllowHeader($collection, $this->response::CODE_OK);
 		} elseif ($this->isAutoMethods()) {
-			$route = $this->getRouteWithAllowHeader($collection, 405);
+			$route = $this->getRouteWithAllowHeader(
+				$collection,
+				$this->response::CODE_METHOD_NOT_ALLOWED
+			);
 		}
 		if ( ! isset($route)) {
 			// @phpstan-ignore-next-line
