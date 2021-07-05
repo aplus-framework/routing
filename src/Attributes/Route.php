@@ -32,9 +32,9 @@ class Route
 	/**
 	 * Route constructor.
 	 *
-	 * @param array|string $methods The Route HTTP Methods
+	 * @param array<int,string>|string $methods The Route HTTP Methods
 	 * @param string $path The Route path
-	 * @param array $argumentsOrder The Route path arguments order
+	 * @param array<int,int> $argumentsOrder The Route path arguments order
 	 * @param string|null $name The Route name
 	 * @param string|null $origin The Route origin
 	 */

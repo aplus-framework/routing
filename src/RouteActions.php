@@ -44,7 +44,7 @@ abstract class RouteActions
 	 * the routing and the action method.
 	 *
 	 * @param string $method The action method
-	 * @param array $arguments The action method arguments
+	 * @param array<int,string> $arguments The action method arguments
 	 *
 	 * @return mixed Returns a response (any value, except null) to prevent the
 	 * route action execution or null to continue the process and call the
@@ -63,7 +63,7 @@ abstract class RouteActions
 	 * the action method and the final response.
 	 *
 	 * @param string $method The action method
-	 * @param array $arguments The action method arguments
+	 * @param array<int,string> $arguments The action method arguments
 	 * @param bool $run Indicates if the action method was executed
 	 * @param mixed $result The returned value directly from beforeAction or
 	 * from the action method, if it was executed

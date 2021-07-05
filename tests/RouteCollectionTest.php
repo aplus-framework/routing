@@ -82,8 +82,9 @@ final class RouteCollectionTest extends TestCase
 	public function testNotFound() : void
 	{
 		$this->router->match();
-		self::assertNull($this->collection->getRouteNotFound());
+		self::assertNull($this->collection->getRouteNotFound()); // @phpstan-ignore-line
 		$this->collection->notFound('Errors::notFound');
+		// @phpstan-ignore-next-line
 		self::assertInstanceOf(Route::class, $this->collection->getRouteNotFound());
 	}
 
@@ -275,7 +276,7 @@ final class RouteCollectionTest extends TestCase
 		$this->expectExceptionMessage(
 			'Method not allowed: ' . $this->collection::class . '::setOrigin'
 		);
-		$this->collection->setOrigin('http://domain.tld');
+		$this->collection->setOrigin('http://domain.tld'); // @phpstan-ignore-line
 	}
 
 	public function testMethodNotFound() : void
@@ -284,7 +285,7 @@ final class RouteCollectionTest extends TestCase
 		$this->expectExceptionMessage(
 			'Method not found: ' . $this->collection::class . '::bazz'
 		);
-		$this->collection->bazz();
+		$this->collection->bazz(); // @phpstan-ignore-line
 	}
 
 	public function testGetProperties() : void
@@ -296,6 +297,6 @@ final class RouteCollectionTest extends TestCase
 		$this->expectExceptionMessage(
 			'Cannot access property ' . $this->collection::class . '::$foo'
 		);
-		$foo = $this->collection->foo;
+		$foo = $this->collection->foo; // @phpstan-ignore-line
 	}
 }

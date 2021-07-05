@@ -63,6 +63,7 @@ final class RouteTest extends TestCase
 		);
 		self::assertSame(
 			'{scheme}://domain.tld/users/25',
+			// @phpstan-ignore-next-line
 			$this->route->getURL([], [25])
 		);
 		self::assertSame(
@@ -88,11 +89,12 @@ final class RouteTest extends TestCase
 	public function testPath() : void
 	{
 		self::assertSame('/users/{int}', $this->route->getPath());
-		self::assertSame('/users/10', $this->route->getPath(10));
+		self::assertSame('/users/10', $this->route->getPath(10)); // @phpstan-ignore-line
 		self::assertInstanceOf(Route::class, $this->route->setPath('/u/{uuid}/show/{int}'));
 		self::assertSame('/u/{uuid}/show/{int}', $this->route->getPath());
 		self::assertSame(
 			'/u/123e4567-e89b-12d3-a456-42661417400a/show/10',
+			// @phpstan-ignore-next-line
 			$this->route->getPath('123e4567-e89b-12d3-a456-42661417400a', 10)
 		);
 	}

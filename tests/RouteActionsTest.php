@@ -27,11 +27,12 @@ final class RouteActionsTest extends TestCase
 
 	public function testBeforeAction() : void
 	{
-		self::assertNull($this->actions->beforeAction('method', []));
+		self::assertNull($this->actions->beforeAction('method', [])); // @phpstan-ignore-line
 	}
 
 	public function testAfterAction() : void
 	{
+		// @phpstan-ignore-next-line
 		self::assertSame('result', $this->actions->afterAction('method', [], false, 'result'));
 	}
 
@@ -41,7 +42,7 @@ final class RouteActionsTest extends TestCase
 		$this->expectExceptionMessage(
 			'Action method not allowed: ' . WithRouteActions::class . '::notAllowed'
 		);
-		$this->actions->notAllowed();
+		$this->actions->notAllowed(); // @phpstan-ignore-line
 	}
 
 	public function testActionMethodNotFound() : void
@@ -50,6 +51,6 @@ final class RouteActionsTest extends TestCase
 		$this->expectExceptionMessage(
 			'Action method not found: ' . WithRouteActions::class . '::bazz'
 		);
-		$this->actions->bazz();
+		$this->actions->bazz(); // @phpstan-ignore-line
 	}
 }

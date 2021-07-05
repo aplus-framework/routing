@@ -12,6 +12,7 @@ namespace Tests\Routing;
 use Attribute;
 use Framework\Routing\Attributes\Route;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 use ReflectionObject;
 use Tests\Routing\Support\UsersRouteActionsResource;
 
@@ -20,6 +21,12 @@ use Tests\Routing\Support\UsersRouteActionsResource;
  */
 final class RouteAttributeTest extends TestCase
 {
+	/**
+	 * @param string $method
+	 * @param array<int,mixed> $arguments
+	 *
+	 * @throws ReflectionException
+	 */
 	protected function assertAttribute(string $method, array $arguments) : void
 	{
 		$reflection = new ReflectionObject(new UsersRouteActionsResource());

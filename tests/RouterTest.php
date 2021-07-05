@@ -297,7 +297,8 @@ final class RouterTest extends TestCase
 			'http://s1.domain.tld/users/25',
 			$this->router->fillPlaceholders(
 				'http://s{num}.domain.tld/users/{num}',
-				1,
+				1, // @phpstan-ignore-line
+				// @phpstan-ignore-next-line
 				25
 			)
 		);
@@ -319,6 +320,7 @@ final class RouterTest extends TestCase
 	{
 		$this->expectException(\InvalidArgumentException::class);
 		$this->expectExceptionMessage('String has no placeholders. Arguments not required');
+		// @phpstan-ignore-next-line
 		$this->router->fillPlaceholders('http://s1.domain.tld/users/30', 1, 25);
 	}
 
@@ -326,6 +328,7 @@ final class RouterTest extends TestCase
 	{
 		$this->expectException(\InvalidArgumentException::class);
 		$this->expectExceptionMessage('Placeholder argument is not set: 1');
+		// @phpstan-ignore-next-line
 		$this->router->fillPlaceholders('http://s{num}.domain-{alpha}.tld', 25);
 	}
 
