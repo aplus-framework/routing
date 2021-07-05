@@ -16,7 +16,7 @@ use Tests\Routing\Support\WithRouteActions;
 /**
  * Class RouteActionsTest.
  */
-class RouteActionsTest extends TestCase
+final class RouteActionsTest extends TestCase
 {
 	protected RouteActions $actions;
 

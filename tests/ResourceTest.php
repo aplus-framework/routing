@@ -19,7 +19,7 @@ use Tests\Routing\Support\UsersRouteActionsResource;
 /**
  * Class ResourceTest.
  */
-class ResourceTest extends TestCase
+final class ResourceTest extends TestCase
 {
 	protected Response $response;
 	protected Router $router;

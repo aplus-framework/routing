@@ -19,7 +19,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * Class RouterTest.
  */
-class RouterTest extends TestCase
+final class RouterTest extends TestCase
 {
 	protected Response $response;
 	protected Router $router;

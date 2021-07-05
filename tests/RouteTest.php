@@ -18,7 +18,10 @@ use Framework\Routing\RoutingException;
 use PHPUnit\Framework\TestCase;
 use Tests\Routing\Support\WithoutRouteActions;
 
-class RouteTest extends TestCase
+/**
+ * Class RouteTest.
+ */
+final class RouteTest extends TestCase
 {
 	protected Response $response;
 	protected Route $route;

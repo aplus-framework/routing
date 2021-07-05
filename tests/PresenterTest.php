@@ -19,7 +19,7 @@ use Tests\Routing\Support\UsersRouteActionsPresenter;
 /**
  * Class PresenterTest.
  */
-class PresenterTest extends TestCase
+final class PresenterTest extends TestCase
 {
 	protected Response $response;
 	protected Router $router;

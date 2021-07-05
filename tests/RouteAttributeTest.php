@@ -18,7 +18,7 @@ use Tests\Routing\Support\UsersRouteActionsResource;
 /**
  * Class RouteAttributeTest.
  */
-class RouteAttributeTest extends TestCase
+final class RouteAttributeTest extends TestCase
 {
 	protected function assertAttribute(string $method, array $arguments) : void
 	{
