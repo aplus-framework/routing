@@ -18,6 +18,18 @@ use Attribute;
 class Route
 {
 	/**
+	 * @var array<int,string>
+	 */
+	protected array $methods;
+	protected string $path;
+	/**
+	 * @var array<int,int>
+	 */
+	protected array $argumentsOrder;
+	protected ?string $name;
+	protected ?string $origin;
+
+	/**
 	 * Route constructor.
 	 *
 	 * @param array|string $methods The Route HTTP Methods
@@ -33,5 +45,55 @@ class Route
 		string $name = null,
 		string $origin = null,
 	) {
+		$methods = (array) $methods;
+		foreach ($methods as &$method) {
+			$method = \strtoupper($method);
+		}
+		unset($method);
+		$this->methods = $methods;
+		$this->path = $path;
+		$this->argumentsOrder = $argumentsOrder;
+		$this->name = $name;
+		$this->origin = $origin;
+	}
+
+	/**
+	 * @return array<int,string>
+	 */
+	public function getMethods() : array
+	{
+		return $this->methods;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getPath() : string
+	{
+		return $this->path;
+	}
+
+	/**
+	 * @return array<int,int>
+	 */
+	public function getArgumentsOrder() : array
+	{
+		return $this->argumentsOrder;
+	}
+
+	/**
+	 * @return string|null
+	 */
+	public function getName() : ?string
+	{
+		return $this->name;
+	}
+
+	/**
+	 * @return string|null
+	 */
+	public function getOrigin() : ?string
+	{
+		return $this->origin;
 	}
 }
