@@ -85,16 +85,16 @@ class Route
 	/**
 	 * Gets the URL.
 	 *
-	 * @param array<int,string> $origin_args Arguments to fill the URL Origin placeholders
-	 * @param array<int,string> $path_args Arguments to fill the URL Path placeholders
+	 * @param array<int,string> $originArgs Arguments to fill the URL Origin placeholders
+	 * @param array<int,string> $pathArgs Arguments to fill the URL Path placeholders
 	 *
 	 * @return string
 	 */
-	public function getURL(array $origin_args = [], array $path_args = []) : string
+	public function getURL(array $originArgs = [], array $pathArgs = []) : string
 	{
-		$origin_args = static::toArrayOfStrings($origin_args);
-		$path_args = static::toArrayOfStrings($path_args);
-		return $this->getOrigin(...$origin_args) . $this->getPath(...$path_args);
+		$originArgs = static::toArrayOfStrings($originArgs);
+		$pathArgs = static::toArrayOfStrings($pathArgs);
+		return $this->getOrigin(...$originArgs) . $this->getPath(...$pathArgs);
 	}
 
 	/**

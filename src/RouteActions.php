@@ -9,6 +9,8 @@
  */
 namespace Framework\Routing;
 
+use BadMethodCallException;
+
 /**
  * Class RouteActions.
  */
@@ -30,11 +32,11 @@ abstract class RouteActions
 		}
 		$class = static::class;
 		if (\method_exists($this, $method)) {
-			throw new \BadMethodCallException(
+			throw new BadMethodCallException(
 				"Action method not allowed: {$class}::{$method}"
 			);
 		}
-		throw new \BadMethodCallException("Action method not found: {$class}::{$method}");
+		throw new BadMethodCallException("Action method not found: {$class}::{$method}");
 	}
 
 	/**

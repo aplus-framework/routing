@@ -105,14 +105,14 @@ class RouteCollection implements \Countable
 	}
 
 	/**
-	 * @param string $http_method
+	 * @param string $httpMethod
 	 * @param Route $route
 	 *
 	 * @return static
 	 */
-	protected function addRoute(string $http_method, Route $route) : static
+	protected function addRoute(string $httpMethod, Route $route) : static
 	{
-		$this->routes[\strtoupper($http_method)][] = $route;
+		$this->routes[\strtoupper($httpMethod)][] = $route;
 		return $this;
 	}
 
@@ -150,7 +150,7 @@ class RouteCollection implements \Countable
 	/**
 	 * Adds a Route to match many HTTP Methods.
 	 *
-	 * @param array<int,string> $http_methods The HTTP Methods
+	 * @param array<int,string> $httpMethods The HTTP Methods
 	 * @param string $path The URL path
 	 * @param Closure|string $action The Route action
 	 * @param string|null $name The Route name
@@ -158,7 +158,7 @@ class RouteCollection implements \Countable
 	 * @return Route
 	 */
 	public function add(
-		array $http_methods,
+		array $httpMethods,
 		string $path,
 		Closure | string $action,
 		string $name = null
@@ -167,7 +167,7 @@ class RouteCollection implements \Countable
 		if ($name) {
 			$route->setName($name);
 		}
-		foreach ($http_methods as $method) {
+		foreach ($httpMethods as $method) {
 			$this->addRoute($method, $route);
 		}
 		return $route;
@@ -277,21 +277,21 @@ class RouteCollection implements \Countable
 	/**
 	 * Groups many Routes into a URL path.
 	 *
-	 * @param string $base_path The URL path to group in
+	 * @param string $basePath The URL path to group in
 	 * @param array<int,array|Route> $routes The Routes to be grouped
 	 * @param array<string,mixed> $options Custom options passed to the Routes
 	 *
 	 * @return array<int,array|Route> The same $routes with updated paths and options
 	 */
-	public function group(string $base_path, array $routes, array $options = []) : array
+	public function group(string $basePath, array $routes, array $options = []) : array
 	{
-		$base_path = \rtrim($base_path, '/');
+		$basePath = \rtrim($basePath, '/');
 		foreach ($routes as $route) {
 			if (\is_array($route)) {
-				$this->group($base_path, $route, $options);
+				$this->group($basePath, $route, $options);
 				continue;
 			}
-			$route->setPath($base_path . $route->getPath());
+			$route->setPath($basePath . $route->getPath());
 			if ($options) {
 				$specific_options = $options;
 				if ($route->getOptions()) {
@@ -331,7 +331,7 @@ class RouteCollection implements \Countable
 	 *
 	 * @param string $path The URL path
 	 * @param string $class The name of the class where the resource will point
-	 * @param string $base_name The base name used as a Route name prefix
+	 * @param string $baseName The base name used as a Route name prefix
 	 * @param array<int,string> $except Actions not added. Allowed values are:
 	 * index, create, show, update, replace and delete
 	 * @param string $placeholder The placeholder. Normally it matches an id, a number
@@ -341,7 +341,7 @@ class RouteCollection implements \Countable
 	public function resource(
 		string $path,
 		string $class,
-		string $base_name,
+		string $baseName,
 		array $except = [],
 		string $placeholder = '{int}'
 	) : array {
@@ -355,42 +355,42 @@ class RouteCollection implements \Countable
 			$routes[] = $this->get(
 				$path,
 				$class . 'index',
-				$base_name . '.index'
+				$baseName . '.index'
 			);
 		}
 		if ( ! isset($except['create'])) {
 			$routes[] = $this->post(
 				$path,
 				$class . 'create',
-				$base_name . '.create'
+				$baseName . '.create'
 			);
 		}
 		if ( ! isset($except['show'])) {
 			$routes[] = $this->get(
 				$path . $placeholder,
 				$class . 'show/0',
-				$base_name . '.show'
+				$baseName . '.show'
 			);
 		}
 		if ( ! isset($except['update'])) {
 			$routes[] = $this->patch(
 				$path . $placeholder,
 				$class . 'update/0',
-				$base_name . '.update'
+				$baseName . '.update'
 			);
 		}
 		if ( ! isset($except['replace'])) {
 			$routes[] = $this->put(
 				$path . $placeholder,
 				$class . 'replace/0',
-				$base_name . '.replace'
+				$baseName . '.replace'
 			);
 		}
 		if ( ! isset($except['delete'])) {
 			$routes[] = $this->delete(
 				$path . $placeholder,
 				$class . 'delete/0',
-				$base_name . '.delete'
+				$baseName . '.delete'
 			);
 		}
 		return $routes;
@@ -401,7 +401,7 @@ class RouteCollection implements \Countable
 	 *
 	 * @param string $path The URL path
 	 * @param string $class The name of the class where the resource will point
-	 * @param string $base_name The base name used as a Route name prefix
+	 * @param string $baseName The base name used as a Route name prefix
 	 * @param array<int,string> $except Actions not added. Allowed values are:
 	 * index, new, create, show, edit, update, remove and delete
 	 * @param string $placeholder The placeholder. Normally it matches an id, a number
@@ -411,7 +411,7 @@ class RouteCollection implements \Countable
 	public function presenter(
 		string $path,
 		string $class,
-		string $base_name,
+		string $baseName,
 		array $except = [],
 		string $placeholder = '{int}'
 	) : array {
@@ -425,56 +425,56 @@ class RouteCollection implements \Countable
 			$routes[] = $this->get(
 				$path,
 				$class . 'index',
-				$base_name . '.index'
+				$baseName . '.index'
 			);
 		}
 		if ( ! isset($except['new'])) {
 			$routes[] = $this->get(
 				$path . 'new',
 				$class . 'new',
-				$base_name . '.new'
+				$baseName . '.new'
 			);
 		}
 		if ( ! isset($except['create'])) {
 			$routes[] = $this->post(
 				$path,
 				$class . 'create',
-				$base_name . '.create'
+				$baseName . '.create'
 			);
 		}
 		if ( ! isset($except['show'])) {
 			$routes[] = $this->get(
 				$path . $placeholder,
 				$class . 'show/0',
-				$base_name . '.show'
+				$baseName . '.show'
 			);
 		}
 		if ( ! isset($except['edit'])) {
 			$routes[] = $this->get(
 				$path . $placeholder . '/edit',
 				$class . 'edit/0',
-				$base_name . '.edit'
+				$baseName . '.edit'
 			);
 		}
 		if ( ! isset($except['update'])) {
 			$routes[] = $this->post(
 				$path . $placeholder . '/update',
 				$class . 'update/0',
-				$base_name . '.update'
+				$baseName . '.update'
 			);
 		}
 		if ( ! isset($except['remove'])) {
 			$routes[] = $this->get(
 				$path . $placeholder . '/remove',
 				$class . 'remove/0',
-				$base_name . '.remove'
+				$baseName . '.remove'
 			);
 		}
 		if ( ! isset($except['delete'])) {
 			$routes[] = $this->post(
 				$path . $placeholder . '/delete',
 				$class . 'delete/0',
-				$base_name . '.delete'
+				$baseName . '.delete'
 			);
 		}
 		return $routes;
