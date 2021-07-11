@@ -13,23 +13,23 @@ use Framework\Routing\RouteActions;
 
 class WithRouteActions extends RouteActions
 {
-	/**
-	 * @var array<int,mixed>
-	 */
-	protected array $construct;
+    /**
+     * @var array<int,mixed>
+     */
+    protected array $construct;
 
-	public function __construct(mixed ...$construct)
-	{
-		$this->construct = $construct;
-	}
+    public function __construct(mixed ...$construct)
+    {
+        $this->construct = $construct;
+    }
 
-	public function index(string ...$params) : string
-	{
-		return \implode(', ', [...$params, ...$this->construct]);
-	}
+    public function index(string ...$params) : string
+    {
+        return \implode(', ', [...$params, ...$this->construct]);
+    }
 
-	protected function notAllowed() : void
-	{
-		//
-	}
+    protected function notAllowed() : void
+    {
+        //
+    }
 }

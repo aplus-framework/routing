@@ -18,51 +18,51 @@ use Framework\Routing\RouteActions;
  */
 class UsersRouteActionsPresenter extends RouteActions implements PresenterInterface
 {
-	#[Route('GET', '/users')]
-	public function index() : string
-	{
-		return __METHOD__;
-	}
+    #[Route('GET', '/users')]
+    public function index() : string
+    {
+        return __METHOD__;
+    }
 
-	#[Route('GET', '/users/new')]
-	public function new() : string
-	{
-		return __METHOD__;
-	}
+    #[Route('GET', '/users/new')]
+    public function new() : string
+    {
+        return __METHOD__;
+    }
 
-	#[Route('POST', '/users')]
-	public function create() : string
-	{
-		return __METHOD__;
-	}
+    #[Route('POST', '/users')]
+    public function create() : string
+    {
+        return __METHOD__;
+    }
 
-	#[Route('GET', '/users/{int}')]
-	public function show(string $id) : string
-	{
-		return __METHOD__ . '/' . $id;
-	}
+    #[Route('GET', '/users/{int}')]
+    public function show(string $id) : string
+    {
+        return __METHOD__ . '/' . $id;
+    }
 
-	#[Route('GET', '/users/{int}/edit')]
-	public function edit(string $id) : string
-	{
-		return __METHOD__ . '/' . $id;
-	}
+    #[Route('GET', '/users/{int}/edit')]
+    public function edit(string $id) : string
+    {
+        return __METHOD__ . '/' . $id;
+    }
 
-	#[Route('POST', '/users/{int}/update')]
-	public function update(string $id) : string
-	{
-		return __METHOD__ . '/' . $id;
-	}
+    #[Route('POST', '/users/{int}/update')]
+    public function update(string $id) : string
+    {
+        return __METHOD__ . '/' . $id;
+    }
 
-	#[Route('GET', '/users/{int}/remove')]
-	public function remove(string $id) : string
-	{
-		return __METHOD__ . '/' . $id;
-	}
+    #[Route('GET', '/users/{int}/remove')]
+    public function remove(string $id) : string
+    {
+        return __METHOD__ . '/' . $id;
+    }
 
-	#[Route('POST', '/users/{int}/delete')]
-	public function delete(string $id) : string
-	{
-		return __METHOD__ . '/' . $id;
-	}
+    #[Route('POST', '/users/{int}/delete')]
+    public function delete(string $id) : string
+    {
+        return __METHOD__ . '/' . $id;
+    }
 }

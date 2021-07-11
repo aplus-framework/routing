@@ -18,39 +18,39 @@ use Framework\Routing\RouteActions;
  */
 class UsersRouteActionsResource extends RouteActions implements ResourceInterface
 {
-	#[Route('GET', '/users')]
-	public function index() : string
-	{
-		return __METHOD__;
-	}
+    #[Route('GET', '/users')]
+    public function index() : string
+    {
+        return __METHOD__;
+    }
 
-	#[Route('POST', '/users')]
-	public function create() : string
-	{
-		return __METHOD__;
-	}
+    #[Route('POST', '/users')]
+    public function create() : string
+    {
+        return __METHOD__;
+    }
 
-	#[Route('GET', '/users/{int}')]
-	public function show(string $id) : string
-	{
-		return __METHOD__ . '/' . $id;
-	}
+    #[Route('GET', '/users/{int}')]
+    public function show(string $id) : string
+    {
+        return __METHOD__ . '/' . $id;
+    }
 
-	#[Route('PATCH', '/users/{int}')]
-	public function update(string $id) : string
-	{
-		return __METHOD__ . '/' . $id;
-	}
+    #[Route('PATCH', '/users/{int}')]
+    public function update(string $id) : string
+    {
+        return __METHOD__ . '/' . $id;
+    }
 
-	#[Route('PUT', '/users/{int}')]
-	public function replace(string $id) : string
-	{
-		return __METHOD__ . '/' . $id;
-	}
+    #[Route('PUT', '/users/{int}')]
+    public function replace(string $id) : string
+    {
+        return __METHOD__ . '/' . $id;
+    }
 
-	#[Route('DELETE', '/users/{int}')]
-	public function delete(string $id) : string
-	{
-		return __METHOD__ . '/' . $id;
-	}
+    #[Route('DELETE', '/users/{int}')]
+    public function delete(string $id) : string
+    {
+        return __METHOD__ . '/' . $id;
+    }
 }

@@ -8,6 +8,6 @@
  * file that was distributed with this source code.
  */
 return [
-	'error404' => 'Error 404',
-	'pageNotFound' => 'Página no encontrada',
+    'error404' => 'Error 404',
+    'pageNotFound' => 'Página no encontrada',
 ];
