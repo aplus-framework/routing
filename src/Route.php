@@ -170,11 +170,11 @@ class Route
 	 * Sets the Route Action.
 	 *
 	 * @param Closure|string $action A \Closure or a string in the format of the
-	 * __METHOD__ constant. Example: App\Blog::show/0/2/1. Where /0/2/1 is the
+	 * `__METHOD__` constant. Example: App\Blog::show/0/2/1. Where /0/2/1 is the
 	 * method parameters order
 	 *
-	 * @see setActionParams
-	 * @see run
+	 * @see Route::setActionArguments()
+	 * @see Route::run()
 	 *
 	 * @return static
 	 */
@@ -199,7 +199,7 @@ class Route
 	 * @param array<int,string> $arguments The arguments. Note that the indexes set
 	 * the order of how the arguments are passed to the Action
 	 *
-	 * @see setAction
+	 * @see Route::setAction()
 	 *
 	 * @return static
 	 */
