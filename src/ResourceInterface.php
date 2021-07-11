@@ -84,7 +84,7 @@ interface ResourceInterface
 	 * fail, return a 400 (Bad Request) with the validation errors in the body.
 	 *
 	 * NOTE: The HTTP PUT method requires an entire resource to be updated. E.g.
-	 * all fields in a database table row must be updated/replaced.
+	 * all fields in a database table row should be updated/replaced.
 	 *
 	 * @param string $id
 	 *
