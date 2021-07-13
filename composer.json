@@ -1,7 +1,7 @@
 {
-    "name": "natanfelles/routing",
+    "name": "aplus/routing",
     "type": "library",
-    "description": "The Framework Routing Library",
+    "description": "Aplus Framework Routing Library",
     "keywords": [
         "routing",
         "router",
@@ -10,7 +10,7 @@
         "rest",
         "restfull"
     ],
-    "homepage": "https://the-framework.gitlab.io/libraries/routing.html",
+    "homepage": "https://aplus-framework.gitlab.io/docs/routing",
     "license": "MIT",
     "authors": [
         {
@@ -52,9 +52,9 @@
     "prefer-stable": true,
     "support": {
         "email": "natanfelles@gmail.com",
-        "issues": "https://gitlab.com/the-framework/libraries/routing/issues",
-        "wiki": "https://gitlab.com/the-framework/libraries/routing/wikis/home",
-        "source": "https://gitlab.com/the-framework/libraries/routing",
-        "docs": "https://the-framework.gitlab.io/libraries/routing/docs/"
+        "issues": "https://gitlab.com/aplus-framework/libraries/routing/issues",
+        "wiki": "https://gitlab.com/aplus-framework/libraries/routing/wikis/home",
+        "source": "https://gitlab.com/aplus-framework/libraries/routing",
+        "docs": "https://aplus-framework.gitlab.io/libraries/routing/docs/"
     }
 }
