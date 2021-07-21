@@ -171,7 +171,7 @@ final class RouterTest extends TestCase
         $route = $this->router->match();
         self::assertSame('auto-allow-200', $route->getName());
         $route->run();
-        self::assertSame('200 OK', $this->response->getStatusLine());
+        self::assertSame('200 OK', $this->response->getStatus());
         self::assertSame('GET, HEAD, OPTIONS, POST', $this->response->getHeader('Allow'));
     }
 
@@ -185,7 +185,7 @@ final class RouterTest extends TestCase
         $route = $this->router->match();
         self::assertSame('not-found', $route->getName());
         $route->run();
-        self::assertSame('404 Not Found', $this->response->getStatusLine());
+        self::assertSame('404 Not Found', $this->response->getStatus());
         self::assertNull($this->response->getHeader('Allow'));
     }
 
@@ -199,7 +199,7 @@ final class RouterTest extends TestCase
         $route = $this->router->match();
         self::assertSame('auto-allow-405', $route->getName());
         $route->run();
-        self::assertSame('405 Method Not Allowed', $this->response->getStatusLine());
+        self::assertSame('405 Method Not Allowed', $this->response->getStatus());
         self::assertSame('GET, HEAD, POST', $this->response->getHeader('Allow'));
     }
 
@@ -213,7 +213,7 @@ final class RouterTest extends TestCase
         $route = $this->router->match();
         self::assertSame('not-found', $route->getName());
         $route->run();
-        self::assertSame('404 Not Found', $this->response->getStatusLine());
+        self::assertSame('404 Not Found', $this->response->getStatus());
         self::assertNull($this->response->getHeader('Allow'));
     }
 
@@ -348,7 +348,7 @@ final class RouterTest extends TestCase
             '<p>Page not found</p>',
             $this->router->match()->run()->getBody()
         );
-        self::assertSame('404 Not Found', $this->response->getStatusLine());
+        self::assertSame('404 Not Found', $this->response->getStatus());
     }
 
     public function testDefaultRouteNotFoundWithJSON() : void
@@ -361,7 +361,7 @@ final class RouterTest extends TestCase
             \json_encode(['error' => ['code' => 404, 'reason' => 'Not Found']]),
             $this->router->match()->run()->getBody()
         );
-        self::assertSame('404 Not Found', $this->response->getStatusLine());
+        self::assertSame('404 Not Found', $this->response->getStatus());
     }
 
     public function testDefaultRouteNotFoundWithCustomAction() : void
@@ -376,6 +376,6 @@ final class RouterTest extends TestCase
             'Default route not found',
             $this->router->match()->run()->getBody()
         );
-        self::assertSame('200 OK', $this->response->getStatusLine());
+        self::assertSame('200 OK', $this->response->getStatus());
     }
 }

@@ -103,12 +103,12 @@ class Router
             $this->getMatchedOrigin(),
             $this->getMatchedPath(),
             $this->defaultRouteNotFound ?? function () {
-                $this->response->setStatusLine($this->response::CODE_NOT_FOUND);
+                $this->response->setStatus($this->response::CODE_NOT_FOUND);
                 if ($this->response->getRequest()->isJSON()) {
                     return $this->response->setJSON([
                         'error' => [
                             'code' => $this->response::CODE_NOT_FOUND,
-                            'reason' => $this->response::getResponseReason(
+                            'reason' => $this->response::getReasonByCode(
                                 $this->response::CODE_NOT_FOUND
                             ),
                         ],
@@ -512,7 +512,7 @@ class Router
                 $this->getMatchedOrigin(),
                 $this->getMatchedPath(),
                 static function () use ($allowed, $code, $response) : void {
-                    $response->setStatusLine($code);
+                    $response->setStatus($code);
                     $response->setHeader('Allow', \implode(', ', $allowed));
                 }
             ))->setName('auto-allow-' . $code);
