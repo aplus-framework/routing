@@ -226,7 +226,7 @@ final class RouteTest extends TestCase
         $route->setActionArguments(['arg1', 'arg2']);
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'Action argument is not numeric on index 1, on unnamed route'
+            'Action argument is not numeric, or has not an allowed wildcard, on index 1, on unnamed route'
         );
         $route->run();
     }

@@ -345,7 +345,7 @@ class Route
             }
             if ($arg !== '*') {
                 throw new InvalidArgumentException(
-                    'Action argument is not numeric on index ' . $index
+                    'Action argument is not numeric, or has not an allowed wildcard, on index ' . $index
                     . $this->onNamedRoutePart()
                 );
             }
