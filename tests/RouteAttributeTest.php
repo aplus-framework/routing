@@ -30,8 +30,8 @@ final class RouteAttributeTest extends TestCase
     protected function assertAttribute(string $method, array $arguments) : void
     {
         $reflection = new ReflectionObject(new UsersRouteActionsResource());
-        $method = $reflection->getMethod($method);
-        $attributes = $method->getAttributes();
+        $reflectionMethod = $reflection->getMethod($method);
+        $attributes = $reflectionMethod->getAttributes();
         $routeAttribute = $attributes[0];
         self::assertSame(Route::class, $routeAttribute->getName());
         self::assertSame($arguments, $routeAttribute->getArguments());
@@ -43,8 +43,12 @@ final class RouteAttributeTest extends TestCase
         $instance = $routeAttribute->newInstance();
         self::assertSame([$arguments[0]], $instance->getMethods());
         self::assertSame($arguments[1], $instance->getPath());
-        self::assertSame([], $instance->getArgumentsOrder());
-        self::assertNull($instance->getName());
+        \in_array($method, ['index', 'create'])
+            ? self::assertSame('', $instance->getArguments())
+            : self::assertSame('0', $instance->getArguments());
+        $method === 'delete'
+            ? self::assertSame('users.delete', $instance->getName())
+            : self::assertNull($instance->getName());
         self::assertNull($instance->getOrigin());
     }
 
@@ -60,21 +64,21 @@ final class RouteAttributeTest extends TestCase
 
     public function testShow() : void
     {
-        $this->assertAttribute('show', ['GET', '/users/{int}']);
+        $this->assertAttribute('show', ['GET', '/users/{int}', '0']);
     }
 
     public function testUpdate() : void
     {
-        $this->assertAttribute('update', ['PATCH', '/users/{int}']);
+        $this->assertAttribute('update', ['PATCH', '/users/{int}', '0']);
     }
 
     public function testReplace() : void
     {
-        $this->assertAttribute('replace', ['PUT', '/users/{int}']);
+        $this->assertAttribute('replace', ['PUT', '/users/{int}', '0']);
     }
 
     public function testDelete() : void
     {
-        $this->assertAttribute('delete', ['DELETE', '/users/{int}']);
+        $this->assertAttribute('delete', ['DELETE', '/users/{int}', '0', 'users.delete']);
     }
 }

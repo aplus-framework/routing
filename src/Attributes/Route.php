@@ -22,10 +22,7 @@ class Route
      */
     protected array $methods;
     protected string $path;
-    /**
-     * @var array<int,int>
-     */
-    protected array $argumentsOrder;
+    protected string $arguments;
     protected ?string $name;
     protected ?string $origin;
 
@@ -34,14 +31,14 @@ class Route
      *
      * @param array<int,string>|string $methods The Route HTTP Methods
      * @param string $path The Route path
-     * @param array<int,int> $argumentsOrder The Route path arguments order
+     * @param string $arguments The Route action arguments
      * @param string|null $name The Route name
      * @param string|null $origin The Route origin
      */
     public function __construct(
         array | string $methods,
         string $path,
-        array $argumentsOrder = [],
+        string $arguments = '',
         string $name = null,
         string $origin = null,
     ) {
@@ -52,7 +49,7 @@ class Route
         unset($method);
         $this->methods = $methods;
         $this->path = $path;
-        $this->argumentsOrder = $argumentsOrder;
+        $this->arguments = $arguments;
         $this->name = $name;
         $this->origin = $origin;
     }
@@ -74,11 +71,11 @@ class Route
     }
 
     /**
-     * @return array<int,int>
+     * @return string
      */
-    public function getArgumentsOrder() : array
+    public function getArguments() : string
     {
-        return $this->argumentsOrder;
+        return $this->arguments;
     }
 
     /**

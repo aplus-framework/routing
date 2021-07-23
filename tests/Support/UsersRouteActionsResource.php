@@ -30,25 +30,25 @@ class UsersRouteActionsResource extends RouteActions implements ResourceInterfac
         return __METHOD__;
     }
 
-    #[Route('GET', '/users/{int}')]
+    #[Route('GET', '/users/{int}', '0')]
     public function show(string $id) : string
     {
         return __METHOD__ . '/' . $id;
     }
 
-    #[Route('PATCH', '/users/{int}')]
+    #[Route('PATCH', '/users/{int}', '0')]
     public function update(string $id) : string
     {
         return __METHOD__ . '/' . $id;
     }
 
-    #[Route('PUT', '/users/{int}')]
+    #[Route('PUT', '/users/{int}', '0')]
     public function replace(string $id) : string
     {
         return __METHOD__ . '/' . $id;
     }
 
-    #[Route('DELETE', '/users/{int}')]
+    #[Route('DELETE', '/users/{int}', '0', 'users.delete')]
     public function delete(string $id) : string
     {
         return __METHOD__ . '/' . $id;
