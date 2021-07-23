@@ -145,11 +145,11 @@ final class RouterTest extends TestCase
         self::assertSame(['25'], $this->router->getMatchedRoute()->getActionArguments());
     }
 
-    public function testGetMatchedURL() : void
+    public function testGetMatchedUrl() : void
     {
-        self::assertNull($this->router->getMatchedURL());
+        self::assertNull($this->router->getMatchedUrl());
         $this->router->match();
-        self::assertSame('http://domain.tld/', $this->router->getMatchedURL());
+        self::assertSame('http://domain.tld/', $this->router->getMatchedUrl());
     }
 
     public function testOptionsRoute() : void

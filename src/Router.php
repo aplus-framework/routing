@@ -104,8 +104,8 @@ class Router
             $this->getMatchedPath(),
             $this->defaultRouteNotFound ?? function () {
                 $this->response->setStatus($this->response::CODE_NOT_FOUND);
-                if ($this->response->getRequest()->isJSON()) {
-                    return $this->response->setJSON([
+                if ($this->response->getRequest()->isJson()) {
+                    return $this->response->setJson([
                         'error' => [
                             'code' => $this->response::CODE_NOT_FOUND,
                             'reason' => $this->response::getReasonByCode(
@@ -244,7 +244,7 @@ class Router
     public function serve(?string $origin, callable $callable) : void
     {
         if ($origin === null) {
-            $origin = $this->response->getRequest()->getURL()->getOrigin();
+            $origin = $this->response->getRequest()->getUrl()->getOrigin();
         }
         $collection = new RouteCollection($this, $origin);
         $callable($collection);
@@ -326,7 +326,7 @@ class Router
     }
 
     #[Pure]
-    public function getMatchedURL() : ?string
+    public function getMatchedUrl() : ?string
     {
         return $this->getMatchedOrigin()
             ? $this->getMatchedOrigin() . $this->getMatchedPath()
@@ -383,7 +383,7 @@ class Router
         if ($method === 'HEAD') {
             $method = 'GET';
         }
-        $url = $this->response->getRequest()->getURL();
+        $url = $this->response->getRequest()->getUrl();
         $this->setMatchedPath($url->getPath());
         $this->setMatchedOrigin($url->getOrigin());
         $collection = $this->matchCollection($url->getOrigin());

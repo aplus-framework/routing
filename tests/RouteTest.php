@@ -51,24 +51,24 @@ final class RouteTest extends TestCase
         self::assertSame('https://domain.tld', $this->route->getOrigin('https'));
     }
 
-    public function testURL() : void
+    public function testUrl() : void
     {
         self::assertSame(
             '{scheme}://domain.tld/users/{int}',
-            $this->route->getURL()
+            $this->route->getUrl()
         );
         self::assertSame(
             'http://domain.tld/users/{int}',
-            $this->route->getURL(['http'])
+            $this->route->getUrl(['http'])
         );
         self::assertSame(
             '{scheme}://domain.tld/users/25',
             // @phpstan-ignore-next-line
-            $this->route->getURL([], [25])
+            $this->route->getUrl([], [25])
         );
         self::assertSame(
             'http://domain.tld/users/25',
-            $this->route->getURL(['http'], ['25'])
+            $this->route->getUrl(['http'], ['25'])
         );
     }
 

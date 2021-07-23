@@ -40,7 +40,7 @@ class Route
      *
      * @param Router $router A Router instance
      * @param string $origin URL Origin. A string in the following format:
-     *                               {scheme}://{hostname}[:{port}]
+     * {scheme}://{hostname}[:{port}]
      * @param string $path URL Path. A string starting with '/'
      * @param Closure|string $action The action
      */
@@ -90,7 +90,7 @@ class Route
      *
      * @return string
      */
-    public function getURL(array $originArgs = [], array $pathArgs = []) : string
+    public function getUrl(array $originArgs = [], array $pathArgs = []) : string
     {
         $originArgs = static::toArrayOfStrings($originArgs);
         $pathArgs = static::toArrayOfStrings($pathArgs);
