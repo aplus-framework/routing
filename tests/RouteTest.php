@@ -155,6 +155,17 @@ final class RouteTest extends TestCase
         $this->assertsForRunWithAction($route);
     }
 
+    public function testRunWithStringAsActionWithAsteriskWildcard() : void
+    {
+        $route = new Route(
+            $this->router,
+            'http://domain.tld',
+            '/',
+            '\Tests\Routing\Support\WithRouteActions::index/*'
+        );
+        $this->assertsForRunWithAction($route);
+    }
+
     public function testRunWithClassNotExists() : void
     {
         $route = new Route($this->router, 'http://domain.tld', '/', 'UnknownClass');
@@ -184,6 +195,22 @@ final class RouteTest extends TestCase
         $this->expectException(RoutingException::class);
         $this->expectExceptionMessage(
             'Class action method not exists: Tests\\Routing\\Support\\WithRouteActions::foo'
+        );
+        $route->run();
+    }
+
+    public function testRunWithActionArgumentAsteriskNotAlone() : void
+    {
+        $route = new Route(
+            $this->router,
+            'http://domain.tld',
+            '/',
+            '\Tests\Routing\Support\WithRouteActions::foo/0/*'
+        );
+        $route->setActionArguments(['arg1', 'arg2']);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Action arguments can only contain an asterisk wildcard and must be passed alone, on unnamed route'
         );
         $route->run();
     }

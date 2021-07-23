@@ -335,6 +335,16 @@ class Route
             $arguments = \array_values($arguments);
             foreach ($arguments as $index => $arg) {
                 if ( ! \is_numeric($arg)) {
+                    if ($arg === '*') {
+                        if ($index !== 0 || \count($arguments) > 1) {
+                            throw new InvalidArgumentException(
+                                'Action arguments can only contain an asterisk wildcard and must be passed alone'
+                                . $this->onNamedRoutePart()
+                            );
+                        }
+                        $arguments = $actionArguments;
+                        break;
+                    }
                     throw new InvalidArgumentException(
                         'Action argument is not numeric on index ' . $index
                         . $this->onNamedRoutePart()
