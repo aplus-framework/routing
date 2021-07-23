@@ -244,11 +244,11 @@ final class RouteCollectionTest extends TestCase
             $this->collection->routes['GET'][0]->getAction()
         );
         self::assertSame(
-            'App\Controllers\Blog\Blog::index',
+            'App\Controllers\Blog\Blog::index/*',
             $this->collection->routes['GET'][1]->getAction()
         );
         self::assertSame(
-            'App\Controllers\Blog\Blog::show/0',
+            'App\Controllers\Blog\Blog::show/*',
             $this->collection->routes['GET'][2]->getAction()
         );
     }

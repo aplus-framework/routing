@@ -354,42 +354,42 @@ class RouteCollection implements \Countable
         if ( ! isset($except['index'])) {
             $routes[] = $this->get(
                 $path,
-                $class . 'index',
+                $class . 'index/*',
                 $baseName . '.index'
             );
         }
         if ( ! isset($except['create'])) {
             $routes[] = $this->post(
                 $path,
-                $class . 'create',
+                $class . 'create/*',
                 $baseName . '.create'
             );
         }
         if ( ! isset($except['show'])) {
             $routes[] = $this->get(
                 $path . $placeholder,
-                $class . 'show/0',
+                $class . 'show/*',
                 $baseName . '.show'
             );
         }
         if ( ! isset($except['update'])) {
             $routes[] = $this->patch(
                 $path . $placeholder,
-                $class . 'update/0',
+                $class . 'update/*',
                 $baseName . '.update'
             );
         }
         if ( ! isset($except['replace'])) {
             $routes[] = $this->put(
                 $path . $placeholder,
-                $class . 'replace/0',
+                $class . 'replace/*',
                 $baseName . '.replace'
             );
         }
         if ( ! isset($except['delete'])) {
             $routes[] = $this->delete(
                 $path . $placeholder,
-                $class . 'delete/0',
+                $class . 'delete/*',
                 $baseName . '.delete'
             );
         }
@@ -424,56 +424,56 @@ class RouteCollection implements \Countable
         if ( ! isset($except['index'])) {
             $routes[] = $this->get(
                 $path,
-                $class . 'index',
+                $class . 'index/*',
                 $baseName . '.index'
             );
         }
         if ( ! isset($except['new'])) {
             $routes[] = $this->get(
                 $path . 'new',
-                $class . 'new',
+                $class . 'new/*',
                 $baseName . '.new'
             );
         }
         if ( ! isset($except['create'])) {
             $routes[] = $this->post(
                 $path,
-                $class . 'create',
+                $class . 'create/*',
                 $baseName . '.create'
             );
         }
         if ( ! isset($except['show'])) {
             $routes[] = $this->get(
                 $path . $placeholder,
-                $class . 'show/0',
+                $class . 'show/*',
                 $baseName . '.show'
             );
         }
         if ( ! isset($except['edit'])) {
             $routes[] = $this->get(
                 $path . $placeholder . '/edit',
-                $class . 'edit/0',
+                $class . 'edit/*',
                 $baseName . '.edit'
             );
         }
         if ( ! isset($except['update'])) {
             $routes[] = $this->post(
                 $path . $placeholder . '/update',
-                $class . 'update/0',
+                $class . 'update/*',
                 $baseName . '.update'
             );
         }
         if ( ! isset($except['remove'])) {
             $routes[] = $this->get(
                 $path . $placeholder . '/remove',
-                $class . 'remove/0',
+                $class . 'remove/*',
                 $baseName . '.remove'
             );
         }
         if ( ! isset($except['delete'])) {
             $routes[] = $this->post(
                 $path . $placeholder . '/delete',
-                $class . 'delete/0',
+                $class . 'delete/*',
                 $baseName . '.delete'
             );
         }
