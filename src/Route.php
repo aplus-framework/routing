@@ -330,34 +330,32 @@ class Route
         $arguments = \explode('/', $part);
         $method = $arguments[0];
         unset($arguments[0]);
-        if ($arguments) {
-            $actionArguments = $this->getActionArguments();
-            $arguments = \array_values($arguments);
-            foreach ($arguments as $index => $arg) {
-                if ( ! \is_numeric($arg)) {
-                    if ($arg === '*') {
-                        if ($index !== 0 || \count($arguments) > 1) {
-                            throw new InvalidArgumentException(
-                                'Action arguments can only contain an asterisk wildcard and must be passed alone'
-                                . $this->onNamedRoutePart()
-                            );
-                        }
-                        $arguments = $actionArguments;
-                        break;
-                    }
-                    throw new InvalidArgumentException(
-                        'Action argument is not numeric on index ' . $index
-                        . $this->onNamedRoutePart()
-                    );
-                }
+        $actionArguments = $this->getActionArguments();
+        $arguments = \array_values($arguments);
+        foreach ($arguments as $index => $arg) {
+            if (\is_numeric($arg)) {
                 $arg = (int) $arg;
-                if ( ! \array_key_exists($arg, $actionArguments)) {
-                    throw new InvalidArgumentException(
-                        "Undefined action argument: {$arg}" . $this->onNamedRoutePart()
-                    );
+                if (\array_key_exists($arg, $actionArguments)) {
+                    $arguments[$index] = $actionArguments[$arg];
+                    continue;
                 }
-                $arguments[$index] = $actionArguments[$arg];
+                throw new InvalidArgumentException(
+                    "Undefined action argument: {$arg}" . $this->onNamedRoutePart()
+                );
             }
+            if ($arg !== '*') {
+                throw new InvalidArgumentException(
+                    'Action argument is not numeric on index ' . $index
+                    . $this->onNamedRoutePart()
+                );
+            }
+            if ($index !== 0 || \count($arguments) > 1) {
+                throw new InvalidArgumentException(
+                    'Action arguments can only contain an asterisk wildcard and must be passed alone'
+                    . $this->onNamedRoutePart()
+                );
+            }
+            $arguments = $actionArguments;
         }
         return [
             $method,
