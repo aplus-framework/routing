@@ -17,6 +17,7 @@ use Framework\Routing\Router;
 use Framework\Routing\RoutingException;
 use PHPUnit\Framework\TestCase;
 use Tests\Routing\Support\WithoutRouteActions;
+use Tests\Routing\Support\WithRouteActions;
 
 /**
  * Class RouteTest.
@@ -339,5 +340,20 @@ final class RouteTest extends TestCase
             "Invalid action return type 'DateTime', on named route 'result-error'"
         );
         $route->run();
+    }
+
+    public function testScalarTypesCoercion() : void
+    {
+        $route = new Route(
+            $this->router,
+            'http://domain.tld',
+            '/',
+            WithRouteActions::class . '::noStrictTypes/*'
+        );
+        $route->setActionArguments(['1.1', '1.1', '1.1', '1.1']);
+        self::assertSame(
+            '{"bool":true,"float":1.1,"int":1,"string":"1.1"}',
+            $route->run()->getBody()
+        );
     }
 }

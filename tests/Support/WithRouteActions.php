@@ -28,6 +28,19 @@ class WithRouteActions extends RouteActions
         return \implode(', ', [...$params, ...$this->construct]);
     }
 
+    /**
+     * @param bool $bool
+     * @param float $float
+     * @param int $int
+     * @param string $string
+     *
+     * @return array<string,scalar>
+     */
+    public function noStrictTypes(bool $bool, float $float, int $int, string $string) : array
+    {
+        return \get_defined_vars();
+    }
+
     protected function notAllowed() : void
     {
         //
