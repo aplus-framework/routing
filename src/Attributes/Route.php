@@ -38,7 +38,7 @@ class Route
     public function __construct(
         array | string $methods,
         string $path,
-        string $arguments = '',
+        string $arguments = '*',
         string $name = null,
         string $origin = null,
     ) {

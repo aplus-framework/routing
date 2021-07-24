@@ -44,7 +44,7 @@ final class RouteAttributeTest extends TestCase
         self::assertSame([$arguments[0]], $instance->getMethods());
         self::assertSame($arguments[1], $instance->getPath());
         \in_array($method, ['index', 'create'])
-            ? self::assertSame('', $instance->getArguments())
+            ? self::assertSame('*', $instance->getArguments())
             : self::assertSame('0', $instance->getArguments());
         $method === 'delete'
             ? self::assertSame('users.delete', $instance->getName())
