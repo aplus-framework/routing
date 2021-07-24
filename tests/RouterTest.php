@@ -351,7 +351,7 @@ final class RouterTest extends TestCase
         self::assertSame('404 Not Found', $this->response->getStatus());
     }
 
-    public function testDefaultRouteNotFoundWithJSON() : void
+    public function testDefaultRouteNotFoundWithJson() : void
     {
         $this->prepare([
             'HTTP_CONTENT_TYPE' => 'application/json',

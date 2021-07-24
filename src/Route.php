@@ -303,7 +303,7 @@ class Route
             || $result instanceof \stdClass
             || $result instanceof \JsonSerializable
         ) {
-            $this->router->getResponse()->setJSON($result);
+            $this->router->getResponse()->setJson($result);
             return '';
         }
         $type = \get_debug_type($result);

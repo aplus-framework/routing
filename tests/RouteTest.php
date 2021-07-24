@@ -215,7 +215,7 @@ final class RouteTest extends TestCase
         $route->run();
     }
 
-    public function testRunWithActionParameterIsNotNumeric() : void
+    public function testRunWithActionArgumentIsNotNumeric() : void
     {
         $route = new Route(
             $this->router,
@@ -231,7 +231,7 @@ final class RouteTest extends TestCase
         $route->run();
     }
 
-    public function testRunWithUndefinedActionParameter() : void
+    public function testRunWithUndefinedActionArgument() : void
     {
         $route = new Route(
             $this->router,
