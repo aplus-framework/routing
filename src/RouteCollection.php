@@ -12,6 +12,7 @@ namespace Framework\Routing;
 use BadMethodCallException;
 use Closure;
 use Error;
+use LogicException;
 
 /**
  * Class RouteCollection.
@@ -152,7 +153,7 @@ class RouteCollection implements \Countable
      *
      * @param array<int,string> $httpMethods The HTTP Methods
      * @param string $path The URL path
-     * @param Closure|string $action The Route action
+     * @param array<int,string>|Closure|string $action The Route action
      * @param string|null $name The Route name
      *
      * @return Route
@@ -160,9 +161,12 @@ class RouteCollection implements \Countable
     public function add(
         array $httpMethods,
         string $path,
-        Closure | string $action,
+        array | Closure | string $action,
         string $name = null
     ) : Route {
+        if (\is_array($action)) {
+            $action = $this->makeRouteActionFromArray($action);
+        }
         $route = new Route($this->router, $this->origin, $path, $action);
         if ($name) {
             $route->setName($name);
@@ -174,16 +178,43 @@ class RouteCollection implements \Countable
     }
 
     /**
+     * @param array<int,string> $action
+     *
+     * @return string
+     */
+    protected function makeRouteActionFromArray(array $action) : string
+    {
+        if ( ! isset($action[0])) {
+            throw new LogicException(
+                'When adding a route action as array, the index 0 must be a FQCN'
+            );
+        }
+        if ( ! isset($action[1])) {
+            $action[1] = $this->router->getDefaultRouteActionMethod();
+        }
+        if ( ! isset($action[2])) {
+            $action[2] = '*';
+        }
+        if ($action[2] !== '') {
+            $action[2] = '/' . $action[2];
+        }
+        return $action[0] . '::' . $action[1] . $action[2];
+    }
+
+    /**
      * Adds a Route to match the HTTP Method GET.
      *
      * @param string $path The URL path
-     * @param Closure|string $action The Route action
+     * @param array<int,string>|Closure|string $action The Route action
      * @param string|null $name The Route name
      *
      * @return Route The Route added to the Collection
      */
-    public function get(string $path, Closure | string $action, string $name = null) : Route
-    {
+    public function get(
+        string $path,
+        array | Closure | string $action,
+        string $name = null
+    ) : Route {
         return $this->add(['GET'], $path, $action, $name);
     }
 
@@ -191,13 +222,16 @@ class RouteCollection implements \Countable
      * Adds a Route to match the HTTP Method POST.
      *
      * @param string $path The URL path
-     * @param Closure|string $action The Route action
+     * @param array<int,string>|Closure|string $action The Route action
      * @param string|null $name The Route name
      *
      * @return Route The Route added to the Collection
      */
-    public function post(string $path, Closure | string $action, string $name = null) : Route
-    {
+    public function post(
+        string $path,
+        array | Closure | string $action,
+        string $name = null
+    ) : Route {
         return $this->add(['POST'], $path, $action, $name);
     }
 
@@ -205,13 +239,16 @@ class RouteCollection implements \Countable
      * Adds a Route to match the HTTP Method PUT.
      *
      * @param string $path The URL path
-     * @param Closure|string $action The Route action
+     * @param array<int,string>|Closure|string $action The Route action
      * @param string|null $name The Route name
      *
      * @return Route The Route added to the Collection
      */
-    public function put(string $path, Closure | string $action, string $name = null) : Route
-    {
+    public function put(
+        string $path,
+        array | Closure | string $action,
+        string $name = null
+    ) : Route {
         return $this->add(['PUT'], $path, $action, $name);
     }
 
@@ -219,13 +256,16 @@ class RouteCollection implements \Countable
      * Adds a Route to match the HTTP Method PATCH.
      *
      * @param string $path The URL path
-     * @param Closure|string $action The Route action
+     * @param array<int,string>|Closure|string $action The Route action
      * @param string|null $name The Route name
      *
      * @return Route The Route added to the Collection
      */
-    public function patch(string $path, Closure | string $action, string $name = null) : Route
-    {
+    public function patch(
+        string $path,
+        array | Closure | string $action,
+        string $name = null
+    ) : Route {
         return $this->add(['PATCH'], $path, $action, $name);
     }
 
@@ -233,13 +273,16 @@ class RouteCollection implements \Countable
      * Adds a Route to match the HTTP Method DELETE.
      *
      * @param string $path The URL path
-     * @param Closure|string $action The Route action
+     * @param array<int,string>|Closure|string $action The Route action
      * @param string|null $name The Route name
      *
      * @return Route The Route added to the Collection
      */
-    public function delete(string $path, Closure | string $action, string $name = null) : Route
-    {
+    public function delete(
+        string $path,
+        array | Closure | string $action,
+        string $name = null
+    ) : Route {
         return $this->add(['DELETE'], $path, $action, $name);
     }
 
@@ -247,13 +290,16 @@ class RouteCollection implements \Countable
      * Adds a Route to match the HTTP Method OPTIONS.
      *
      * @param string $path The URL path
-     * @param Closure|string $action The Route action
+     * @param array<int,string>|Closure|string $action The Route action
      * @param string|null $name The Route name
      *
      * @return Route The Route added to the Collection
      */
-    public function options(string $path, Closure | string $action, string $name = null) : Route
-    {
+    public function options(
+        string $path,
+        array | Closure | string $action,
+        string $name = null
+    ) : Route {
         return $this->add(['OPTIONS'], $path, $action, $name);
     }
 

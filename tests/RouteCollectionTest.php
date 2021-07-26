@@ -12,6 +12,7 @@ namespace Tests\Routing;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
 use Framework\Routing\Route;
+use Framework\Routing\RouteActions;
 use Framework\Routing\RouteCollection;
 use Framework\Routing\Router;
 use PHPUnit\Framework\TestCase;
@@ -77,6 +78,30 @@ final class RouteCollectionTest extends TestCase
         self::assertSame([], $this->collection->routes);
         $this->collection->options('/', 'RouteActions::foo');
         self::assertArrayHasKey('OPTIONS', $this->collection->routes);
+    }
+
+    public function testActionAsArray() : void
+    {
+        $this->collection->get('/', [RouteActions::class]);
+        self::assertSame(
+            'Framework\Routing\RouteActions::index/*',
+            $this->collection->routes['GET'][0]->getAction()
+        );
+        $this->collection->get('/', [RouteActions::class, 'index', '']);
+        self::assertSame(
+            'Framework\Routing\RouteActions::index',
+            $this->collection->routes['GET'][1]->getAction()
+        );
+        $this->collection->get('/{int}', [RouteActions::class, 'show']);
+        self::assertSame(
+            'Framework\Routing\RouteActions::show/*',
+            $this->collection->routes['GET'][2]->getAction()
+        );
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage(
+            'When adding a route action as array, the index 0 must be a FQCN'
+        );
+        $this->collection->get('/{int}', []);
     }
 
     public function testNotFound() : void
