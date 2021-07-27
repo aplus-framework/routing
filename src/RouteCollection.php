@@ -168,7 +168,7 @@ class RouteCollection implements \Countable
             $action = $this->makeRouteActionFromArray($action);
         }
         $route = new Route($this->router, $this->origin, $path, $action);
-        if ($name) {
+        if ($name !== null) {
             $route->setName($name);
         }
         foreach ($httpMethods as $method) {
@@ -184,7 +184,7 @@ class RouteCollection implements \Countable
      */
     protected function makeRouteActionFromArray(array $action) : string
     {
-        if ( ! isset($action[0])) {
+        if (empty($action[0])) {
             throw new LogicException(
                 'When adding a route action as array, the index 0 must be a FQCN'
             );
