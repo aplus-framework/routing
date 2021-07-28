@@ -240,8 +240,10 @@ class Router
      * {scheme}://{hostname}[:{port}]. Null to auto-detect.
      * @param callable $callable A function receiving an instance of RouteCollection
      * as the first parameter
+     *
+     * @return static
      */
-    public function serve(?string $origin, callable $callable) : void
+    public function serve(?string $origin, callable $callable) : static
     {
         if ($origin === null) {
             $origin = $this->response->getRequest()->getUrl()->getOrigin();
@@ -249,6 +251,7 @@ class Router
         $collection = new RouteCollection($this, $origin);
         $callable($collection);
         $this->addCollection($collection);
+        return $this;
     }
 
     /**
@@ -439,9 +442,6 @@ class Router
         if (empty($routes[$method])) {
             return null;
         }
-        /**
-         * @var Route $route
-         */
         foreach ($routes[$method] as $route) {
             $pattern = $this->replacePlaceholders($route->getPath());
             $matched = \preg_match(
