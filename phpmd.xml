@@ -3,23 +3,15 @@
     <!-- cleancode -->
     <rule ref="rulesets/cleancode.xml">
         <exclude name="BooleanArgumentFlag"/>
-        <exclude name="StaticAccess"/>
     </rule>
     <!-- codesize -->
-    <rule ref="rulesets/codesize.xml/ExcessiveParameterList">
+    <rule ref="rulesets/codesize.xml/CyclomaticComplexity">
         <properties>
-            <property name="minimum" value="7"/>
-        </properties>
-    </rule>
-    <rule ref="rulesets/codesize.xml/TooManyPublicMethods">
-        <properties>
-            <property name="maxmethods" value="20"/>
+            <property name="reportLevel" value="15"/>
         </properties>
     </rule>
     <!-- controversial -->
-    <rule ref="rulesets/controversial.xml">
-        <exclude name="CamelCaseVariableName"/>
-    </rule>
+    <rule ref="rulesets/controversial.xml"/>
     <!-- design -->
     <rule ref="rulesets/design.xml"/>
     <!-- naming -->
