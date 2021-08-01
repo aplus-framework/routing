@@ -106,7 +106,7 @@ class Router
                 $this->response->setStatus($this->response::CODE_NOT_FOUND);
                 if ($this->response->getRequest()->isJson()) {
                     return $this->response->setJson([
-                        'error' => [
+                        'status' => [
                             'code' => $this->response::CODE_NOT_FOUND,
                             'reason' => $this->response::getReasonByCode(
                                 $this->response::CODE_NOT_FOUND

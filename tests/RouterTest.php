@@ -358,7 +358,7 @@ final class RouterTest extends TestCase
             'REQUEST_URI' => '/not-found-slug',
         ]);
         self::assertSame(
-            \json_encode(['error' => ['code' => 404, 'reason' => 'Not Found']]),
+            \json_encode(['status' => ['code' => 404, 'reason' => 'Not Found']]),
             $this->router->match()->run()->getBody()
         );
         self::assertSame('404 Not Found', $this->response->getStatus());
