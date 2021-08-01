@@ -339,11 +339,11 @@ class RouteCollection implements \Countable
             }
             $route->setPath($basePath . $route->getPath());
             if ($options) {
-                $specific_options = $options;
+                $specificOptions = $options;
                 if ($route->getOptions()) {
-                    $specific_options = \array_replace_recursive($options, $route->getOptions());
+                    $specificOptions = \array_replace_recursive($options, $route->getOptions());
                 }
-                $route->setOptions($specific_options);
+                $route->setOptions($specificOptions);
             }
         }
         return $routes;

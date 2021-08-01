@@ -366,8 +366,8 @@ class Route
     #[Pure]
     protected function onNamedRoutePart() : string
     {
-        $route_name = $this->getName();
-        $part = $route_name ? "named route '{$route_name}'" : 'unnamed route';
+        $routeName = $this->getName();
+        $part = $routeName ? "named route '{$routeName}'" : 'unnamed route';
         return ', on ' . $part;
     }
 
