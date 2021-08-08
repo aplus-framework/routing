@@ -13,6 +13,8 @@ use BadMethodCallException;
 
 /**
  * Class RouteActions.
+ *
+ * @package routing
  */
 abstract class RouteActions
 {

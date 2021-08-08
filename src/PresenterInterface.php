@@ -16,6 +16,8 @@ namespace Framework\Routing;
  * using the HTTP GET and POST methods.
  *
  * @see https://developer.mozilla.org/en-US/docs/Glossary/UI
+ *
+ * @package routing
  */
 interface PresenterInterface
 {

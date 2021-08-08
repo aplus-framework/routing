@@ -20,6 +20,8 @@ use LogicException;
  * @property-read string $origin
  * @property-read Router $router
  * @property-read array<string, Route[]> $routes
+ *
+ * @package routing
  */
 class RouteCollection implements \Countable
 {

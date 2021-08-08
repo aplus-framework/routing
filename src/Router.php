@@ -18,6 +18,8 @@ use RuntimeException;
 
 /**
  * Class Router.
+ *
+ * @package routing
  */
 class Router
 {

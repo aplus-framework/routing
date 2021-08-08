@@ -11,6 +11,8 @@ namespace Framework\Routing;
 
 /**
  * Class RoutingException.
+ *
+ * @package routing
  */
 class RoutingException extends \RuntimeException
 {

@@ -13,6 +13,8 @@ use Attribute;
 
 /**
  * Class Route.
+ *
+ * @package routing
  */
 #[Attribute(Attribute::TARGET_METHOD | Attribute::IS_REPEATABLE)]
 class Route

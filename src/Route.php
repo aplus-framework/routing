@@ -18,6 +18,8 @@ use JsonException;
 
 /**
  * Class Route.
+ *
+ * @package routing
  */
 class Route
 {

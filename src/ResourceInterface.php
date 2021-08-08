@@ -16,6 +16,8 @@ namespace Framework\Routing;
  * using all correct HTTP methods to manage a resource.
  *
  * @see https://developer.mozilla.org/en-US/docs/Glossary/REST
+ *
+ * @package routing
  */
 interface ResourceInterface
 {
