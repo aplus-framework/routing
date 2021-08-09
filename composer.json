@@ -10,7 +10,7 @@
         "rest",
         "restfull"
     ],
-    "homepage": "https://aplus-framework.gitlab.io/docs/routing",
+    "homepage": "https://docs.aplus-framework.com/guides/libraries/routing/",
     "license": "MIT",
     "authors": [
         {
@@ -55,6 +55,6 @@
         "issues": "https://gitlab.com/aplus-framework/libraries/routing/issues",
         "wiki": "https://gitlab.com/aplus-framework/libraries/routing/wikis/home",
         "source": "https://gitlab.com/aplus-framework/libraries/routing",
-        "docs": "https://aplus-framework.gitlab.io/libraries/routing/docs/"
+        "docs": "https://docs.aplus-framework.com/guides/libraries/routing/"
     }
 }
