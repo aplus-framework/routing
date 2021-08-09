@@ -16,7 +16,7 @@
             <source dsn=".">
                 <path>src</path>
             </source>
-            <default-package-name>Routing</default-package-name>
+            <default-package-name>routing</default-package-name>
             <include-source>true</include-source>
         </api>
         <guide>
