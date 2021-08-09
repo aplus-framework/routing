@@ -1,7 +1,6 @@
 # Aplus Framework Routing Library
 
-- [Homepage](https://aplus-framework.com/docs/routing)
-- [API Documentation](https://aplus-framework.gitlab.io/libraries/routing/docs/)
+- [Documentation](https://docs.aplus-framework.com/guides/libraries/routing/)
 
 [![Pipeline](https://gitlab.com/aplus-framework/libraries/routing/badges/master/pipeline.svg)](https://gitlab.com/aplus-framework/libraries/routing/-/pipelines?scope=branches)
 [![Coverage](https://gitlab.com/aplus-framework/libraries/routing/badges/master/coverage.svg?job=test:php)](https://aplus-framework.gitlab.io/libraries/routing/coverage/)
