@@ -140,14 +140,16 @@ class RouteCollection implements \Countable
      */
     protected function getRouteNotFound() : ?Route
     {
-        return ! isset($this->notFoundAction)
-            ? null
-            : (new Route(
+        if (isset($this->notFoundAction)) {
+            $this->router->getResponse()->setStatus(404);
+            return (new Route(
                 $this->router,
                 $this->router->getMatchedOrigin(),
                 $this->router->getMatchedPath(),
                 $this->notFoundAction
             ))->setName('collection-not-found');
+        }
+        return null;
     }
 
     /**

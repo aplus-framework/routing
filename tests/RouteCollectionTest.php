@@ -106,11 +106,15 @@ final class RouteCollectionTest extends TestCase
 
     public function testNotFound() : void
     {
+        $response = $this->router->getResponse();
         $this->router->match();
         self::assertNull($this->collection->getRouteNotFound()); // @phpstan-ignore-line
+        self::assertSame(200, $response->getStatusCode());
         $this->collection->notFound('Errors::notFound');
+        self::assertSame(200, $response->getStatusCode());
         // @phpstan-ignore-next-line
         self::assertInstanceOf(Route::class, $this->collection->getRouteNotFound());
+        self::assertSame(404, $response->getStatusCode());
     }
 
     public function testResource() : void
