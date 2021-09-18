@@ -328,4 +328,14 @@ final class RouteCollectionTest extends TestCase
         );
         $foo = $this->collection->foo; // @phpstan-ignore-line
     }
+
+    public function testJsonSerialize() : void
+    {
+        $this->collection->get('/foo', 'Foo');
+        $this->collection->post('/bar', 'Bar');
+        self::assertSame(
+            '{"origin":"http://domain.tld","routes":{"GET":["http://domain.tld/foo"],"POST":["http://domain.tld/bar"]},"hasNotFound":false}',
+            \json_encode($this->collection, \JSON_UNESCAPED_SLASHES)
+        );
+    }
 }

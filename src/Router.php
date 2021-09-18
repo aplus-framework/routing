@@ -21,7 +21,7 @@ use RuntimeException;
  *
  * @package routing
  */
-class Router
+class Router implements \JsonSerializable
 {
     protected string $defaultRouteActionMethod = 'index';
     protected Closure | string $defaultRouteNotFound;
@@ -617,5 +617,19 @@ class Router
             }
         }
         return $result;
+    }
+
+    /**
+     * @return array<string,mixed>
+     */
+    public function jsonSerialize() : array
+    {
+        return [
+            'matched' => $this->getMatchedRoute(),
+            'collections' => $this->getCollections(),
+            'isAutoMethods' => $this->isAutoMethods(),
+            'isAutoOptions' => $this->isAutoOptions(),
+            'placeholders' => $this->getPlaceholders(),
+        ];
     }
 }

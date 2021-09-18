@@ -23,7 +23,7 @@ use LogicException;
  *
  * @package routing
  */
-class RouteCollection implements \Countable
+class RouteCollection implements \Countable, \JsonSerializable
 {
     protected Router $router;
     protected string $origin;
@@ -542,5 +542,17 @@ class RouteCollection implements \Countable
             $count += \count($routes);
         }
         return $count;
+    }
+
+    /**
+     * @return array<string,mixed>
+     */
+    public function jsonSerialize() : array
+    {
+        return [
+            'origin' => $this->origin,
+            'routes' => $this->routes,
+            'hasNotFound' => isset($this->notFoundAction),
+        ];
     }
 }

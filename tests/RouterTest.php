@@ -378,4 +378,16 @@ final class RouterTest extends TestCase
         );
         self::assertSame('200 OK', $this->response->getStatus());
     }
+
+    public function testJsonSerialize() : void
+    {
+        $json = \json_encode($this->router);
+        self::assertIsString($json);
+        $json = \json_decode($json); // @phpstan-ignore-line
+        self::assertNull($json->matched);
+        self::assertIsArray($json->collections);
+        self::assertIsBool($json->isAutoMethods);
+        self::assertIsBool($json->isAutoOptions);
+        self::assertArrayHasKey('{int}', (array) $json->placeholders);
+    }
 }

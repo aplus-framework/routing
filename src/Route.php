@@ -21,7 +21,7 @@ use JsonException;
  *
  * @package routing
  */
-class Route
+class Route implements \JsonSerializable
 {
     protected Router $router;
     protected string $origin;
@@ -371,6 +371,11 @@ class Route
         $routeName = $this->getName();
         $part = $routeName ? "named route '{$routeName}'" : 'unnamed route';
         return ', on ' . $part;
+    }
+
+    public function jsonSerialize() : string
+    {
+        return $this->getUrl();
     }
 
     /**

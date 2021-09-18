@@ -356,4 +356,12 @@ final class RouteTest extends TestCase
             $route->run()->getBody()
         );
     }
+
+    public function testJsonSerialize() : void
+    {
+        self::assertSame(
+            '"{scheme}:\/\/domain.tld\/users\/{int}"',
+            \json_encode($this->route)
+        );
+    }
 }
