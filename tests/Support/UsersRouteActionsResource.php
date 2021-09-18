@@ -9,6 +9,7 @@
  */
 namespace Tests\Routing\Support;
 
+use Framework\Routing\Attributes\Origin;
 use Framework\Routing\Attributes\Route;
 use Framework\Routing\ResourceInterface;
 use Framework\Routing\RouteActions;
@@ -16,6 +17,8 @@ use Framework\Routing\RouteActions;
 /**
  * Class UsersRouteActionsResource.
  */
+#[Origin('http://domain.com')]
+#[Origin('http://api.domain.xyz')]
 class UsersRouteActionsResource extends RouteActions implements ResourceInterface
 {
     #[Route('GET', '/users')]
