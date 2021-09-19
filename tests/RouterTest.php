@@ -395,4 +395,33 @@ final class RouterTest extends TestCase
         self::assertIsBool($json->isAutoOptions);
         self::assertArrayHasKey('{int}', (array) $json->placeholders);
     }
+
+    /**
+     * Test that some Router setters work.
+     *
+     * For some reason, as a performance improvement, they are not used
+     * internally, because I preferred to set values directly on properties.
+     *
+     * Sometimes we just do what we need to do, as quickly as possible.
+     */
+    public function testSatisfaction() : void
+    {
+        $router = new class($this->response) extends Router {
+            public function setMatchedCollection(RouteCollection $matchedCollection) : static
+            {
+                return parent::setMatchedCollection($matchedCollection);
+            }
+
+            public function setMatchedRoute(Route $route) : static
+            {
+                return parent::setMatchedRoute($route);
+            }
+        };
+        $collection = new RouteCollection($router, 'http://upaupa.com');
+        $router->setMatchedCollection($collection);
+        self::assertSame($collection, $router->getMatchedCollection());
+        $route = new Route($router, 'http://upaupa.com', '/', 'Home::index');
+        $router->setMatchedRoute($route);
+        self::assertSame($route, $router->getMatchedRoute());
+    }
 }
