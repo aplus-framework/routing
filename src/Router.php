@@ -49,6 +49,7 @@ class Router implements \JsonSerializable
      * @var array<int,RouteCollection>
      */
     protected array $collections = [];
+    protected ?RouteCollection $matchedCollection = null;
     protected ?Route $matchedRoute = null;
     protected ?string $matchedOrigin = null;
     /**
@@ -277,6 +278,18 @@ class Router implements \JsonSerializable
     }
 
     #[Pure]
+    public function getMatchedCollection() : ?RouteCollection
+    {
+        return $this->matchedCollection;
+    }
+
+    protected function setMatchedCollection(RouteCollection $matchedCollection) : static
+    {
+        $this->matchedCollection = $matchedCollection;
+        return $this;
+    }
+
+    #[Pure]
     public function getMatchedRoute() : ?Route
     {
         return $this->matchedRoute;
@@ -391,12 +404,12 @@ class Router implements \JsonSerializable
         $url = $this->response->getRequest()->getUrl();
         $this->setMatchedPath($url->getPath());
         $this->setMatchedOrigin($url->getOrigin());
-        $collection = $this->matchCollection($url->getOrigin());
-        if ( ! $collection) {
+        $this->matchedCollection = $this->matchCollection($url->getOrigin());
+        if ( ! $this->matchedCollection) {
             return $this->matchedRoute = $this->getDefaultRouteNotFound();
         }
-        return $this->matchedRoute = $this->matchRoute($method, $collection, $url->getPath())
-            ?? $this->getAlternativeRoute($method, $collection);
+        return $this->matchedRoute = $this->matchRoute($method, $this->matchedCollection, $url->getPath())
+            ?? $this->getAlternativeRoute($method, $this->matchedCollection);
     }
 
     protected function getAlternativeRoute(string $method, RouteCollection $collection) : Route

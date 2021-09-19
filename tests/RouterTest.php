@@ -120,6 +120,7 @@ final class RouterTest extends TestCase
             'HTTP_HOST' => 'unknown.tld',
         ]);
         self::assertSame('not-found', $this->router->match()->getName());
+        self::assertNull($this->router->getMatchedCollection());
     }
 
     public function testMatchCollectionReturnRouteNotFound() : void
@@ -127,11 +128,14 @@ final class RouterTest extends TestCase
         $this->prepare([
             'HTTP_HOST' => 'known.tld',
         ]);
-        $this->router->serve('http://known.tld', static function (RouteCollection $routes) : void {
+        $collection = null;
+        $this->router->serve('http://known.tld', static function (RouteCollection $routes) use (&$collection) : void {
             $routes->notFound(static function () : void {
             });
+            $collection = $routes;
         });
         self::assertSame('collection-not-found', $this->router->match()->getName());
+        self::assertSame($collection, $this->router->getMatchedCollection());
     }
 
     public function testMatchRoute() : void
@@ -143,6 +147,7 @@ final class RouterTest extends TestCase
         $this->router->match();
         self::assertSame('post.update', $this->router->getMatchedRoute()->getName());
         self::assertSame(['25'], $this->router->getMatchedRoute()->getActionArguments());
+        self::assertInstanceOf(RouteCollection::class, $this->router->getMatchedCollection());
     }
 
     public function testGetMatchedUrl() : void
