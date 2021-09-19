@@ -465,7 +465,6 @@ class Router implements \JsonSerializable
                 $matches
             );
             if ($matched) {
-                $this->setMatchedRoute($route);
                 unset($matches[0]);
                 $this->setMatchedPathArguments(\array_values($matches));
                 $route->setActionArguments($this->getMatchedPathArguments());
