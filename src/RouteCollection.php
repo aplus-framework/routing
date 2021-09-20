@@ -17,6 +17,7 @@ use LogicException;
 /**
  * Class RouteCollection.
  *
+ * @property-read string|null $name
  * @property-read string $origin
  * @property-read Router $router
  * @property-read array<string, Route[]> $routes
@@ -27,6 +28,7 @@ class RouteCollection implements \Countable, \JsonSerializable
 {
     protected Router $router;
     protected string $origin;
+    protected ?string $name;
     /**
      * Array of HTTP Methods as keys and array of Routes as values.
      *
@@ -44,11 +46,13 @@ class RouteCollection implements \Countable, \JsonSerializable
      * @param Router $router A Router instance
      * @param string $origin URL Origin. A string in the following format:
      * {scheme}://{hostname}[:{port}]
+     * @param string|null $name The RouteCollection name
      */
-    public function __construct(Router $router, string $origin)
+    public function __construct(Router $router, string $origin, string $name = null)
     {
         $this->router = $router;
         $this->setOrigin($origin);
+        $this->name = $name;
     }
 
     /**
@@ -82,6 +86,9 @@ class RouteCollection implements \Countable, \JsonSerializable
      */
     public function __get(string $property) : mixed
     {
+        if ($property === 'name') {
+            return $this->name;
+        }
         if ($property === 'origin') {
             return $this->origin;
         }
@@ -105,6 +112,22 @@ class RouteCollection implements \Countable, \JsonSerializable
     {
         $this->origin = \ltrim($origin, '/');
         return $this;
+    }
+
+    /**
+     * Get a Route name.
+     *
+     * @param string $name The current Route name
+     *
+     * @return string The Route name prefixed with the RouteCollection
+     * name and a dot if it is set
+     */
+    protected function getRouteName(string $name) : string
+    {
+        if (isset($this->name)) {
+            $name = $this->name . '.' . $name;
+        }
+        return $name;
     }
 
     /**
@@ -147,7 +170,9 @@ class RouteCollection implements \Countable, \JsonSerializable
                 $this->router->getMatchedOrigin(),
                 $this->router->getMatchedPath(),
                 $this->notFoundAction
-            ))->setName('collection-not-found');
+            ))->setName(
+                $this->getRouteName('collection-not-found')
+            );
         }
         return null;
     }
@@ -173,7 +198,7 @@ class RouteCollection implements \Countable, \JsonSerializable
         }
         $route = new Route($this->router, $this->origin, $path, $action);
         if ($name !== null) {
-            $route->setName($name);
+            $route->setName($this->getRouteName($name));
         }
         foreach ($httpMethods as $method) {
             $this->addRoute($method, $route);

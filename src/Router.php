@@ -243,15 +243,16 @@ class Router implements \JsonSerializable
      * {scheme}://{hostname}[:{port}]. Null to auto-detect.
      * @param callable $callable A function receiving an instance of RouteCollection
      * as the first parameter
+     * @param string|null $collectionName The RouteCollection name
      *
      * @return static
      */
-    public function serve(?string $origin, callable $callable) : static
+    public function serve(?string $origin, callable $callable, string $collectionName = null) : static
     {
         if ($origin === null) {
             $origin = $this->response->getRequest()->getUrl()->getOrigin();
         }
-        $collection = new RouteCollection($this, $origin);
+        $collection = new RouteCollection($this, $origin, $collectionName);
         $callable($collection);
         $this->addCollection($collection);
         return $this;

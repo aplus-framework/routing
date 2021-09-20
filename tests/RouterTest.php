@@ -138,6 +138,19 @@ final class RouterTest extends TestCase
         self::assertSame($collection, $this->router->getMatchedCollection());
     }
 
+    public function testMatchedCollectionName() : void
+    {
+        $this->prepare([
+            'HTTP_HOST' => 'known.tld',
+        ]);
+        $this->router->serve('http://known.tld', static function (RouteCollection $routes) : void {
+            $routes->notFound(static function () : void {
+            });
+        }, 'foo');
+        self::assertSame('foo.collection-not-found', $this->router->match()->getName());
+        self::assertSame('foo', $this->router->getMatchedCollection()->name);
+    }
+
     public function testMatchRoute() : void
     {
         $this->prepare([

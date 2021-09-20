@@ -38,6 +38,20 @@ final class RouteCollectionTest extends TestCase
         );
     }
 
+    public function testNames() : void
+    {
+        $collection = new RouteCollection(
+            $this->router,
+            'http://domain.tld',
+            'api'
+        );
+        self::assertSame('api', $collection->name);
+        $collection->get('/users', 'Users::index', 'users');
+        $collection->post('/users', 'Users::create', 'Users.create');
+        self::assertSame('api.users', $collection->routes['GET'][0]->getName());
+        self::assertSame('api.Users.create', $collection->routes['POST'][0]->getName());
+    }
+
     public function testGet() : void
     {
         self::assertSame([], $this->collection->routes);
