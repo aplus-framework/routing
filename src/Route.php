@@ -87,8 +87,8 @@ class Route implements \JsonSerializable
     /**
      * Gets the URL.
      *
-     * @param array<int,string> $originArgs Arguments to fill the URL Origin placeholders
-     * @param array<int,string> $pathArgs Arguments to fill the URL Path placeholders
+     * @param array<mixed> $originArgs Arguments to fill the URL Origin placeholders
+     * @param array<mixed> $pathArgs Arguments to fill the URL Path placeholders
      *
      * @return string
      */
@@ -379,7 +379,7 @@ class Route implements \JsonSerializable
     }
 
     /**
-     * @param array<int,mixed> $array
+     * @param array<mixed> $array
      *
      * @return array<int,string>
      */

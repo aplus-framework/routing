@@ -64,7 +64,6 @@ final class RouteTest extends TestCase
         );
         self::assertSame(
             '{scheme}://domain.tld/users/25',
-            // @phpstan-ignore-next-line
             $this->route->getUrl([], [25])
         );
         self::assertSame(

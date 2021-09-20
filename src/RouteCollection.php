@@ -41,12 +41,12 @@ class RouteCollection implements \Countable, \JsonSerializable
     protected Closure | string $notFoundAction;
 
     /**
-     * Collection constructor.
+     * RouteCollection constructor.
      *
      * @param Router $router A Router instance
      * @param string $origin URL Origin. A string in the following format:
      * {scheme}://{hostname}[:{port}]
-     * @param string|null $name The RouteCollection name
+     * @param string|null $name The collection name
      */
     public function __construct(Router $router, string $origin, string $name = null)
     {
@@ -119,8 +119,8 @@ class RouteCollection implements \Countable, \JsonSerializable
      *
      * @param string $name The current Route name
      *
-     * @return string The Route name prefixed with the RouteCollection
-     * name and a dot if it is set
+     * @return string The Route name prefixed with the collection name and a
+     * dot if it is set
      */
     protected function getRouteName(string $name) : string
     {
@@ -143,7 +143,7 @@ class RouteCollection implements \Countable, \JsonSerializable
     }
 
     /**
-     * Sets the action to the Collection Route Not Found.
+     * Sets the Route Not Found action for this collection.
      *
      * @param Closure|string $action the Route function to run when no Route
      * path is found for this collection
@@ -154,7 +154,7 @@ class RouteCollection implements \Countable, \JsonSerializable
     }
 
     /**
-     * Gets the Route Not Found for this Collection.
+     * Gets the Route Not Found for this collection.
      *
      * @see notFound
      *
@@ -237,7 +237,7 @@ class RouteCollection implements \Countable, \JsonSerializable
      * @param array<int,string>|Closure|string $action The Route action
      * @param string|null $name The Route name
      *
-     * @return Route The Route added to the Collection
+     * @return Route The Route added to the collection
      */
     public function get(
         string $path,
@@ -254,7 +254,7 @@ class RouteCollection implements \Countable, \JsonSerializable
      * @param array<int,string>|Closure|string $action The Route action
      * @param string|null $name The Route name
      *
-     * @return Route The Route added to the Collection
+     * @return Route The Route added to the collection
      */
     public function post(
         string $path,
@@ -271,7 +271,7 @@ class RouteCollection implements \Countable, \JsonSerializable
      * @param array<int,string>|Closure|string $action The Route action
      * @param string|null $name The Route name
      *
-     * @return Route The Route added to the Collection
+     * @return Route The Route added to the collection
      */
     public function put(
         string $path,
@@ -288,7 +288,7 @@ class RouteCollection implements \Countable, \JsonSerializable
      * @param array<int,string>|Closure|string $action The Route action
      * @param string|null $name The Route name
      *
-     * @return Route The Route added to the Collection
+     * @return Route The Route added to the collection
      */
     public function patch(
         string $path,
@@ -305,7 +305,7 @@ class RouteCollection implements \Countable, \JsonSerializable
      * @param array<int,string>|Closure|string $action The Route action
      * @param string|null $name The Route name
      *
-     * @return Route The Route added to the Collection
+     * @return Route The Route added to the collection
      */
     public function delete(
         string $path,
@@ -322,7 +322,7 @@ class RouteCollection implements \Countable, \JsonSerializable
      * @param array<int,string>|Closure|string $action The Route action
      * @param string|null $name The Route name
      *
-     * @return Route The Route added to the Collection
+     * @return Route The Route added to the collection
      */
     public function options(
         string $path,
@@ -339,7 +339,7 @@ class RouteCollection implements \Countable, \JsonSerializable
      * @param string $location The URL to redirect
      * @param int|null $code The status code of the response
      *
-     * @return Route The Route added to the Collection
+     * @return Route The Route added to the collection
      */
     public function redirect(string $path, string $location, int $code = null) : Route
     {
@@ -411,7 +411,7 @@ class RouteCollection implements \Countable, \JsonSerializable
      * index, create, show, update, replace and delete
      * @param string $placeholder The placeholder. Normally it matches an id, a number
      *
-     * @return array<int,Route> The Routes added to the Collection
+     * @return array<int,Route> The Routes added to the collection
      */
     public function resource(
         string $path,
@@ -481,7 +481,7 @@ class RouteCollection implements \Countable, \JsonSerializable
      * index, new, create, show, edit, update, remove and delete
      * @param string $placeholder The placeholder. Normally it matches an id, a number
      *
-     * @return array<int,Route> The Routes added to the Collection
+     * @return array<int,Route> The Routes added to the collection
      */
     public function presenter(
         string $path,
@@ -556,7 +556,7 @@ class RouteCollection implements \Countable, \JsonSerializable
     }
 
     /**
-     * Count routes in the Collection.
+     * Count routes in the collection.
      *
      * @return int
      */
