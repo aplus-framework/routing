@@ -1,6 +1,9 @@
 Routing
 =======
 
+.. image:: image.png
+    :alt: Aplus Framework Routing Library
+
 Aplus Framework Routing Library.
 
 - `Installation`_
