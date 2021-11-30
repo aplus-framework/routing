@@ -12,6 +12,7 @@ namespace Framework\Routing;
 use BadMethodCallException;
 use Closure;
 use Error;
+use Framework\HTTP\RequestInterface;
 use LogicException;
 
 /**
@@ -231,11 +232,13 @@ class RouteCollection implements \Countable, \JsonSerializable
     }
 
     /**
-     * Adds a Route to match the HTTP Method GET.
+     * Adds a Route to match the HTTP GET Method.
      *
      * @param string $path The URL path
      * @param array<int,string>|Closure|string $action The Route action
      * @param string|null $name The Route name
+     *
+     * @see RequestInterface::METHOD_GET
      *
      * @return Route The Route added to the collection
      */
@@ -248,11 +251,13 @@ class RouteCollection implements \Countable, \JsonSerializable
     }
 
     /**
-     * Adds a Route to match the HTTP Method POST.
+     * Adds a Route to match the HTTP POST Method.
      *
      * @param string $path The URL path
      * @param array<int,string>|Closure|string $action The Route action
      * @param string|null $name The Route name
+     *
+     * @see RequestInterface::METHOD_POST
      *
      * @return Route The Route added to the collection
      */
@@ -265,11 +270,13 @@ class RouteCollection implements \Countable, \JsonSerializable
     }
 
     /**
-     * Adds a Route to match the HTTP Method PUT.
+     * Adds a Route to match the HTTP PUT Method.
      *
      * @param string $path The URL path
      * @param array<int,string>|Closure|string $action The Route action
      * @param string|null $name The Route name
+     *
+     * @see RequestInterface::METHOD_PUT
      *
      * @return Route The Route added to the collection
      */
@@ -282,11 +289,13 @@ class RouteCollection implements \Countable, \JsonSerializable
     }
 
     /**
-     * Adds a Route to match the HTTP Method PATCH.
+     * Adds a Route to match the HTTP PATCH Method.
      *
      * @param string $path The URL path
      * @param array<int,string>|Closure|string $action The Route action
      * @param string|null $name The Route name
+     *
+     * @see RequestInterface::METHOD_PATCH
      *
      * @return Route The Route added to the collection
      */
@@ -299,11 +308,13 @@ class RouteCollection implements \Countable, \JsonSerializable
     }
 
     /**
-     * Adds a Route to match the HTTP Method DELETE.
+     * Adds a Route to match the HTTP DELETE Method.
      *
      * @param string $path The URL path
      * @param array<int,string>|Closure|string $action The Route action
      * @param string|null $name The Route name
+     *
+     * @see RequestInterface::METHOD_DELETE
      *
      * @return Route The Route added to the collection
      */
@@ -316,11 +327,13 @@ class RouteCollection implements \Countable, \JsonSerializable
     }
 
     /**
-     * Adds a Route to match the HTTP Method OPTIONS.
+     * Adds a Route to match the HTTP OPTIONS Method.
      *
      * @param string $path The URL path
      * @param array<int,string>|Closure|string $action The Route action
      * @param string|null $name The Route name
+     *
+     * @see RequestInterface::METHOD_OPTIONS
      *
      * @return Route The Route added to the collection
      */
@@ -411,6 +424,8 @@ class RouteCollection implements \Countable, \JsonSerializable
      * index, create, show, update, replace and delete
      * @param string $placeholder The placeholder. Normally it matches an id, a number
      *
+     * @see ResourceInterface
+     *
      * @return array<int,Route> The Routes added to the collection
      */
     public function resource(
@@ -480,6 +495,8 @@ class RouteCollection implements \Countable, \JsonSerializable
      * @param array<int,string> $except Actions not added. Allowed values are:
      * index, new, create, show, edit, update, remove and delete
      * @param string $placeholder The placeholder. Normally it matches an id, a number
+     *
+     * @see PresenterInterface
      *
      * @return array<int,Route> The Routes added to the collection
      */
