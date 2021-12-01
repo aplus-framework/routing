@@ -154,6 +154,25 @@ class Router implements \JsonSerializable
     }
 
     /**
+     * Gets the Route Not Found.
+     *
+     * Must be called after {@see Router::match()} and will return the Route
+     * Not Found from the matched collection or the Default Route Not Found
+     * from the router.
+     *
+     * @see RouteCollection::notFound()
+     * @see Router::setDefaultRouteNotFound()
+     *
+     * @return Route
+     */
+    public function getRouteNotFound() : Route
+    {
+        // @phpstan-ignore-next-line
+        return $this->getMatchedCollection()?->getRouteNotFound()
+            ?? $this->getDefaultRouteNotFound();
+    }
+
+    /**
      * @param array<string,string>|string $placeholder
      * @param string|null $pattern
      *

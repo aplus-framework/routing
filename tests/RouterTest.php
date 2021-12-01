@@ -397,6 +397,14 @@ final class RouterTest extends TestCase
         self::assertSame('200 OK', $this->response->getStatus());
     }
 
+    public function testRouteNotFound() : void
+    {
+        $this->router->match();
+        self::assertSame('not-found', $this->router->getRouteNotFound()->getName());
+        $this->router->getMatchedCollection()->notFound('foo');
+        self::assertSame('collection-not-found', $this->router->getRouteNotFound()->getName());
+    }
+
     public function testJsonSerialize() : void
     {
         $json = \json_encode($this->router);
