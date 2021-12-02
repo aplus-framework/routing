@@ -59,7 +59,7 @@ class Route implements \JsonSerializable
     }
 
     /**
-     * Gets the URL Origin.
+     * Gets the Route URL origin.
      *
      * @param string ...$arguments Arguments to fill the URL Origin placeholders
      *
@@ -85,7 +85,9 @@ class Route implements \JsonSerializable
     }
 
     /**
-     * Gets the URL.
+     * Gets the Route URL.
+     *
+     * Note: Arguments must be passed if placeholders need to be filled.
      *
      * @param array<mixed> $originArgs Arguments to fill the URL Origin placeholders
      * @param array<mixed> $pathArgs Arguments to fill the URL Path placeholders
@@ -100,6 +102,8 @@ class Route implements \JsonSerializable
     }
 
     /**
+     * Gets Route options.
+     *
      * @return array<string,mixed>
      */
     #[Pure]
@@ -109,6 +113,10 @@ class Route implements \JsonSerializable
     }
 
     /**
+     * Sets options to be used in a specific environment application.
+     * For example: its possible set Access Control List options, Locations,
+     * Middleware filters, etc.
+     *
      * @param array<string,mixed> $options
      *
      * @return static
@@ -119,6 +127,11 @@ class Route implements \JsonSerializable
         return $this;
     }
 
+    /**
+     * Gets the Route name.
+     *
+     * @return string|null
+     */
     #[Pure]
     public function getName() : ?string
     {
@@ -126,6 +139,8 @@ class Route implements \JsonSerializable
     }
 
     /**
+     * Sets the Route name.
+     *
      * @param string $name
      *
      * @return static
@@ -137,6 +152,8 @@ class Route implements \JsonSerializable
     }
 
     /**
+     * Sets the Route URL path.
+     *
      * @param string $path
      *
      * @return static
@@ -148,7 +165,7 @@ class Route implements \JsonSerializable
     }
 
     /**
-     * Gets the URL Path.
+     * Gets the Route URL path.
      *
      * @param string ...$arguments Arguments to fill the URL Path placeholders
      *
@@ -162,6 +179,11 @@ class Route implements \JsonSerializable
         return $this->path;
     }
 
+    /**
+     * Gets the Route action.
+     *
+     * @return Closure|string
+     */
     #[Pure]
     public function getAction() : Closure | string
     {
@@ -169,11 +191,17 @@ class Route implements \JsonSerializable
     }
 
     /**
-     * Sets the Route Action.
+     * Sets the Route action.
      *
-     * @param Closure|string $action A \Closure or a string in the format of the
-     * `__METHOD__` constant. Example: App\Blog::show/0/2/1. Where /0/2/1 is the
-     * method parameters order
+     * @param Closure|string $action A Closure or a string in the format of the
+     * `__METHOD__` constant. Example: `App\Blog::show`.
+     *
+     * The action can be suffixed with ordered parameters, separated by slashes,
+     * to set how the arguments will be passed to the class method.
+     * Example: `App\Blog::show/0/2/1`.
+     *
+     * And, also with the asterisk wildcard, to pass all arguments in the
+     * incoming order. Example: `App\Blog::show/*`
      *
      * @see Route::setActionArguments()
      * @see Route::run()
@@ -187,6 +215,8 @@ class Route implements \JsonSerializable
     }
 
     /**
+     * Gets the Route action arguments.
+     *
      * @return array<int,string>
      */
     #[Pure]
@@ -196,7 +226,7 @@ class Route implements \JsonSerializable
     }
 
     /**
-     * Sets the Action parameters.
+     * Sets the Route action arguments.
      *
      * @param array<int,string> $arguments The arguments. Note that the indexes set
      * the order of how the arguments are passed to the Action
@@ -213,13 +243,13 @@ class Route implements \JsonSerializable
     }
 
     /**
-     * Run the Route Action.
+     * Runs the Route action.
      *
-     * @param mixed ...$construct Class constructor parameters
+     * @param mixed ...$construct Class constructor arguments
      *
      * @throws JsonException if the action result is an array, or an instance of
      * JsonSerializable, and the Response cannot be set as JSON
-     * @throws RoutingException if class is not an instance of RouteAction,
+     * @throws RoutingException if class is not an instance of {@see RouteActions},
      * action method not exists or if the result of the action method has not
      * a valid type
      *

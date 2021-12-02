@@ -10,7 +10,10 @@
 namespace Framework\Routing;
 
 use Closure;
+use Framework\HTTP\Request;
+use Framework\HTTP\RequestInterface;
 use Framework\HTTP\Response;
+use Framework\HTTP\ResponseInterface;
 use Framework\Language\Language;
 use InvalidArgumentException;
 use JetBrains\PhpStorm\Pure;
@@ -66,6 +69,12 @@ class Router implements \JsonSerializable
     protected Response $response;
     protected Language $language;
 
+    /**
+     * Router constructor.
+     *
+     * @param Response $response
+     * @param Language|null $language
+     */
     public function __construct(Response $response, Language $language = null)
     {
         $this->response = $response;
@@ -74,6 +83,8 @@ class Router implements \JsonSerializable
     }
 
     /**
+     * Gets the HTTP Response instance.
+     *
      * @return Response
      */
     #[Pure]
@@ -82,6 +93,15 @@ class Router implements \JsonSerializable
         return $this->response;
     }
 
+    /**
+     * Gets the default route action method.
+     *
+     * Normally, it is "index".
+     *
+     * @see Router::setDefaultRouteActionMethod()
+     *
+     * @return string
+     */
     #[Pure]
     public function getDefaultRouteActionMethod() : string
     {
@@ -89,6 +109,9 @@ class Router implements \JsonSerializable
     }
 
     /**
+     * Set the class method name to be called when a Route action is set without
+     * a method.
+     *
      * @param string $action
      *
      * @return static
@@ -143,7 +166,9 @@ class Router implements \JsonSerializable
     }
 
     /**
-     * @param Closure|string $action
+     * Sets the Default Route Not Found action.
+     *
+     * @param Closure|string $action the function to run when no Route path is found
      *
      * @return static
      */
@@ -173,6 +198,8 @@ class Router implements \JsonSerializable
     }
 
     /**
+     * Adds Router placeholders.
+     *
      * @param array<string,string>|string $placeholder
      * @param string|null $pattern
      *
@@ -191,6 +218,8 @@ class Router implements \JsonSerializable
     }
 
     /**
+     * Gets all Router placeholders.
+     *
      * @return array<string,string>
      */
     #[Pure]
@@ -199,6 +228,14 @@ class Router implements \JsonSerializable
         return static::$placeholders;
     }
 
+    /**
+     * Replaces string placeholders with patterns or patterns with placeholders.
+     *
+     * @param string $string The string with placeholders or patterns
+     * @param bool $flip Set true to replace patterns with placeholders
+     *
+     * @return string
+     */
     #[Pure]
     public function replacePlaceholders(
         string $string,
@@ -212,13 +249,15 @@ class Router implements \JsonSerializable
     }
 
     /**
-     * @param string $string
-     * @param string ...$arguments
+     * Fills argument values into a string with placeholders.
+     *
+     * @param string $string The input string
+     * @param string ...$arguments Values to fill the string placeholders
      *
      * @throws InvalidArgumentException if param not required, empty or invalid
      * @throws RuntimeException if a pattern position is not found
      *
-     * @return string
+     * @return string The string with argument values in place of placeholders
      */
     public function fillPlaceholders(string $string, string ...$arguments) : string
     {
@@ -259,7 +298,7 @@ class Router implements \JsonSerializable
      * Serves a RouteCollection to a specific Origin.
      *
      * @param string|null $origin URL Origin. A string in the following format:
-     * {scheme}://{hostname}[:{port}]. Null to auto-detect.
+     * `{scheme}://{hostname}[:{port}]`. Null to auto-detect.
      * @param callable $callable A function receiving an instance of RouteCollection
      * as the first parameter
      * @param string|null $collectionName The RouteCollection name
@@ -289,6 +328,8 @@ class Router implements \JsonSerializable
     }
 
     /**
+     * Gets all Route Collections.
+     *
      * @return array<int,RouteCollection>
      */
     #[Pure]
@@ -297,6 +338,13 @@ class Router implements \JsonSerializable
         return $this->collections;
     }
 
+    /**
+     * Gets the matched Route Collection.
+     *
+     * Note: Will return null if no URL Origin was matched in a Route Collection
+     *
+     * @return RouteCollection|null
+     */
     #[Pure]
     public function getMatchedCollection() : ?RouteCollection
     {
@@ -309,6 +357,11 @@ class Router implements \JsonSerializable
         return $this;
     }
 
+    /**
+     * Gets the matched Route.
+     *
+     * @return Route|null
+     */
     #[Pure]
     public function getMatchedRoute() : ?Route
     {
@@ -326,6 +379,11 @@ class Router implements \JsonSerializable
         return $this;
     }
 
+    /**
+     * Gets the matched URL Path.
+     *
+     * @return string|null
+     */
     #[Pure]
     public function getMatchedPath() : ?string
     {
@@ -344,6 +402,8 @@ class Router implements \JsonSerializable
     }
 
     /**
+     * Gets the matched URL Path arguments.
+     *
      * @return array<int,string>
      */
     #[Pure]
@@ -363,6 +423,14 @@ class Router implements \JsonSerializable
         return $this;
     }
 
+    /**
+     * Gets the matched URL.
+     *
+     * Note: This method does not return the URL query. If it is needed, get
+     * with {@see Request::getUrl()}.
+     *
+     * @return string|null
+     */
     #[Pure]
     public function getMatchedUrl() : ?string
     {
@@ -371,6 +439,11 @@ class Router implements \JsonSerializable
             : null;
     }
 
+    /**
+     * Gets the matched URL Origin.
+     *
+     * @return string|null
+     */
     #[Pure]
     public function getMatchedOrigin() : ?string
     {
@@ -389,6 +462,8 @@ class Router implements \JsonSerializable
     }
 
     /**
+     * Gets the matched URL Origin arguments.
+     *
      * @return array<int,string>
      */
     #[Pure]
@@ -411,7 +486,7 @@ class Router implements \JsonSerializable
     /**
      * Match HTTP Method and URL against RouteCollections to process the request.
      *
-     * @see serve
+     * @see Router::serve()
      *
      * @return Route Always returns a Route, even if it is the Route Not Found
      */
@@ -495,10 +570,13 @@ class Router implements \JsonSerializable
     }
 
     /**
-     * Enable/disable the feature of auto detect and show HTTP allowed methods
-     * via the Allow header when the request has the OPTIONS method.
+     * Enable/disable the feature of auto-detect and show HTTP allowed methods
+     * via the Allow header when the Request has the OPTIONS method.
      *
      * @param bool $enabled true to enable, false to disable
+     *
+     * @see RequestInterface::METHOD_OPTIONS
+     * @see ResponseInterface::HEADER_ALLOW
      *
      * @return static
      */
@@ -508,6 +586,13 @@ class Router implements \JsonSerializable
         return $this;
     }
 
+    /**
+     * Tells if auto options is enabled.
+     *
+     * @see Router::setAutoOptions()
+     *
+     * @return bool
+     */
     #[Pure]
     public function isAutoOptions() : bool
     {
@@ -515,12 +600,15 @@ class Router implements \JsonSerializable
     }
 
     /**
-     * Enable/disable the feature of auto detect and show HTTP allowed methods
-     * via the Allow header when a route with the request method does not exist.
+     * Enable/disable the feature of auto-detect and show HTTP allowed methods
+     * via the Allow header when a route with the requested method does not exist.
      *
      * A response with code 405 "Method Not Allowed" will trigger.
      *
      * @param bool $enabled true to enable, false to disable
+     *
+     * @see ResponseInterface::CODE_METHOD_NOT_ALLOWED
+     * @see ResponseInterface::HEADER_ALLOW
      *
      * @return static
      */
@@ -530,6 +618,13 @@ class Router implements \JsonSerializable
         return $this;
     }
 
+    /**
+     * Tells if auto methods is enabled.
+     *
+     * @see Router::setAutoMethods()
+     *
+     * @return bool
+     */
     #[Pure]
     public function isAutoMethods() : bool
     {
@@ -611,7 +706,7 @@ class Router implements \JsonSerializable
     }
 
     /**
-     * Tells if has a named route.
+     * Tells if it has a named route.
      *
      * @param string $name
      *
@@ -634,6 +729,8 @@ class Router implements \JsonSerializable
     }
 
     /**
+     * Gets all routes, except the not found.
+     *
      * @return array<string,Route[]> The HTTP Methods as keys and its Routes as
      * values
      */

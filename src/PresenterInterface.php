@@ -9,11 +9,20 @@
  */
 namespace Framework\Routing;
 
+use Framework\HTTP\RequestInterface;
+use Framework\HTTP\Response;
+use Framework\HTTP\ResponseInterface;
+
 /**
  * Interface PresenterInterface.
  *
  * The interface for data management via a Web Browser UI
  * using the HTTP GET and POST methods.
+ *
+ * Note: If a presenter needs more than one parameter to get URL path information
+ * provided by placeholders, in addition to $id, do not implement this interface.
+ * But this interface can be a reference because its method names are used in
+ * {@see RouteCollection::presenter()}.
  *
  * @see https://developer.mozilla.org/en-US/docs/Glossary/UI
  *
@@ -24,7 +33,9 @@ interface PresenterInterface
     /**
      * Handles a GET request for /.
      *
-     * Usage: Show a list of paginated items.
+     * Common usage: Show a list of paginated items.
+     *
+     * @see RequestInterface::METHOD_GET
      *
      * @return mixed
      */
@@ -33,8 +44,11 @@ interface PresenterInterface
     /**
      * Handles a GET request for /new.
      *
-     * Usage: Show a form with inputs to create a new item.
-     * The POST action must go to the 'create' method.
+     * Common usage: Show a form with inputs to create a new item.
+     * The POST action must go to the 'create' method URL.
+     *
+     * @see PresenterInterface::create()
+     * @see RequestInterface::METHOD_GET
      *
      * @return mixed
      */
@@ -43,8 +57,14 @@ interface PresenterInterface
     /**
      * Handles a POST request for /.
      *
-     * Usage: Try to create a new item. On success, redirect to the 'show' or
-     * 'edit' method. On fail, back to the 'new' method.
+     * Common usage: Try to create a new item. On success, redirect to the 'show' or
+     * 'edit' method URL. On fail, back to the 'new' method URL.
+     *
+     * @see PresenterInterface::edit()
+     * @see PresenterInterface::new()
+     * @see PresenterInterface::show()
+     * @see RequestInterface::METHOD_POST
+     * @see Response::redirect()
      *
      * @return mixed
      */
@@ -53,9 +73,12 @@ interface PresenterInterface
     /**
      * Handles a GET request for /$id.
      *
-     * Usage: Show a specific item based on the $id.
+     * Common usage: Show a specific item based on the $id.
      *
      * @param string $id
+     *
+     * @see RequestInterface::METHOD_GET
+     * @see ResponseInterface::CODE_NOT_FOUND
      *
      * @return mixed
      */
@@ -64,10 +87,13 @@ interface PresenterInterface
     /**
      * Handles a GET request for /$id/edit.
      *
-     * Usage: Show a form to edit a specific item based on the $id.
-     * The POST action must go to the 'update' method.
+     * Common usage: Show a form to edit a specific item based on the $id.
+     * The POST action must go to the 'update' method URL.
      *
      * @param string $id
+     *
+     * @see PresenterInterface::update()
+     * @see RequestInterface::METHOD_GET
      *
      * @return mixed
      */
@@ -76,10 +102,14 @@ interface PresenterInterface
     /**
      * Handles a POST request for /$id/update.
      *
-     * Usage: Try to update an item based on the $id. After the process, back
-     * to the 'edit' method and show a message.
+     * Common usage: Try to update an item based on the $id. After the process, back
+     * to the 'edit' method URL and show a message.
      *
      * @param string $id
+     *
+     * @see PresenterInterface::edit()
+     * @see RequestInterface::METHOD_POST
+     * @see Response::redirect()
      *
      * @return mixed
      */
@@ -88,11 +118,14 @@ interface PresenterInterface
     /**
      * Handles a GET request for /$id/remove.
      *
-     * Usage: Show an alert message about the item to be deleted based on the
+     * Common usage: Show an alert message about the item to be deleted based on the
      * $id. The confirmation action must call a POST request to the 'delete'
-     * method.
+     * method URL.
      *
      * @param string $id
+     *
+     * @see PresenterInterface::delete()
+     * @see RequestInterface::METHOD_GET
      *
      * @return mixed
      */
@@ -101,11 +134,16 @@ interface PresenterInterface
     /**
      * Handles a POST request for /$id/delete.
      *
-     * Usage: Try to delete an item based on the $id. On success, go to the
-     * 'index' method and show a success message. On fail, back to the 'remove'
-     * method and show the error message.
+     * Common usage: Try to delete an item based on the $id. On success, go to the
+     * 'index' method URL and show a success message. On fail, back to the 'remove'
+     * method URL and show the error message.
      *
      * @param string $id
+     *
+     * @see PresenterInterface::index()
+     * @see PresenterInterface::remove()
+     * @see RequestInterface::METHOD_POST
+     * @see Response::redirect()
      *
      * @return mixed
      */

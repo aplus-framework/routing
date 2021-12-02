@@ -42,12 +42,12 @@ abstract class RouteActions
     }
 
     /**
-     * Runs just before the action method and after the constructor.
+     * Runs just before the class action method and after the constructor.
      *
      * Used to prepare settings, filter input data, acts as a middleware between
-     * the routing and the action method.
+     * the routing and the class action method.
      *
-     * @param string $method The action method
+     * @param string $method The action method name
      * @param array<int,string> $arguments The action method arguments
      *
      * @return mixed Returns a response (any value, except null) to prevent the
@@ -61,16 +61,19 @@ abstract class RouteActions
     }
 
     /**
-     * Runs just after the action method and before the deconstruct.
+     * Runs just after the class action method and before the destructor.
      *
      * Used to finalize settings, filter output data, acts as a middleware between
      * the action method and the final response.
      *
-     * @param string $method The action method
+     * @param string $method The action method name
      * @param array<int,string> $arguments The action method arguments
-     * @param bool $run Indicates if the action method was executed
+     * @param bool $run Indicates if the class action method was executed, true
+     * if it was not intercepted by the beforeAction method
      * @param mixed $result The returned value directly from beforeAction or
-     * from the action method, if it was executed
+     * from the class action method, if it was executed
+     *
+     * @see RouteActions::beforeAction()
      *
      * @return mixed
      */

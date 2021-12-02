@@ -46,7 +46,7 @@ class RouteCollection implements \Countable, \JsonSerializable
      *
      * @param Router $router A Router instance
      * @param string $origin URL Origin. A string in the following format:
-     * {scheme}://{hostname}[:{port}]
+     * `{scheme}://{hostname}[:{port}]`
      * @param string|null $name The collection name
      */
     public function __construct(Router $router, string $origin, string $name = null)
@@ -157,7 +157,7 @@ class RouteCollection implements \Countable, \JsonSerializable
     /**
      * Gets the Route Not Found for this collection.
      *
-     * @see notFound
+     * @see RouteCollection::notFound()
      *
      * @return Route|null The Route containing the Not Found Action or null if
      * the Action was not set
@@ -185,6 +185,13 @@ class RouteCollection implements \Countable, \JsonSerializable
      * @param string $path The URL path
      * @param array<int,string>|Closure|string $action The Route action
      * @param string|null $name The Route name
+     *
+     * @see RequestInterface::METHOD_DELETE
+     * @see RequestInterface::METHOD_GET
+     * @see RequestInterface::METHOD_OPTIONS
+     * @see RequestInterface::METHOD_PATCH
+     * @see RequestInterface::METHOD_POST
+     * @see RequestInterface::METHOD_PUT
      *
      * @return Route
      */
@@ -425,6 +432,7 @@ class RouteCollection implements \Countable, \JsonSerializable
      * @param string $placeholder The placeholder. Normally it matches an id, a number
      *
      * @see ResourceInterface
+     * @see Router::$placeholders
      *
      * @return array<int,Route> The Routes added to the collection
      */
@@ -497,6 +505,7 @@ class RouteCollection implements \Countable, \JsonSerializable
      * @param string $placeholder The placeholder. Normally it matches an id, a number
      *
      * @see PresenterInterface
+     * @see Router::$placeholders
      *
      * @return array<int,Route> The Routes added to the collection
      */
