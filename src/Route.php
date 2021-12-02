@@ -285,12 +285,12 @@ class Route implements \JsonSerializable
             );
         }
         $result = $class->beforeAction($method, $arguments); // @phpstan-ignore-line
-        $run = false;
+        $ran = false;
         if ($result === null) {
             $result = $class->{$method}(...$arguments);
-            $run = true;
+            $ran = true;
         }
-        $result = $class->afterAction($method, $arguments, $run, $result); // @phpstan-ignore-line
+        $result = $class->afterAction($method, $arguments, $ran, $result); // @phpstan-ignore-line
         return $this->makeResponse($result);
     }
 

@@ -68,7 +68,7 @@ abstract class RouteActions
      *
      * @param string $method The action method name
      * @param array<int,string> $arguments The action method arguments
-     * @param bool $run Indicates if the class action method was executed, true
+     * @param bool $ran Indicates if the class action method was executed, true
      * if it was not intercepted by the beforeAction method
      * @param mixed $result The returned value directly from beforeAction or
      * from the class action method, if it was executed
@@ -80,7 +80,7 @@ abstract class RouteActions
     protected function afterAction(
         string $method,
         array $arguments,
-        bool $run,
+        bool $ran,
         mixed $result
     ) : mixed {
         return $result;
