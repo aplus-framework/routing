@@ -21,8 +21,35 @@ registerArgumentsSet(
     \Framework\HTTP\ResponseInterface::CODE_TEMPORARY_REDIRECT,
     \Framework\HTTP\ResponseInterface::CODE_USE_PROXY,
 );
+registerArgumentsSet(
+    'placeholders',
+    '{alpha}',
+    '{alphanum}',
+    '{any}',
+    '{hex}',
+    '{int}',
+    '{md5}',
+    '{num}',
+    '{port}',
+    '{scheme}',
+    '{segment}',
+    '{slug}',
+    '{subdomain}',
+    '{title}',
+    '{uuid}',
+);
 expectedArguments(
     \Framework\Routing\RouteCollection::redirect(),
     2,
     argumentsSet('redirect_codes')
+);
+expectedArguments(
+    \Framework\Routing\RouteCollection::resource(),
+    4,
+    argumentsSet('placeholders')
+);
+expectedArguments(
+    \Framework\Routing\RouteCollection::presenter(),
+    4,
+    argumentsSet('placeholders')
 );
