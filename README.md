@@ -2,6 +2,7 @@
 
 # Aplus Framework Routing Library
 
+- [Homepage](https://aplus-framework.com/packages/routing)
 - [User Guide](https://docs.aplus-framework.com/guides/libraries/routing/index.html)
 - [API Documentation](https://docs.aplus-framework.com/packages/routing.html)
 
