@@ -14,11 +14,11 @@ use Framework\Routing\RouteCollection;
 use Framework\Routing\Router;
 
 /**
- * Class RouterCollector.
+ * Class RoutingCollector.
  *
  * @package routing
  */
-class RouterCollector extends Collector
+class RoutingCollector extends Collector
 {
     protected Router $router;
 
