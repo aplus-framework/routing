@@ -9,6 +9,7 @@
  */
 namespace Framework\Routing\Debug;
 
+use Closure;
 use Framework\Debug\Collector;
 use Framework\Routing\RouteCollection;
 use Framework\Routing\Router;
@@ -31,7 +32,45 @@ class RoutingCollector extends Collector
     public function getContents() : string
     {
         \ob_start(); ?>
-        <h2>Matched Route</h2>
+        <h1>Matched Route</h1>
+        <?= $this->renderMatchedRoute() ?>
+        <h1>Route Collections</h1>
+        <?= $this->renderRouteCollections() ?>
+        <h1>Router Infos</h1>
+        <p><strong>Auto Methods:</strong> <?= $this->router->isAutoMethods() ? 'On' : 'Off' ?></p>
+        <p><strong>Auto Options:</strong> <?= $this->router->isAutoOptions() ? 'On' : 'Off' ?></p>
+        <h2>Placeholders</h2>
+        <?php
+        $placeholders = $this->router->getPlaceholders();
+        \ksort($placeholders); ?>
+        <p>Total of <?= \count($placeholders) ?> placeholders.</p>
+        <table>
+            <thead>
+            <tr>
+                <th>Placeholder</th>
+                <th>Pattern</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($placeholders as $placeholder => $pattern): ?>
+                <tr>
+                    <td><code><?= \htmlentities($placeholder) ?></code></td>
+                    <td><code><?= \htmlentities($pattern) ?></code></td>
+                </tr>
+            <?php endforeach ?>
+            </tbody>
+        </table>
+        <?php
+        return \ob_get_clean(); // @phpstan-ignore-line
+    }
+
+    protected function renderMatchedRoute() : string
+    {
+        $route = $this->router->getMatchedRoute();
+        if ($route === null) {
+            return '<p>No matching route on this Router instance.</p>';
+        }
+        \ob_start(); ?>
         <table>
             <thead>
             <tr>
@@ -45,33 +84,69 @@ class RoutingCollector extends Collector
             </thead>
             <tbody>
             <tr>
-                <?php
-                $route = $this->router->getMatchedRoute(); ?>
                 <td><strong><?= $this->router->getResponse()->getRequest()->getMethod() ?></strong>
                 </td>
-                <td><?= $this->router->getMatchedOrigin() ?></td>
-                <td><?= $this->router->getMatchedPath() ?></td>
-                <td><?= $route->getAction() instanceof \Closure
+                <td><?= \htmlentities($this->router->getMatchedOrigin()) ?></td>
+                <td><?= \htmlentities($this->router->getMatchedPath()) ?></td>
+                <td><?= $route->getAction() instanceof Closure
                         ? 'Closure'
-                        : $route->getAction() ?></td>
-                <td><?= $route->getName() ?></td>
+                        : \htmlentities($route->getAction()) ?></td>
+                <td><?= \htmlentities((string) $route->getName()) ?></td>
                 <td><?= $route->getOptions() ? 'Yes' : 'No' ?></td>
             </tr>
             </tbody>
         </table>
-        <h2>Route Collections</h2>
-        <?php foreach ($this->router->getCollections() as $collection): ?>
-        <p><strong>Origin:</strong> <?= $this->toCodeBrackets($collection->origin) ?></p>
-        <p><strong>Name:</strong> <?= $collection->name ?></p>
         <?php
-        $notFound = $collection->getRouteNotFound(); // @phpstan-ignore-line
-        if ($notFound) {
-            $notFound = $notFound->getAction() instanceof \Closure
-                ? 'Closure'
-                : $notFound->getAction();
+        return \ob_get_clean(); // @phpstan-ignore-line
+    }
+
+    protected function renderRouteCollections() : string
+    {
+        $countCollections = \count($this->router->getCollections());
+        if ($countCollections === 0) {
+            return '<p>No route collection has been set.</p>';
+        }
+        $plural = $countCollections > 1;
+        \ob_start(); ?>
+        <p>There <?= $plural ? 'are' : 'is' ?> <?= $countCollections ?> route collection<?=
+            $plural ? 's' : '' ?> set.
+        </p>
+        <?php
+        foreach ($this->router->getCollections() as $index => $collection): ?>
+            <h2>Route Collection <?= $index + 1 ?></h2>
+            <p><strong>Origin:</strong> <?= $this->toCodeBrackets($collection->origin) ?></p>
+            <?php
+            if ($collection->name !== null): ?>
+                <p><strong>Name:</strong> <?= $collection->name ?></p>
+            <?php
+            endif;
+        // @phpstan-ignore-next-line
+        $notFound = $this->router->getMatchedOrigin() ? $collection->getRouteNotFound() : false;
+        if ($notFound): ?>
+                <p><strong>Route Not Found:</strong> <?= $notFound->getAction() instanceof Closure
+                        ? 'Closure'
+                        : \htmlentities($notFound->getAction()) ?></p>
+            <?php
+            endif;
+        echo $this->renderRouteCollectionsTable($collection);
+        endforeach;
+        return \ob_get_clean(); // @phpstan-ignore-line
+    }
+
+    protected function renderRouteCollectionsTable(RouteCollection $collection) : string
+    {
+        $routesCount = \count($collection);
+        \ob_start();
+        echo '<p><strong>Routes Count:</strong> ' . $routesCount . '</p>';
+        if ($routesCount === 0) {
+            echo '<p>No route has been set in this collection.</p>';
+            return \ob_get_clean(); // @phpstan-ignore-line
+        }
+        // @phpstan-ignore-next-line
+        if ($routesCount === 1 && $collection->getRouteNotFound()) {
+            echo '<p>Only Route Not Found has been set in this collection.</p>';
+            return \ob_get_clean(); // @phpstan-ignore-line
         } ?>
-        <p><strong>Route Not Found:</strong> <?= $notFound ?></p>
-        <p><strong>Routes Count:</strong> <?= \count($collection) ?></p>
         <table>
             <thead>
             <tr>
@@ -85,33 +160,11 @@ class RoutingCollector extends Collector
             <tbody>
             <?php foreach ($this->getRoutes($collection) as $route): ?>
                 <tr<?= $route['matched'] ? ' class="active" title="Matched Route"' : '' ?>>
-                    <td><strong><?= $route['method'] ?></strong></td>
-                    <td><?= $route['path'] ?></td>
-                    <td><?= $route['action'] ?></td>
-                    <td><?= $route['name'] ?></td>
-                    <td><?= $route['hasOptions'] ?></td>
-                </tr>
-            <?php endforeach ?>
-            </tbody>
-        </table>
-        <hr>
-    <?php endforeach ?>
-        <h2>Router Infos</h2>
-        <p><strong>Auto Methods:</strong> <?= $this->router->isAutoMethods() ? 'On' : 'Off' ?></p>
-        <p><strong>Auto Options:</strong> <?= $this->router->isAutoOptions() ? 'On' : 'Off' ?></p>
-        <h3>Placeholders</h3>
-        <table>
-            <thead>
-            <tr>
-                <th>Placeholder</th>
-                <th>Pattern</th>
-            </tr>
-            </thead>
-            <tbody>
-            <?php foreach ($this->router->getPlaceholders() as $placeholder => $pattern): ?>
-                <tr>
-                    <td><code><?= $placeholder ?></code></td>
-                    <td><code><?= $pattern ?></code></td>
+                    <td><strong><?= \htmlentities($route['method']) ?></strong></td>
+                    <td><?= $this->toCodeBrackets(\htmlentities($route['path'])) ?></td>
+                    <td><?= \htmlentities($route['action']) ?></td>
+                    <td><?= \htmlentities((string) $route['name']) ?></td>
+                    <td><?= \htmlentities($route['hasOptions']) ?></td>
                 </tr>
             <?php endforeach ?>
             </tbody>
@@ -132,8 +185,8 @@ class RoutingCollector extends Collector
             foreach ($routes as $route) {
                 $result[] = [
                     'method' => $method,
-                    'path' => $this->toCodeBrackets($route->getPath()),
-                    'action' => \is_string($route->getAction()) ? $route->getAction() : '{closure}',
+                    'path' => $route->getPath(),
+                    'action' => \is_string($route->getAction()) ? $route->getAction() : 'Closure',
                     'name' => $route->getName(),
                     'hasOptions' => $route->getOptions() ? 'Yes' : 'No',
                     'matched' => $route === $this->router->getMatchedRoute(),
