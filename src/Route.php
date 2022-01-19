@@ -257,10 +257,23 @@ class Route implements \JsonSerializable
      */
     public function run(mixed ...$construct) : Response
     {
+        $debug = $this->router->getDebugCollector();
+        if ($debug) {
+            $start = \microtime(true);
+            $addToDebug = static fn () => $debug->addData([
+                'type' => 'run',
+                'start' => $start,
+                'end' => \microtime(true),
+            ]);
+        }
         $action = $this->getAction();
         if ($action instanceof Closure) {
             $result = $action($this->getActionArguments(), ...$construct);
-            return $this->makeResponse($result);
+            $response = $this->makeResponse($result);
+            if ($debug) {
+                $addToDebug();
+            }
+            return $response;
         }
         if ( ! \str_contains($action, '::')) {
             $action .= '::' . $this->router->getDefaultRouteActionMethod();
@@ -291,7 +304,11 @@ class Route implements \JsonSerializable
             $ran = true;
         }
         $result = $class->afterAction($method, $arguments, $ran, $result); // @phpstan-ignore-line
-        return $this->makeResponse($result);
+        $response = $this->makeResponse($result);
+        if ($debug) {
+            $addToDebug();
+        }
+        return $response;
     }
 
     /**
