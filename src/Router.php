@@ -15,6 +15,7 @@ use Framework\HTTP\RequestInterface;
 use Framework\HTTP\Response;
 use Framework\HTTP\ResponseInterface;
 use Framework\Language\Language;
+use Framework\Routing\Debug\RoutingCollector;
 use InvalidArgumentException;
 use JetBrains\PhpStorm\Pure;
 use RuntimeException;
@@ -68,6 +69,7 @@ class Router implements \JsonSerializable
     protected bool $autoMethods = false;
     protected Response $response;
     protected Language $language;
+    protected RoutingCollector $debugCollector;
 
     /**
      * Router constructor.
@@ -770,5 +772,17 @@ class Router implements \JsonSerializable
             'isAutoOptions' => $this->isAutoOptions(),
             'placeholders' => $this->getPlaceholders(),
         ];
+    }
+
+    public function setDebugCollector(RoutingCollector $debugCollector) : static
+    {
+        $this->debugCollector = $debugCollector;
+        $this->debugCollector->setRouter($this);
+        return $this;
+    }
+
+    public function getDebugCollector() : ?RoutingCollector
+    {
+        return $this->debugCollector ?? null;
     }
 }
