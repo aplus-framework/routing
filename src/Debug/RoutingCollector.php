@@ -74,18 +74,27 @@ class RoutingCollector extends Collector
         <table>
             <thead>
             <tr>
+                <th title="Route Collection">RC</th>
                 <th>Method</th>
                 <th>Origin</th>
                 <th>Path</th>
                 <th>Action</th>
                 <th>Name</th>
                 <th>Has Options</th>
+                <th title="Seconds">Time to Match</th>
+                <th title="Seconds">Runtime</th>
             </tr>
             </thead>
             <tbody>
             <tr>
-                <td><strong><?= $this->router->getResponse()->getRequest()->getMethod() ?></strong>
-                </td>
+                <td><?php
+                    foreach ($this->router->getCollections() as $index => $collection) {
+                        if ($collection === $this->router->getMatchedCollection()) {
+                            echo $index + 1;
+                        }
+                    } ?></td>
+                <td><?= $this->router->getResponse()->getRequest()->getMethod() ?></td>
+
                 <td><?= \htmlentities($this->router->getMatchedOrigin()) ?></td>
                 <td><?= \htmlentities($this->router->getMatchedPath()) ?></td>
                 <td><?= $route->getAction() instanceof Closure
@@ -93,6 +102,18 @@ class RoutingCollector extends Collector
                         : \htmlentities($route->getAction()) ?></td>
                 <td><?= \htmlentities((string) $route->getName()) ?></td>
                 <td><?= $route->getOptions() ? 'Yes' : 'No' ?></td>
+                <td><?php
+                    foreach ($this->getData() as $data) {
+                        if ($data['type'] === 'match') {
+                            echo \round($data['end'] - $data['start'], 6);
+                        }
+                    } ?></td>
+                <td><?php
+                    foreach ($this->getData() as $data) {
+                        if ($data['type'] === 'run') {
+                            echo \round($data['end'] - $data['start'], 6);
+                        }
+                    } ?></td>
             </tr>
             </tbody>
         </table>
@@ -133,11 +154,24 @@ class RoutingCollector extends Collector
         return \ob_get_clean(); // @phpstan-ignore-line
     }
 
+    protected function renderRouteCollectionTime(RouteCollection $collection) : string
+    {
+        foreach ($this->getData() as $data) {
+            if ($data['type'] === 'serve' && $data['collectionId'] === \spl_object_id($collection)) {
+                return '<p title="Seconds"><strong>Time to Serve:</strong> '
+                    . \round($data['end'] - $data['start'], 6)
+                    . '</p>';
+            }
+        }
+        return '';
+    }
+
     protected function renderRouteCollectionsTable(RouteCollection $collection) : string
     {
         $routesCount = \count($collection);
         \ob_start();
         echo '<p><strong>Routes Count:</strong> ' . $routesCount . '</p>';
+        echo $this->renderRouteCollectionTime($collection);
         if ($routesCount === 0) {
             echo '<p>No route has been set in this collection.</p>';
             return \ob_get_clean(); // @phpstan-ignore-line
