@@ -319,6 +319,26 @@ class Router implements \JsonSerializable
      */
     public function serve(?string $origin, callable $callable, string $collectionName = null) : static
     {
+        if ( ! isset($this->debugCollector)) {
+            return $this->addServedCollection($origin, $callable, $collectionName);
+        }
+        $start = \microtime(true);
+        $this->addServedCollection($origin, $callable, $collectionName);
+        $end = \microtime(true);
+        $this->debugCollector->addData([
+            'type' => 'serve',
+            'start' => $start,
+            'end' => $end,
+            'collectionId' => \spl_object_id($this->collections[\array_key_last($this->collections)]),
+        ]);
+        return $this;
+    }
+
+    protected function addServedCollection(
+        ?string $origin,
+        callable $callable,
+        string $collectionName = null
+    ) : static {
         if ($origin === null) {
             $origin = $this->response->getRequest()->getUrl()->getOrigin();
         }
@@ -503,6 +523,22 @@ class Router implements \JsonSerializable
      * @return Route Always returns a Route, even if it is the Route Not Found
      */
     public function match() : Route
+    {
+        if ( ! isset($this->debugCollector)) {
+            return $this->makeMatchedRoute();
+        }
+        $start = \microtime(true);
+        $route = $this->makeMatchedRoute();
+        $end = \microtime(true);
+        $this->debugCollector->addData([
+            'type' => 'match',
+            'start' => $start,
+            'end' => $end,
+        ]);
+        return $route;
+    }
+
+    protected function makeMatchedRoute() : Route
     {
         $method = $this->response->getRequest()->getMethod();
         if ($method === 'HEAD') {
