@@ -55,7 +55,9 @@ class RoutingCollector extends Collector
             <?php foreach ($placeholders as $placeholder => $pattern): ?>
                 <tr>
                     <td><code><?= \htmlentities($placeholder) ?></code></td>
-                    <td><code><?= \htmlentities($pattern) ?></code></td>
+                    <td>
+                        <pre><code class="language-regex"><?= \htmlentities($pattern) ?></code></pre>
+                    </td>
                 </tr>
             <?php endforeach ?>
             </tbody>
