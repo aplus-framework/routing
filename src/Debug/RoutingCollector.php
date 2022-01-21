@@ -41,7 +41,10 @@ class RoutingCollector extends Collector
         <p><strong>Auto Options:</strong> <?= $this->router->isAutoOptions() ? 'On' : 'Off' ?></p>
         <h2>Placeholders</h2>
         <?php
-        $placeholders = $this->router->getPlaceholders();
+        $placeholders = [];
+        foreach ($this->router->getPlaceholders() as $placeholder => $pattern) {
+            $placeholders[\trim($placeholder, '{}')] = $pattern;
+        }
         \ksort($placeholders); ?>
         <p>Total of <?= \count($placeholders) ?> placeholders.</p>
         <table>
@@ -54,7 +57,7 @@ class RoutingCollector extends Collector
             <tbody>
             <?php foreach ($placeholders as $placeholder => $pattern): ?>
                 <tr>
-                    <td><code><?= \htmlentities($placeholder) ?></code></td>
+                    <td><code>{<?= \htmlentities($placeholder) ?>}</code></td>
                     <td>
                         <pre><code class="language-regex"><?= \htmlentities($pattern) ?></code></pre>
                     </td>
