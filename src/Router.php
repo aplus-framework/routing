@@ -152,6 +152,16 @@ class Router implements \JsonSerializable
                             <meta charset="utf-8">
                             <meta name="viewport" content="width=device-width, initial-scale=1">
                             <title>{$title}</title>
+                            <style>
+                                body {
+                                    background: #fff;
+                                    color: #000;
+                                    font-family: Arial, Helvetica, sans-serif;
+                                    font-size: 1.2rem;
+                                    line-height: 1.5rem;
+                                    margin: 1rem;
+                                }
+                            </style>
                         </head>
                         <body>
                         <h1>{$title}</h1>
