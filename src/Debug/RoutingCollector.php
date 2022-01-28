@@ -29,6 +29,41 @@ class RoutingCollector extends Collector
         return $this;
     }
 
+    public function getActivities() : array
+    {
+        $activities = [];
+        $serveCount = 0;
+        foreach ($this->getData() as $data) {
+            if ($data['type'] === 'serve') {
+                $serveCount++;
+                $activities[] = [
+                    'collector' => $this->getName(),
+                    'class' => static::class,
+                    'description' => 'Serve route collection ' . $serveCount,
+                    'start' => $data['start'],
+                    'end' => $data['end'],
+                ];
+            } elseif ($data['type'] === 'match') {
+                $activities[] = [
+                    'collector' => $this->getName(),
+                    'class' => static::class,
+                    'description' => 'Match route',
+                    'start' => $data['start'],
+                    'end' => $data['end'],
+                ];
+            } elseif ($data['type'] === 'run') {
+                $activities[] = [
+                    'collector' => $this->getName(),
+                    'class' => static::class,
+                    'description' => 'Run matched route',
+                    'start' => $data['start'],
+                    'end' => $data['end'],
+                ];
+            }
+        }
+        return $activities;
+    }
+
     public function getContents() : string
     {
         \ob_start(); ?>
