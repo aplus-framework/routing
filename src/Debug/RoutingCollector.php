@@ -234,7 +234,7 @@ class RoutingCollector extends Collector
             <tbody>
             <?php foreach ($this->getRoutes($collection) as $route): ?>
                 <tr<?= $route['matched'] ? ' class="active" title="Matched Route"' : '' ?>>
-                    <td><strong><?= \htmlentities($route['method']) ?></strong></td>
+                    <td><?= \htmlentities($route['method']) ?></td>
                     <td><?= $this->toCodeBrackets(\htmlentities($route['path'])) ?></td>
                     <td><?= \htmlentities($route['action']) ?></td>
                     <td><?= \htmlentities((string) $route['name']) ?></td>
