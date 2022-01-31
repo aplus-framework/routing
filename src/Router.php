@@ -81,8 +81,9 @@ class Router implements \JsonSerializable
     public function __construct(Response $response, Language $language = null)
     {
         $this->response = $response;
-        $this->language = $language ?? new Language('en');
-        $this->language->addDirectory(__DIR__ . '/Languages');
+        if ($language) {
+            $this->setLanguage($language);
+        }
     }
 
     public function __get(string $property) : mixed
@@ -104,6 +105,21 @@ class Router implements \JsonSerializable
     public function getResponse() : Response
     {
         return $this->response;
+    }
+
+    public function setLanguage(Language $language = null) : static
+    {
+        $this->language = $language ?? new Language();
+        $this->language->addDirectory(__DIR__ . '/Languages');
+        return $this;
+    }
+
+    public function getLanguage() : Language
+    {
+        if ( ! isset($this->language)) {
+            $this->setLanguage();
+        }
+        return $this->language;
     }
 
     /**
@@ -153,10 +169,11 @@ class Router implements \JsonSerializable
                         ],
                     ]);
                 }
-                $lang = $this->language->getCurrentLocale();
-                $dir = $this->language->getCurrentLocaleDirection();
-                $title = $this->language->render('routing', 'error404');
-                $message = $this->language->render('routing', 'pageNotFound');
+                $language = $this->getLanguage();
+                $lang = $language->getCurrentLocale();
+                $dir = $language->getCurrentLocaleDirection();
+                $title = $language->render('routing', 'error404');
+                $message = $language->render('routing', 'pageNotFound');
                 return $this->response->setBody(
                     <<<HTML
                         <!doctype html>

@@ -11,6 +11,7 @@ namespace Tests\Routing;
 
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
+use Framework\Language\Language;
 use Framework\Routing\Route;
 use Framework\Routing\RouteCollection;
 use Framework\Routing\Router;
@@ -66,6 +67,14 @@ final class RouterTest extends TestCase
         $this->expectException(\OutOfBoundsException::class);
         $this->expectExceptionMessage('Property not exists: ' . $this->router::class . '::$foo');
         $this->router->foo; // @phpstan-ignore-line
+    }
+
+    public function testLanguage() : void
+    {
+        $directory = \realpath(__DIR__ . '/../src/Languages') . \DIRECTORY_SEPARATOR;
+        self::assertContains($directory, $this->router->getLanguage()->getDirectories());
+        $router = new Router($this->response, new Language('es'));
+        self::assertContains($directory, $router->getLanguage()->getDirectories());
     }
 
     public function testDefaultRouteActionMethod() : void
