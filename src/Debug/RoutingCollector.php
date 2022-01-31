@@ -74,6 +74,17 @@ class RoutingCollector extends Collector
         <h1>Router Infos</h1>
         <p><strong>Auto Methods:</strong> <?= $this->router->isAutoMethods() ? 'On' : 'Off' ?></p>
         <p><strong>Auto Options:</strong> <?= $this->router->isAutoOptions() ? 'On' : 'Off' ?></p>
+        <p>
+            <strong>Default Route Action Method:</strong> <?= \htmlentities($this->router->getDefaultRouteActionMethod()) ?>
+        </p>
+        <?php
+        $notFound = $this->router->defaultRouteNotFound; // @phpstan-ignore-line
+        if ($notFound): ?>
+            <p><strong>Default Route Not Found:</strong> <?=
+                $notFound instanceof Closure ? 'Closure' : \htmlentities($notFound)
+                ?></p>
+        <?php
+        endif ?>
         <h2>Placeholders</h2>
         <?php
         $placeholders = [];
