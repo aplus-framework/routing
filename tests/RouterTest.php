@@ -58,6 +58,16 @@ final class RouterTest extends TestCase
         });
     }
 
+    public function testMagicGetter() : void
+    {
+        self::assertNull($this->router->defaultRouteNotFound); // @phpstan-ignore-line
+        $this->router->setDefaultRouteNotFound('Foo');
+        self::assertSame('Foo', $this->router->defaultRouteNotFound); // @phpstan-ignore-line
+        $this->expectException(\OutOfBoundsException::class);
+        $this->expectExceptionMessage('Property not exists: ' . $this->router::class . '::$foo');
+        $this->router->foo; // @phpstan-ignore-line
+    }
+
     public function testDefaultRouteActionMethod() : void
     {
         self::assertSame('index', $this->router->getDefaultRouteActionMethod());

@@ -18,6 +18,7 @@ use Framework\Language\Language;
 use Framework\Routing\Debug\RoutingCollector;
 use InvalidArgumentException;
 use JetBrains\PhpStorm\Pure;
+use OutOfBoundsException;
 use RuntimeException;
 
 /**
@@ -82,6 +83,16 @@ class Router implements \JsonSerializable
         $this->response = $response;
         $this->language = $language ?? new Language('en');
         $this->language->addDirectory(__DIR__ . '/Languages');
+    }
+
+    public function __get(string $property) : mixed
+    {
+        if (\property_exists($this, $property)) {
+            return $this->{$property} ?? null;
+        }
+        throw new OutOfBoundsException(
+            'Property not exists: ' . static::class . '::$' . $property
+        );
     }
 
     /**
