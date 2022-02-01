@@ -66,6 +66,9 @@ class RoutingCollector extends Collector
 
     public function getContents() : string
     {
+        if ( ! isset($this->router)) {
+            return '<p>A Router instance has not been set on this collector.</p>';
+        }
         \ob_start(); ?>
         <h1>Matched Route</h1>
         <?= $this->renderMatchedRoute() ?>
@@ -228,7 +231,7 @@ class RoutingCollector extends Collector
             return \ob_get_clean(); // @phpstan-ignore-line
         }
         // @phpstan-ignore-next-line
-        if ($routesCount === 1 && $collection->getRouteNotFound()) {
+        if ($routesCount === 1 && $collection->router->getMatchedOrigin() && $collection->getRouteNotFound()) {
             echo '<p>Only Route Not Found has been set in this collection.</p>';
             return \ob_get_clean(); // @phpstan-ignore-line
         } ?>
