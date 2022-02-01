@@ -347,19 +347,21 @@ class Router implements \JsonSerializable
      */
     public function serve(?string $origin, callable $callable, string $collectionName = null) : static
     {
-        if ( ! isset($this->debugCollector)) {
-            return $this->addServedCollection($origin, $callable, $collectionName);
+        if (isset($this->debugCollector)) {
+            $start = \microtime(true);
+            $this->addServedCollection($origin, $callable, $collectionName);
+            $end = \microtime(true);
+            $this->debugCollector->addData([
+                'type' => 'serve',
+                'start' => $start,
+                'end' => $end,
+                'collectionId' => \spl_object_id(
+                    $this->collections[\array_key_last($this->collections)]
+                ),
+            ]);
+            return $this;
         }
-        $start = \microtime(true);
-        $this->addServedCollection($origin, $callable, $collectionName);
-        $end = \microtime(true);
-        $this->debugCollector->addData([
-            'type' => 'serve',
-            'start' => $start,
-            'end' => $end,
-            'collectionId' => \spl_object_id($this->collections[\array_key_last($this->collections)]),
-        ]);
-        return $this;
+        return $this->addServedCollection($origin, $callable, $collectionName);
     }
 
     protected function addServedCollection(
@@ -552,18 +554,18 @@ class Router implements \JsonSerializable
      */
     public function match() : Route
     {
-        if ( ! isset($this->debugCollector)) {
-            return $this->makeMatchedRoute();
+        if (isset($this->debugCollector)) {
+            $start = \microtime(true);
+            $route = $this->makeMatchedRoute();
+            $end = \microtime(true);
+            $this->debugCollector->addData([
+                'type' => 'match',
+                'start' => $start,
+                'end' => $end,
+            ]);
+            return $route;
         }
-        $start = \microtime(true);
-        $route = $this->makeMatchedRoute();
-        $end = \microtime(true);
-        $this->debugCollector->addData([
-            'type' => 'match',
-            'start' => $start,
-            'end' => $end,
-        ]);
-        return $route;
+        return $this->makeMatchedRoute();
     }
 
     protected function makeMatchedRoute() : Route
