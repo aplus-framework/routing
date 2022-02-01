@@ -10,10 +10,11 @@
 namespace Framework\Routing;
 
 use Closure;
+use Framework\HTTP\Method;
 use Framework\HTTP\Request;
-use Framework\HTTP\RequestInterface;
 use Framework\HTTP\Response;
-use Framework\HTTP\ResponseInterface;
+use Framework\HTTP\ResponseHeader;
+use Framework\HTTP\Status;
 use Framework\Language\Language;
 use Framework\Routing\Debug\RoutingCollector;
 use InvalidArgumentException;
@@ -158,14 +159,12 @@ class Router implements \JsonSerializable
             $this->getMatchedOrigin(),
             $this->getMatchedPath(),
             $this->defaultRouteNotFound ?? function () {
-                $this->response->setStatus($this->response::CODE_NOT_FOUND);
+                $this->response->setStatus(Status::NOT_FOUND);
                 if ($this->response->getRequest()->isJson()) {
                     return $this->response->setJson([
                         'status' => [
-                            'code' => $this->response::CODE_NOT_FOUND,
-                            'reason' => $this->response::getReasonByCode(
-                                $this->response::CODE_NOT_FOUND
-                            ),
+                            'code' => Status::NOT_FOUND,
+                            'reason' => Status::getReason(Status::NOT_FOUND),
                         ],
                     ]);
                 }
@@ -588,11 +587,11 @@ class Router implements \JsonSerializable
     protected function getAlternativeRoute(string $method, RouteCollection $collection) : Route
     {
         if ($method === 'OPTIONS' && $this->isAutoOptions()) {
-            $route = $this->getRouteWithAllowHeader($collection, $this->response::CODE_OK);
+            $route = $this->getRouteWithAllowHeader($collection, Status::OK);
         } elseif ($this->isAutoMethods()) {
             $route = $this->getRouteWithAllowHeader(
                 $collection,
-                $this->response::CODE_METHOD_NOT_ALLOWED
+                Status::METHOD_NOT_ALLOWED
             );
         }
         if ( ! isset($route)) {
@@ -653,8 +652,8 @@ class Router implements \JsonSerializable
      *
      * @param bool $enabled true to enable, false to disable
      *
-     * @see RequestInterface::METHOD_OPTIONS
-     * @see ResponseInterface::HEADER_ALLOW
+     * @see Method::OPTIONS
+     * @see ResponseHeader::ALLOW
      *
      * @return static
      */
@@ -685,8 +684,8 @@ class Router implements \JsonSerializable
      *
      * @param bool $enabled true to enable, false to disable
      *
-     * @see ResponseInterface::CODE_METHOD_NOT_ALLOWED
-     * @see ResponseInterface::HEADER_ALLOW
+     * @see Status::METHOD_NOT_ALLOWED
+     * @see ResponseHeader::ALLOW
      *
      * @return static
      */

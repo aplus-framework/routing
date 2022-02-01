@@ -35,7 +35,7 @@
     "require": {
         "php": ">=8.0",
         "aplus/debug": "^2.4",
-        "aplus/http": "^4.5",
+        "aplus/http": "^4.6",
         "aplus/language": "^1.7"
     },
     "require-dev": {
