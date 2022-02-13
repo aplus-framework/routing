@@ -12,7 +12,7 @@ namespace Framework\Routing;
 use BadMethodCallException;
 use Closure;
 use Error;
-use Framework\HTTP\RequestInterface;
+use Framework\HTTP\Method;
 use LogicException;
 
 /**
@@ -186,12 +186,12 @@ class RouteCollection implements \Countable, \JsonSerializable
      * @param array<int,string>|Closure|string $action The Route action
      * @param string|null $name The Route name
      *
-     * @see RequestInterface::METHOD_DELETE
-     * @see RequestInterface::METHOD_GET
-     * @see RequestInterface::METHOD_OPTIONS
-     * @see RequestInterface::METHOD_PATCH
-     * @see RequestInterface::METHOD_POST
-     * @see RequestInterface::METHOD_PUT
+     * @see Method::DELETE
+     * @see Method::GET
+     * @see Method::OPTIONS
+     * @see Method::PATCH
+     * @see Method::POST
+     * @see Method::PUT
      *
      * @return Route
      */
@@ -245,7 +245,7 @@ class RouteCollection implements \Countable, \JsonSerializable
      * @param array<int,string>|Closure|string $action The Route action
      * @param string|null $name The Route name
      *
-     * @see RequestInterface::METHOD_GET
+     * @see Method::GET
      *
      * @return Route The Route added to the collection
      */
@@ -264,7 +264,7 @@ class RouteCollection implements \Countable, \JsonSerializable
      * @param array<int,string>|Closure|string $action The Route action
      * @param string|null $name The Route name
      *
-     * @see RequestInterface::METHOD_POST
+     * @see Method::POST
      *
      * @return Route The Route added to the collection
      */
@@ -283,7 +283,7 @@ class RouteCollection implements \Countable, \JsonSerializable
      * @param array<int,string>|Closure|string $action The Route action
      * @param string|null $name The Route name
      *
-     * @see RequestInterface::METHOD_PUT
+     * @see Method::PUT
      *
      * @return Route The Route added to the collection
      */
@@ -302,7 +302,7 @@ class RouteCollection implements \Countable, \JsonSerializable
      * @param array<int,string>|Closure|string $action The Route action
      * @param string|null $name The Route name
      *
-     * @see RequestInterface::METHOD_PATCH
+     * @see Method::PATCH
      *
      * @return Route The Route added to the collection
      */
@@ -321,7 +321,7 @@ class RouteCollection implements \Countable, \JsonSerializable
      * @param array<int,string>|Closure|string $action The Route action
      * @param string|null $name The Route name
      *
-     * @see RequestInterface::METHOD_DELETE
+     * @see Method::DELETE
      *
      * @return Route The Route added to the collection
      */
@@ -340,7 +340,7 @@ class RouteCollection implements \Countable, \JsonSerializable
      * @param array<int,string>|Closure|string $action The Route action
      * @param string|null $name The Route name
      *
-     * @see RequestInterface::METHOD_OPTIONS
+     * @see Method::OPTIONS
      *
      * @return Route The Route added to the collection
      */

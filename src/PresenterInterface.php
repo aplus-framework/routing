@@ -9,9 +9,9 @@
  */
 namespace Framework\Routing;
 
-use Framework\HTTP\RequestInterface;
+use Framework\HTTP\Method;
 use Framework\HTTP\Response;
-use Framework\HTTP\ResponseInterface;
+use Framework\HTTP\Status;
 
 /**
  * Interface PresenterInterface.
@@ -35,7 +35,7 @@ interface PresenterInterface
      *
      * Common usage: Show a list of paginated items.
      *
-     * @see RequestInterface::METHOD_GET
+     * @see Method::GET
      *
      * @return mixed
      */
@@ -48,7 +48,7 @@ interface PresenterInterface
      * The POST action must go to the 'create' method URL.
      *
      * @see PresenterInterface::create()
-     * @see RequestInterface::METHOD_GET
+     * @see Method::GET
      *
      * @return mixed
      */
@@ -63,7 +63,7 @@ interface PresenterInterface
      * @see PresenterInterface::edit()
      * @see PresenterInterface::new()
      * @see PresenterInterface::show()
-     * @see RequestInterface::METHOD_POST
+     * @see Method::POST
      * @see Response::redirect()
      *
      * @return mixed
@@ -77,8 +77,8 @@ interface PresenterInterface
      *
      * @param string $id
      *
-     * @see RequestInterface::METHOD_GET
-     * @see ResponseInterface::CODE_NOT_FOUND
+     * @see Method::GET
+     * @see Status::NOT_FOUND
      *
      * @return mixed
      */
@@ -93,7 +93,7 @@ interface PresenterInterface
      * @param string $id
      *
      * @see PresenterInterface::update()
-     * @see RequestInterface::METHOD_GET
+     * @see Method::GET
      *
      * @return mixed
      */
@@ -108,7 +108,7 @@ interface PresenterInterface
      * @param string $id
      *
      * @see PresenterInterface::edit()
-     * @see RequestInterface::METHOD_POST
+     * @see Method::POST
      * @see Response::redirect()
      *
      * @return mixed
@@ -125,7 +125,7 @@ interface PresenterInterface
      * @param string $id
      *
      * @see PresenterInterface::delete()
-     * @see RequestInterface::METHOD_GET
+     * @see Method::GET
      *
      * @return mixed
      */
@@ -142,7 +142,7 @@ interface PresenterInterface
      *
      * @see PresenterInterface::index()
      * @see PresenterInterface::remove()
-     * @see RequestInterface::METHOD_POST
+     * @see Method::POST
      * @see Response::redirect()
      *
      * @return mixed

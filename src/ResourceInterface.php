@@ -9,8 +9,9 @@
  */
 namespace Framework\Routing;
 
-use Framework\HTTP\RequestInterface;
-use Framework\HTTP\ResponseInterface;
+use Framework\HTTP\Method;
+use Framework\HTTP\ResponseHeader;
+use Framework\HTTP\Status;
 
 /**
  * Interface ResourceInterface.
@@ -34,7 +35,7 @@ interface ResourceInterface
      *
      * Common usage: Show a list of paginated items.
      *
-     * @see RequestInterface::METHOD_GET
+     * @see Method::GET
      *
      * @return mixed
      */
@@ -47,11 +48,11 @@ interface ResourceInterface
      * the 'show' method URL and return a 201 (Created) status code. On fail, return
      * a 400 (Bad Request) status code and list the error messages in the body.
      *
-     * @see RequestInterface::METHOD_POST
+     * @see Method::POST
      * @see ResourceInterface::show()
-     * @see ResponseInterface::CODE_BAD_REQUEST
-     * @see ResponseInterface::CODE_CREATED
-     * @see ResponseInterface::HEADER_LOCATION
+     * @see Status::BAD_REQUEST
+     * @see Status::CREATED
+     * @see ResponseHeader::LOCATION
      *
      * @return mixed
      */
@@ -65,9 +66,9 @@ interface ResourceInterface
      *
      * @param string $id
      *
-     * @see RequestInterface::METHOD_GET
-     * @see ResponseInterface::CODE_NOT_FOUND
-     * @see ResponseInterface::CODE_OK
+     * @see Method::GET
+     * @see Status::NOT_FOUND
+     * @see Status::OK
      *
      * @return mixed
      */
@@ -86,11 +87,11 @@ interface ResourceInterface
      *
      * @param string $id
      *
-     * @see RequestInterface::METHOD_PATCH
+     * @see Method::PATCH
      * @see ResourceInterface::show()
-     * @see ResponseInterface::CODE_BAD_REQUEST
-     * @see ResponseInterface::CODE_OK
-     * @see ResponseInterface::HEADER_LOCATION
+     * @see Status::BAD_REQUEST
+     * @see Status::OK
+     * @see ResponseHeader::LOCATION
      *
      * @return mixed
      */
@@ -108,11 +109,11 @@ interface ResourceInterface
      *
      * @param string $id
      *
-     * @see RequestInterface::METHOD_PUT
+     * @see Method::PUT
      * @see ResourceInterface::show()
-     * @see ResponseInterface::CODE_BAD_REQUEST
-     * @see ResponseInterface::CODE_OK
-     * @see ResponseInterface::HEADER_LOCATION
+     * @see Status::BAD_REQUEST
+     * @see Status::OK
+     * @see ResponseHeader::LOCATION
      *
      * @return mixed
      */
@@ -126,8 +127,8 @@ interface ResourceInterface
      *
      * @param string $id
      *
-     * @see RequestInterface::METHOD_DELETE
-     * @see ResponseInterface::CODE_NO_CONTENT
+     * @see Method::DELETE
+     * @see Status::NO_CONTENT
      *
      * @return mixed
      */
