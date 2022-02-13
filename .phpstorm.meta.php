@@ -11,15 +11,24 @@ namespace PHPSTORM_META;
 
 registerArgumentsSet(
     'redirect_codes',
-    \Framework\HTTP\ResponseInterface::CODE_FOUND,
-    \Framework\HTTP\ResponseInterface::CODE_MOVED_PERMANENTLY,
-    \Framework\HTTP\ResponseInterface::CODE_MULTIPLE_CHOICES,
-    \Framework\HTTP\ResponseInterface::CODE_NOT_MODIFIED,
-    \Framework\HTTP\ResponseInterface::CODE_PERMANENT_REDIRECT,
-    \Framework\HTTP\ResponseInterface::CODE_SEE_OTHER,
-    \Framework\HTTP\ResponseInterface::CODE_SWITCH_PROXY,
-    \Framework\HTTP\ResponseInterface::CODE_TEMPORARY_REDIRECT,
-    \Framework\HTTP\ResponseInterface::CODE_USE_PROXY,
+    \Framework\HTTP\Status::FOUND,
+    \Framework\HTTP\Status::MOVED_PERMANENTLY,
+    \Framework\HTTP\Status::MULTIPLE_CHOICES,
+    \Framework\HTTP\Status::NOT_MODIFIED,
+    \Framework\HTTP\Status::PERMANENT_REDIRECT,
+    \Framework\HTTP\Status::SEE_OTHER,
+    \Framework\HTTP\Status::SWITCH_PROXY,
+    \Framework\HTTP\Status::TEMPORARY_REDIRECT,
+    \Framework\HTTP\Status::USE_PROXY,
+);
+registerArgumentsSet(
+    'methods',
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
 );
 registerArgumentsSet(
     'placeholders',
@@ -52,4 +61,9 @@ expectedArguments(
     \Framework\Routing\RouteCollection::presenter(),
     4,
     argumentsSet('placeholders')
+);
+expectedArguments(
+    \Framework\Routing\Attributes\Route::__construct(),
+    0,
+    argumentsSet('methods')
 );
