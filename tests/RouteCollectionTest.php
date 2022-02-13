@@ -52,6 +52,19 @@ final class RouteCollectionTest extends TestCase
         self::assertSame('api.Users.create', $collection->routes['POST'][0]->getName());
     }
 
+    public function testAdd() : void
+    {
+        self::assertSame([], $this->collection->routes);
+        $this->collection->add(['Get'], '/', 'RouteActions::foo');
+        self::assertArrayHasKey('GET', $this->collection->routes);
+        $this->collection->add(['put', 'POST'], '/', 'RouteActions::foo');
+        self::assertArrayHasKey('PUT', $this->collection->routes);
+        self::assertArrayHasKey('POST', $this->collection->routes);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid method: Pot');
+        $this->collection->add(['Pot'], '/', 'RouteActions::foo');
+    }
+
     public function testGet() : void
     {
         self::assertSame([], $this->collection->routes);

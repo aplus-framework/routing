@@ -13,6 +13,7 @@ use BadMethodCallException;
 use Closure;
 use Error;
 use Framework\HTTP\Method;
+use InvalidArgumentException;
 use LogicException;
 
 /**
@@ -135,11 +136,24 @@ class RouteCollection implements \Countable, \JsonSerializable
      * @param string $httpMethod
      * @param Route $route
      *
+     * @throws InvalidArgumentException for invalid method
+     *
      * @return static
      */
     protected function addRoute(string $httpMethod, Route $route) : static
     {
-        $this->routes[\strtoupper($httpMethod)][] = $route;
+        $method = \strtoupper($httpMethod);
+        if ( ! \in_array($method, [
+            'DELETE',
+            'GET',
+            'OPTIONS',
+            'PATCH',
+            'POST',
+            'PUT',
+        ], true)) {
+            throw new InvalidArgumentException('Invalid method: ' . $httpMethod);
+        }
+        $this->routes[$method][] = $route;
         return $this;
     }
 
@@ -201,6 +215,25 @@ class RouteCollection implements \Countable, \JsonSerializable
         array | Closure | string $action,
         string $name = null
     ) : Route {
+        $route = $this->makeRoute($path, $action, $name);
+        foreach ($httpMethods as $method) {
+            $this->addRoute($method, $route);
+        }
+        return $route;
+    }
+
+    /**
+     * @param string $path
+     * @param array<int,string>|Closure|string $action
+     * @param string|null $name
+     *
+     * @return Route
+     */
+    protected function makeRoute(
+        string $path,
+        array | Closure | string $action,
+        string $name = null
+    ) : Route {
         if (\is_array($action)) {
             $action = $this->makeRouteActionFromArray($action);
         }
@@ -208,10 +241,24 @@ class RouteCollection implements \Countable, \JsonSerializable
         if ($name !== null) {
             $route->setName($this->getRouteName($name));
         }
-        foreach ($httpMethods as $method) {
-            $this->addRoute($method, $route);
-        }
         return $route;
+    }
+
+    /**
+     * @param string $method
+     * @param string $path
+     * @param array<int,string>|Closure|string $action
+     * @param string|null $name
+     *
+     * @return Route
+     */
+    protected function addSimple(
+        string $method,
+        string $path,
+        array | Closure | string $action,
+        string $name = null
+    ) : Route {
+        return $this->routes[$method][] = $this->makeRoute($path, $action, $name);
     }
 
     /**
@@ -254,7 +301,7 @@ class RouteCollection implements \Countable, \JsonSerializable
         array | Closure | string $action,
         string $name = null
     ) : Route {
-        return $this->add(['GET'], $path, $action, $name);
+        return $this->addSimple('GET', $path, $action, $name);
     }
 
     /**
@@ -273,7 +320,7 @@ class RouteCollection implements \Countable, \JsonSerializable
         array | Closure | string $action,
         string $name = null
     ) : Route {
-        return $this->add(['POST'], $path, $action, $name);
+        return $this->addSimple('POST', $path, $action, $name);
     }
 
     /**
@@ -292,7 +339,7 @@ class RouteCollection implements \Countable, \JsonSerializable
         array | Closure | string $action,
         string $name = null
     ) : Route {
-        return $this->add(['PUT'], $path, $action, $name);
+        return $this->addSimple('PUT', $path, $action, $name);
     }
 
     /**
@@ -311,7 +358,7 @@ class RouteCollection implements \Countable, \JsonSerializable
         array | Closure | string $action,
         string $name = null
     ) : Route {
-        return $this->add(['PATCH'], $path, $action, $name);
+        return $this->addSimple('PATCH', $path, $action, $name);
     }
 
     /**
@@ -330,7 +377,7 @@ class RouteCollection implements \Countable, \JsonSerializable
         array | Closure | string $action,
         string $name = null
     ) : Route {
-        return $this->add(['DELETE'], $path, $action, $name);
+        return $this->addSimple('DELETE', $path, $action, $name);
     }
 
     /**
@@ -349,7 +396,7 @@ class RouteCollection implements \Countable, \JsonSerializable
         array | Closure | string $action,
         string $name = null
     ) : Route {
-        return $this->add(['OPTIONS'], $path, $action, $name);
+        return $this->addSimple('OPTIONS', $path, $action, $name);
     }
 
     /**
@@ -364,9 +411,13 @@ class RouteCollection implements \Countable, \JsonSerializable
     public function redirect(string $path, string $location, int $code = null) : Route
     {
         $response = $this->router->getResponse();
-        return $this->add(['GET'], $path, static function () use ($response, $location, $code) : void {
-            $response->redirect($location, [], $code);
-        });
+        return $this->addSimple(
+            'GET',
+            $path,
+            static function () use ($response, $location, $code) : void {
+                $response->redirect($location, [], $code);
+            }
+        );
     }
 
     /**
