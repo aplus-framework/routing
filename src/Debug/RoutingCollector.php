@@ -210,14 +210,16 @@ class RoutingCollector extends Collector
 
     protected function renderRouteCollectionTime(RouteCollection $collection) : string
     {
+        $contents = '';
         foreach ($this->getData() as $data) {
             if ($data['type'] === 'serve' && $data['collectionId'] === \spl_object_id($collection)) {
-                return '<p title="Seconds"><strong>Time to Serve:</strong> '
+                $contents = '<p title="Seconds"><strong>Time to Serve:</strong> '
                     . \round($data['end'] - $data['start'], 6)
                     . '</p>';
+                break;
             }
         }
-        return '';
+        return $contents;
     }
 
     protected function renderRouteCollectionsTable(RouteCollection $collection) : string
