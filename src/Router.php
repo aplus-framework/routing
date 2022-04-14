@@ -317,16 +317,10 @@ class Router implements \JsonSerializable
             if ( ! \preg_match('#' . $pattern . '#', $arguments[$index])) {
                 throw new InvalidArgumentException("Placeholder argument is invalid: {$index}");
             }
-            $pos = \strpos($string, $pattern);
-            if ($pos === false) {
-                throw new RuntimeException(
-                    "Pattern position not found on placeholder argument: {$index}"
-                );
-            }
             $string = \substr_replace(
                 $string,
                 $arguments[$index],
-                $pos,
+                \strpos($string, $pattern), // @phpstan-ignore-line
                 \strlen($pattern)
             );
         }
