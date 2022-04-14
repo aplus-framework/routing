@@ -111,6 +111,26 @@ final class RoutingCollectorTest extends TestCase
         self::assertStringContainsString('Time to Match', $contents);
     }
 
+    public function testRunWithRouteActions() : void
+    {
+        $this->setServerVars();
+        $_SERVER['REQUEST_URI'] = '/foo';
+        $router = new Router(new Response(new Request()));
+        $router->setDebugCollector($this->collector);
+        $router->serve('http://domain.tld', static function (RouteCollection $routes) : void {
+            $routes->get('/foo', 'Tests\Routing\Support\WithRouteActions::index', 'actions');
+        });
+        $router->match()->run();
+        $activities = $this->collector->getActivities();
+        self::assertSame('Serve route collection 1', $activities[0]['description']);
+        self::assertSame('Match route', $activities[1]['description']);
+        self::assertSame('Run matched route', $activities[2]['description']);
+        $contents = $this->collector->getContents();
+        self::assertStringNotContainsString('No matching route', $contents);
+        self::assertStringContainsString('Time to Match', $contents);
+        self::assertSame('actions', $router->getMatchedRoute()->getName());
+    }
+
     public function testNotRoutesInCollection() : void
     {
         $this->makeRouter()->serve('http://admin.domain.tld', static function (RouteCollection $routes) : void {
