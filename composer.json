@@ -34,17 +34,17 @@
     ],
     "require": {
         "php": ">=8.1",
-        "aplus/debug": "^2.4",
-        "aplus/http": "^4.6",
-        "aplus/language": "^1.7"
+        "aplus/debug": "^3.0",
+        "aplus/http": "^5.0",
+        "aplus/language": "^2.0"
     },
     "require-dev": {
         "ext-xdebug": "*",
         "aplus/coding-standard": "^1.12",
-        "ergebnis/composer-normalize": "^2.23",
+        "ergebnis/composer-normalize": "^2.25",
         "jetbrains/phpstorm-attributes": "^1.0",
-        "phpmd/phpmd": "^2.11",
-        "phpstan/phpstan": "^0.12",
+        "phpmd/phpmd": "^2.12",
+        "phpstan/phpstan": "^1.5",
         "phpunit/phpunit": "^9.5"
     },
     "minimum-stability": "dev",
