@@ -424,10 +424,10 @@ class RouteCollection implements \Countable, \JsonSerializable
      * Groups many Routes into a URL path.
      *
      * @param string $basePath The URL path to group in
-     * @param array<int,array|Route> $routes The Routes to be grouped
+     * @param array<array<mixed|Route>|Route> $routes The Routes to be grouped
      * @param array<string,mixed> $options Custom options passed to the Routes
      *
-     * @return array<int,array|Route> The same $routes with updated paths and options
+     * @return array<array<mixed|Route>|Route> The same $routes with updated paths and options
      */
     public function group(string $basePath, array $routes, array $options = []) : array
     {
@@ -453,9 +453,9 @@ class RouteCollection implements \Countable, \JsonSerializable
      * Updates Routes actions, which are strings, prepending a namespace.
      *
      * @param string $namespace The namespace
-     * @param array<int,array|Route> $routes The Routes
+     * @param array<array<mixed|Route>|Route> $routes The Routes
      *
-     * @return array<int,array|Route> The same $routes with updated actions
+     * @return array<array<mixed|Route>|Route> The same $routes with updated actions
      */
     public function namespace(string $namespace, array $routes) : array
     {

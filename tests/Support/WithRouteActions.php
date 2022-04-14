@@ -14,7 +14,7 @@ use Framework\Routing\RouteActions;
 class WithRouteActions extends RouteActions
 {
     /**
-     * @var array<int,mixed>
+     * @var array<mixed>
      */
     protected array $construct;
 
