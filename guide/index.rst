@@ -7,6 +7,24 @@ Routing
 Aplus Framework Routing Library.
 
 - `Installation`_
+- `Introduction`_
+- `Placeholders`_
+- `Actions`_
+- `Route Collection`_
+- `Resources`_
+- `Presenters`_
+- `Groups`_
+- `Namespaces`_
+- `Route Not Found`_
+- `Routes`_
+- `Route Actions`_
+- `Router`_
+- `Default Route Not Found`_
+- `Named Routes`_
+- `Matched Route`_
+- `HTTP OPTIONS Method`_
+- `HTTP Allowed Methods`_
+- `Conclusion`_
 
 Installation
 ------------
@@ -25,6 +43,8 @@ Closure, with named routes.
 
 The Router is responsible for handling the various Routes of an application,
 created in a Route Collection.
+
+Let's look at a complete example of the routing system:
 
 .. code-block:: php
 
@@ -96,6 +116,9 @@ The available placeholders are:
 | ``{uuid}``      | Accepts a UUID                  |
 +-----------------+---------------------------------+
 
+You can also add custom placeholders. Let's look at an example for the
+``{username}`` placeholder:
+
 .. code-block:: php
 
     $router->addPlaceholder('username', '([a-z\\d](?:[a-z\\d]|-(?=[a-z\\d])){0,16})');
@@ -103,9 +126,20 @@ The available placeholders are:
 Actions
 -------
 
-Closure or instance of Framework\Routing\RouteActions
+The router delivers route actions which can be a Closure or a
+instance of the **Framework\Routing\RouteActions** class.
 
-Closure
+Let's see how to define a Closure for the path ``/posts/{int}``.
+
+In the first argument it receives an array with the values received in the placeholders.
+
+If the path ``/posts/25`` is accessed, the variable ``$pathArgs[0]`` will have
+the number 25, as a string.
+
+In the $constructorArguments parameters, the instances passed in the ``run``
+method of the matched Route will be received.
+
+Closure:
 
 .. code-block:: php
 
@@ -117,11 +151,33 @@ Closure
         }
     );
 
-Framework\Routing\RouteActions
+Actions can also be defined as strings. Following the format below:
+
+.. code-block::
+
+    Class::method/arguments
+
+The Class must extend the **Framework\Routing\RouteActions** class and have
+the action method.
+
+The arguments are numbers separated by slashes after the method name.
+
+The number of arguments starts at zero and can have custom order. These are the
+arguments that will go to the action class method.
 
 .. code-block:: php
 
     $routes->get('/posts/{int}', 'Posts::show/0');
+
+Let's see an example creating the ``Posts`` class, which will have the ``show``
+method, which will receive two arguments. In the first will be the value of
+placeholder ``{int}`` and in the second will be the value of ``{slug}``:
+
+.. code-block:: php
+
+    $routes->get('/categories/{slug}/posts/{int}/', 'Posts::show/1/0');
+
+Let's see the class that serves this route:
 
 .. code-block:: php
 
@@ -144,25 +200,16 @@ Framework\Routing\RouteActions
         }
     }
 
-.. code-block:: php
-
-    class Posts extends RouteActions
-    {
-        public function show(int $id, string $category)
-        {
-            echo 'Category slug is: ' . $category;
-            echo 'Post id is: ' . $id;
-            var_dump($this->constructorArguments);
-        }
-    }
-
-.. code-block:: php
-
-    $routes->get('/categories/{slug}/posts/{int}/', 'Posts::show/1/0');
+If you do not want to pass the arguments through numbers, with a defined order,
+you can use the asterisk character to indicate that all placeholder values must
+go to the method in the order they are received:
 
 .. code-block:: php
 
     $routes->get('/categories/{slug}/posts/{int}/', 'Posts::show/*');
+
+Note that the show method will receive ``{slug}`` in the first argument and
+``{int}`` in the second:
 
 .. code-block:: diff
 
@@ -178,6 +225,9 @@ Framework\Routing\RouteActions
             }
          }
 
+To avoid passing arguments to action methods, just do not add the suffix of
+slashes with numbers or the asterisk:
+
 .. code-block:: php
 
     $routes->get('/categories/{slug}/posts/{int}/', 'Posts::show');
@@ -190,6 +240,13 @@ The RouteCollection has several methods for creating Routes.
 Most receive the name of the HTTP method to which the Route is assigned.
 
 For example, the HTTP GET method has the ``get`` method. The POST, ``post``, etc.
+
+Let's see below an example in which the routing will only receive URLs that
+start with the origin ``http://domain.tld`` and in it, will have a collection
+of routes for the various HTTP verbs.
+
+In the third parameter of the ``serve`` method, an argument with the name of the
+collection is accepted, which will be prefixed to the name of the routes:
 
 .. code-block:: php
 
@@ -214,13 +271,21 @@ For example, the HTTP GET method has the ``get`` method. The POST, ``post``, etc
     }, 'collection-name');
 
 Resources
-^^^^^^^^^
+#########
+
+Through the ``resource`` method it is possible to create several routes at once.
+
+They are meant to be used in a REST API.
+
+Let's see the example below, which serves the path ``/users`` and delivers the
+requests to the ``App\Users`` class. Since the prefix of the name of the
+automatic routes is ``users``:
 
 .. code-block:: php
 
     $routes->resource('/users', 'App\Users', 'users');
 
-Which will create 6 routes:
+Which will create 6 routes, as follows:
 
 +-----------------+--------------+----------------------+---------------+
 | HTTP Method     | Path         | Action               | Name          |
@@ -238,10 +303,19 @@ Which will create 6 routes:
 | **DELETE**      | /users/{int} | App\Users::delete/*  | users.delete  |
 +-----------------+--------------+----------------------+---------------+
 
+In the fourth parameter of the ``serve`` method it is possible to be in an array
+the routes that should not be added. And they are: ``index``, ``create``, ``show``,
+``update``, ``replace`` and ``delete``.
+
+In the fifth parameter, the placeholder to be used is defined, the default being
+``{int}``, to be the id of the resource.
+
 Presenters
-^^^^^^^^^^
+##########
 
 Presenters create Routes to be used in a Web Browser User Interface.
+
+It also creates multiple routes at once:
 
 .. code-block:: php
 
@@ -269,10 +343,17 @@ The routes are as follows:
 | **POST**        | /users/{int}/delete | App\Users::delete/* | users.delete |
 +-----------------+---------------------+---------------------+--------------+
 
-Groups
-^^^^^^
+In the fourth parameter it is also possible to pass an array with paths to be
+ignored: ``index``, ``new``, ``create``, ``show``, ``edit``, ``update``, ``remove``
+and ``delete``.
 
-Sometimes the route path can become repetitive and to simplify route creation 
+In the fifth parameter you can also pass the Presenter placeholder, and the
+default is also ``{int}``.
+
+Groups
+######
+
+Sometimes the route path can become repetitive and to simplify route creation
 is possible to group them with a base path.
 
 .. code-block:: php
@@ -300,7 +381,7 @@ Grouping works on multiple layers. This also works:
     ]);
 
 Namespaces
-^^^^^^^^^^
+##########
 
 It is possible group route actions with the ``namespace`` method:
 
@@ -320,10 +401,11 @@ It is possible group route actions with the ``namespace`` method:
     ]);
 
 Route Not Found
-^^^^^^^^^^^^^^^
+###############
 
 Each RouteCollection can have its own custom Error 404 page.
-It can be a Closure:
+
+The action can be a Closure:
 
 .. code-block:: php
 
@@ -340,13 +422,21 @@ Or a class method string:
 Routes
 ------
 
+Through routes it is possible to build URLs that point to your RouteCollection:
+
 .. code-block:: php
 
     $route = $router->getNamedRoute('blog');
     echo $route->getUrl();
 
 Route Actions
-^^^^^^^^^^^^^
+#############
+
+RouteActions is an abstract class that has methods that run after the constructor
+and before the action method. And also after the action and before the destructor.
+
+Let's see below the use of the ``beforeAction`` method that can intercept the
+action and redirect to the route named ``access.login``:
 
 .. code-block:: php
 
@@ -419,6 +509,16 @@ Router
 The router is where the RouteCollections are stored, and it decides which
 Route will run according to the HTTP Request method and URL.
 
+It is possible to serve several RouteCollections that will respond through an
+URL Origin.
+
+In the example below, a collection of routes for both http and https as a scheme
+is served.
+
+Below is a collection for ``https://api.domain.tld``. Note that it will only
+work for https and has a prefix name for the route name called ``api``,
+defined in the third parameter:
+
 .. code-block:: php
 
     $router->serve('{scheme}://domain.tld', function (RouteCollection $routes) {
@@ -428,17 +528,19 @@ Route will run according to the HTTP Request method and URL.
     }, 'api');
 
 Default Route Not Found
-^^^^^^^^^^^^^^^^^^^^^^^
+#######################
 
 If a RouteCollection does not have an Error 404 route set, the default router page
-will be responded. It is customizable:
+will be responded. It is customizable.
+
+The route action can be either a Closure or a string:
 
 .. code-block:: php
 
     $router->setDefaultRouteNotFound('App\Errors::notFound');
 
 Named Routes
-^^^^^^^^^^^^
+############
 
 Routes in a collection can be named for easy route maintenance when a URL
 changes its path.
@@ -449,8 +551,10 @@ Through the Router is possible take Routes by names:
 
     $route = $router->getNamedRoute('api.users.followers');
 
+Note that a RuntimeException will be thrown if the named route does not exist.
+
 Matched Route
-^^^^^^^^^^^^^
+#############
 
 After calling the ``match`` method, it is possible get the Route with ``getMatchedRoute``:
 
@@ -459,10 +563,10 @@ After calling the ``match`` method, it is possible get the Route with ``getMatch
     $route = $router->getMatchedRoute();
 
 HTTP OPTIONS Method
-^^^^^^^^^^^^^^^^^^^
+###################
 
-The HTTP OPTIONS method serves to show which methods a particular resource 
-makes available. With the routes defined, the server can answer automatically 
+The HTTP OPTIONS method serves to show which methods a particular resource
+makes available. With the routes defined, the server can respond automatically
 which methods are allowed.
 
 .. code-block:: php
@@ -470,8 +574,24 @@ which methods are allowed.
     $router->setAutoOptions();
 
 HTTP Allowed Methods
-^^^^^^^^^^^^^^^^^^^^
+####################
+
+Enable/disable the feature of auto-detect and show HTTP allowed methods
+via the Allow header when a route with the requested method does not exist.
 
 .. code-block:: php
 
     $router->setAutoMethods();
+
+Conclusion
+----------
+
+Aplus Routing Library is an easy-to-use tool for, beginners and experienced, PHP developers. 
+It is perfect for routing URLs to Closures or class methods very quickly. 
+The more you use it, the more you will learn.
+
+.. note::
+    Did you find something wrong? 
+    Be sure to let us know about it with an
+    `issue <https://gitlab.com/aplus-framework/libraries/routing/issues>`_. 
+    Thank you!
