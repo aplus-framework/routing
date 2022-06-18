@@ -108,6 +108,11 @@ class RouteCollection implements \Countable, \JsonSerializable
         );
     }
 
+    public function __isset(string $property) : bool
+    {
+        return isset($this->{$property});
+    }
+
     /**
      * @param string $origin
      *
