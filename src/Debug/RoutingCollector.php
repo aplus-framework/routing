@@ -195,12 +195,12 @@ class RoutingCollector extends Collector
                 <p><strong>Name:</strong> <?= $collection->name ?></p>
             <?php
             endif;
-        // @phpstan-ignore-next-line
-        $notFound = $this->router->getMatchedOrigin() ? $collection->getRouteNotFound() : false;
-        if ($notFound): ?>
-                <p><strong>Route Not Found:</strong> <?= $notFound->getAction() instanceof Closure
+        $notFound = $collection->notFoundAction ?? null;
+        if ($notFound !== null):
+                ?>
+                <p><strong>Route Not Found:</strong> <?= $notFound instanceof Closure
                         ? 'Closure'
-                        : \htmlentities($notFound->getAction()) ?></p>
+                        : \htmlentities($notFound) ?></p>
             <?php
             endif;
         echo $this->renderRouteCollectionsTable($collection);

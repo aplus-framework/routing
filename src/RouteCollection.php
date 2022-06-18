@@ -91,6 +91,9 @@ class RouteCollection implements \Countable, \JsonSerializable
         if ($property === 'name') {
             return $this->name;
         }
+        if ($property === 'notFoundAction') {
+            return $this->notFoundAction;
+        }
         if ($property === 'origin') {
             return $this->origin;
         }

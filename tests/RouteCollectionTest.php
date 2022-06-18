@@ -356,6 +356,12 @@ final class RouteCollectionTest extends TestCase
         $foo = $this->collection->foo; // @phpstan-ignore-line
     }
 
+    public function testGetNotFoundAction() : void
+    {
+        $this->collection->notFound('Foo::bar');
+        self::assertSame('Foo::bar', $this->collection->notFoundAction); // @phpstan-ignore-line
+    }
+
     public function testJsonSerialize() : void
     {
         $this->collection->get('/foo', 'Foo');
