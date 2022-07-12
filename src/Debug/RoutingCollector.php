@@ -85,7 +85,7 @@ class RoutingCollector extends Collector
         if ($notFound): ?>
             <p><strong>Default Route Not Found:</strong> <?=
                 $notFound instanceof Closure ? 'Closure' : \htmlentities($notFound)
-                ?></p>
+            ?></p>
         <?php
         endif ?>
         <h2>Placeholders</h2>
@@ -195,15 +195,15 @@ class RoutingCollector extends Collector
                 <p><strong>Name:</strong> <?= $collection->name ?></p>
             <?php
             endif;
-        $notFound = $collection->notFoundAction ?? null;
-        if ($notFound !== null):
+            $notFound = $collection->notFoundAction ?? null;
+            if ($notFound !== null):
                 ?>
                 <p><strong>Route Not Found:</strong> <?= $notFound instanceof Closure
                         ? 'Closure'
                         : \htmlentities($notFound) ?></p>
             <?php
             endif;
-        echo $this->renderRouteCollectionsTable($collection);
+            echo $this->renderRouteCollectionsTable($collection);
         endforeach;
         return \ob_get_clean(); // @phpstan-ignore-line
     }

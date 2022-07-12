@@ -361,7 +361,8 @@ class Router implements \JsonSerializable
         ?string $origin,
         callable $callable,
         string $collectionName = null
-    ) : static {
+    ) : static
+    {
         if ($origin === null) {
             $origin = $this->response->getRequest()->getUrl()->getOrigin();
         }
