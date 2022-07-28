@@ -21,7 +21,7 @@ use Framework\Routing\RouteActions;
 #[Origin('http://api.domain.xyz')]
 class UsersRouteActionsResource extends RouteActions implements ResourceInterface
 {
-    #[Route('GET', '/users')]
+    #[Route('GET', '/users', origin: 'http://foo.com')]
     public function index() : string
     {
         return __METHOD__;

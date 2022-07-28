@@ -23,7 +23,7 @@ final class RouteAttributeTest extends TestCase
 {
     /**
      * @param string $method
-     * @param array<int,mixed> $arguments
+     * @param array<mixed> $arguments
      *
      * @throws ReflectionException
      */
@@ -49,12 +49,18 @@ final class RouteAttributeTest extends TestCase
         $method === 'delete'
             ? self::assertSame('users.delete', $instance->getName())
             : self::assertNull($instance->getName());
-        self::assertNull($instance->getOrigin());
+        $method === 'index'
+            ? self::assertSame('http://foo.com', $instance->getOrigin())
+            : self::assertNull($instance->getOrigin());
     }
 
     public function testIndex() : void
     {
-        $this->assertAttribute('index', ['GET', '/users']);
+        $this->assertAttribute('index', [
+            'GET',
+            '/users',
+            'origin' => 'http://foo.com',
+        ]);
     }
 
     public function testCreate() : void

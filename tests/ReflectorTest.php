@@ -60,8 +60,7 @@ final class ReflectorTest extends TestCase
         $reflector = new Reflector(UsersRouteActionsResource::class);
         self::assertContains([
             'origins' => [
-                'http://domain.com',
-                'http://api.domain.xyz',
+                'http://foo.com',
             ],
             'methods' => ['GET'],
             'path' => '/users',

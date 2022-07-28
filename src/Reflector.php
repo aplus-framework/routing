@@ -96,7 +96,7 @@ class Reflector
                 continue;
             }
             $origin = $route->getOrigin();
-            $origin = $origin === null ? $origins : [];
+            $origin = $origin === null ? $origins : [$origin];
             $routes[] = [
                 'origins' => $origin,
                 'methods' => $route->getMethods(),
