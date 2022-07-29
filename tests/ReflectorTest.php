@@ -11,6 +11,7 @@ namespace Tests\Routing;
 
 use Framework\Routing\Reflector;
 use PHPUnit\Framework\TestCase;
+use Tests\Routing\Support\ChildClass;
 use Tests\Routing\Support\UsersRouteActionsPresenter;
 use Tests\Routing\Support\UsersRouteActionsResource;
 use Tests\Routing\Support\WithoutRouteActions;
@@ -78,6 +79,27 @@ final class ReflectorTest extends TestCase
             'arguments' => '0',
             'name' => 'users.delete',
             'action' => UsersRouteActionsResource::class . '::delete',
+        ], $reflector->getRoutes());
+    }
+
+    public function testInChildClass() : void
+    {
+        $reflector = new Reflector(new ChildClass());
+        self::assertContains([
+            'origins' => [],
+            'methods' => ['GET'],
+            'path' => '/hello',
+            'arguments' => '*',
+            'name' => null,
+            'action' => ChildClass::class . '::hello',
+        ], $reflector->getRoutes());
+        self::assertContains([
+            'origins' => [],
+            'methods' => ['GET'],
+            'path' => '/bye',
+            'arguments' => '*',
+            'name' => null,
+            'action' => ChildClass::class . '::bye',
         ], $reflector->getRoutes());
     }
 }

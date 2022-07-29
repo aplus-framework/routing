@@ -103,7 +103,7 @@ class Reflector
                 'path' => $route->getPath(),
                 'arguments' => $route->getArguments(),
                 'name' => $route->getName(),
-                'action' => $method->class . '::' . $method->name,
+                'action' => $this->reflection->name . '::' . $method->name,
             ];
         }
         return $routes;
