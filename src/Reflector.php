@@ -61,12 +61,16 @@ class Reflector
     }
 
     /**
+     * @template T of object
+     *
+     * @param ReflectionClass<T> $reflection
+     *
      * @return array<int,string>
      */
-    protected function getObjectOrigins() : array
+    protected function getObjectOrigins(ReflectionClass $reflection) : array
     {
         $origins = [];
-        foreach ($this->reflection->getAttributes() as $attribute) {
+        foreach ($reflection->getAttributes() as $attribute) {
             if ($attribute->getName() === Origin::class) {
                 /**
                  * @var Origin $origin
@@ -75,6 +79,12 @@ class Reflector
                 $origins[] = $origin->getOrigin();
             }
         }
+        $parent = $reflection->getParentClass();
+        if ($parent) {
+            $origins = [...$origins, ...$this->getObjectOrigins($parent)];
+        }
+        $origins = \array_unique($origins);
+        \sort($origins);
         return $origins;
     }
 
@@ -85,7 +95,7 @@ class Reflector
      */
     public function getRoutes() : array
     {
-        $origins = $this->getObjectOrigins();
+        $origins = $this->getObjectOrigins($this->reflection);
         $routes = [];
         foreach ($this->reflection->getMethods() as $method) {
             if ( ! $method->isPublic()) {

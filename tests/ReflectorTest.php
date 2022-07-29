@@ -71,8 +71,8 @@ final class ReflectorTest extends TestCase
         ], $reflector->getRoutes());
         self::assertContains([
             'origins' => [
-                'http://domain.com',
                 'http://api.domain.xyz',
+                'http://domain.com',
             ],
             'methods' => ['DELETE'],
             'path' => '/users/{int}',
@@ -86,7 +86,9 @@ final class ReflectorTest extends TestCase
     {
         $reflector = new Reflector(new ChildClass());
         self::assertContains([
-            'origins' => [],
+            'origins' => [
+                'http://bar.xyz',
+            ],
             'methods' => ['GET'],
             'path' => '/hello',
             'arguments' => '*',
@@ -94,7 +96,9 @@ final class ReflectorTest extends TestCase
             'action' => ChildClass::class . '::hello',
         ], $reflector->getRoutes());
         self::assertContains([
-            'origins' => [],
+            'origins' => [
+                'http://bar.xyz',
+            ],
             'methods' => ['GET'],
             'path' => '/bye',
             'arguments' => '*',
