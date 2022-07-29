@@ -24,4 +24,9 @@ abstract class AbstractClass
     public function hello() : void
     {
     }
+
+    #[Route('GET', '/replace-origin', origin: 'xxx')]
+    public function replaceOrigin() : void
+    {
+    }
 }

@@ -97,6 +97,16 @@ final class ReflectorTest extends TestCase
         ], $reflector->getRoutes());
         self::assertContains([
             'origins' => [
+                'xxx',
+            ],
+            'methods' => ['GET'],
+            'path' => '/replace-origin',
+            'arguments' => '*',
+            'name' => null,
+            'action' => ChildClass::class . '::replaceOrigin',
+        ], $reflector->getRoutes());
+        self::assertContains([
+            'origins' => [
                 'http://bar.xyz',
             ],
             'methods' => ['GET'],
