@@ -12,11 +12,6 @@ namespace Tests\Routing\Support;
 use Framework\Routing\Attributes\Origin;
 use Framework\Routing\Attributes\Route;
 
-/**
- * Class AbstractClass.
- *
- * @package routing
- */
 #[Origin('http://bar.xyz')]
 abstract class AbstractClass
 {

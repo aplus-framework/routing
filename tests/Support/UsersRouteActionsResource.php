@@ -15,9 +15,6 @@ use Framework\Routing\Attributes\RouteNotFound;
 use Framework\Routing\ResourceInterface;
 use Framework\Routing\RouteActions;
 
-/**
- * Class UsersRouteActionsResource.
- */
 #[Origin('http://domain.com')]
 #[Origin('http://api.domain.xyz')]
 class UsersRouteActionsResource extends RouteActions implements ResourceInterface

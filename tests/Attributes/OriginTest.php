@@ -15,9 +15,6 @@ use PHPUnit\Framework\TestCase;
 use ReflectionObject;
 use Tests\Routing\Support\UsersRouteActionsResource;
 
-/**
- * Class OriginTest.
- */
 final class OriginTest extends TestCase
 {
     public function testAttributes() : void

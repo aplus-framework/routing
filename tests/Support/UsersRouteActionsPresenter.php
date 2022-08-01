@@ -14,9 +14,6 @@ use Framework\Routing\Attributes\RouteNotFound;
 use Framework\Routing\PresenterInterface;
 use Framework\Routing\RouteActions;
 
-/**
- * Class UsersRouteActionsPresenter.
- */
 class UsersRouteActionsPresenter extends RouteActions implements PresenterInterface
 {
     #[Route('GET', '/users')]

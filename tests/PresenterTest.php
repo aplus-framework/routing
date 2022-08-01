@@ -16,9 +16,6 @@ use Framework\Routing\Router;
 use PHPUnit\Framework\TestCase;
 use Tests\Routing\Support\UsersRouteActionsPresenter;
 
-/**
- * Class PresenterTest.
- */
 final class PresenterTest extends TestCase
 {
     protected Response $response;

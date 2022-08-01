@@ -13,9 +13,6 @@ use Framework\Routing\RouteActions;
 use PHPUnit\Framework\TestCase;
 use Tests\Routing\Support\WithRouteActions;
 
-/**
- * Class RouteActionsTest.
- */
 final class RouteActionsTest extends TestCase
 {
     protected RouteActions $actions;

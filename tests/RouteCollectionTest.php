@@ -17,9 +17,6 @@ use Framework\Routing\RouteCollection;
 use Framework\Routing\Router;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Class RouteCollectionTest.
- */
 final class RouteCollectionTest extends TestCase
 {
     protected RouteCollection $collection;

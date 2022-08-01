@@ -16,9 +16,6 @@ use ReflectionException;
 use ReflectionObject;
 use Tests\Routing\Support\UsersRouteActionsResource;
 
-/**
- * Class RouteTest.
- */
 final class RouteTest extends TestCase
 {
     /**

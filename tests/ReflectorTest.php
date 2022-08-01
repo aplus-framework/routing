@@ -16,9 +16,6 @@ use Tests\Routing\Support\UsersRouteActionsPresenter;
 use Tests\Routing\Support\UsersRouteActionsResource;
 use Tests\Routing\Support\WithoutRouteActions;
 
-/**
- * Class ReflectorTest.
- */
 final class ReflectorTest extends TestCase
 {
     public function testWithoutRouteActions() : void

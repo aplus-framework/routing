@@ -11,9 +11,6 @@ namespace Tests\Routing;
 
 use PHPUnit\Framework\TestCase;
 
-/**
- * Class LanguagesTest.
- */
 final class LanguagesTest extends TestCase
 {
     protected string $langDir = __DIR__ . '/../src/Languages/';

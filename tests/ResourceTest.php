@@ -16,9 +16,6 @@ use Framework\Routing\Router;
 use PHPUnit\Framework\TestCase;
 use Tests\Routing\Support\UsersRouteActionsResource;
 
-/**
- * Class ResourceTest.
- */
 final class ResourceTest extends TestCase
 {
     protected Response $response;

@@ -11,11 +11,6 @@ namespace Tests\Routing\Support;
 
 use Framework\Routing\Attributes\Route;
 
-/**
- * Class ChildClass.
- *
- * @package routing
- */
 class ChildClass extends AbstractClass
 {
     #[Route('GET', '/bye')]

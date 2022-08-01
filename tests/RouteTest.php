@@ -19,9 +19,6 @@ use PHPUnit\Framework\TestCase;
 use Tests\Routing\Support\WithoutRouteActions;
 use Tests\Routing\Support\WithRouteActions;
 
-/**
- * Class RouteTest.
- */
 final class RouteTest extends TestCase
 {
     protected Response $response;

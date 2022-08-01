@@ -14,11 +14,6 @@ use PHPUnit\Framework\TestCase;
 use Tests\Routing\Support\UsersRouteActionsPresenter;
 use Tests\Routing\Support\UsersRouteActionsResource;
 
-/**
- * Class RouteNotFoundTest.
- *
- * @package routing
- */
 final class RouteNotFoundTest extends TestCase
 {
     public function testWithOrigins() : void

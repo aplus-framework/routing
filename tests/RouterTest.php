@@ -17,9 +17,6 @@ use Framework\Routing\RouteCollection;
 use Framework\Routing\Router;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Class RouterTest.
- */
 final class RouterTest extends TestCase
 {
     protected Response $response;
