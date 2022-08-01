@@ -7,7 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Tests\Routing;
+namespace Tests\Routing\Attributes;
 
 use Attribute;
 use Framework\Routing\Attributes\Origin;
@@ -16,9 +16,9 @@ use ReflectionObject;
 use Tests\Routing\Support\UsersRouteActionsResource;
 
 /**
- * Class OriginAttributeTest.
+ * Class OriginTest.
  */
-final class OriginAttributeTest extends TestCase
+final class OriginTest extends TestCase
 {
     public function testAttributes() : void
     {

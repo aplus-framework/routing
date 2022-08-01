@@ -7,7 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Tests\Routing;
+namespace Tests\Routing\Attributes;
 
 use Attribute;
 use Framework\Routing\Attributes\Route;
@@ -17,9 +17,9 @@ use ReflectionObject;
 use Tests\Routing\Support\UsersRouteActionsResource;
 
 /**
- * Class RouteAttributeTest.
+ * Class RouteTest.
  */
-final class RouteAttributeTest extends TestCase
+final class RouteTest extends TestCase
 {
     /**
      * @param string $method

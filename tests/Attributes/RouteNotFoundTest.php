@@ -7,7 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Tests\Routing;
+namespace Tests\Routing\Attributes;
 
 use Framework\Routing\Reflector;
 use PHPUnit\Framework\TestCase;
@@ -15,11 +15,11 @@ use Tests\Routing\Support\UsersRouteActionsPresenter;
 use Tests\Routing\Support\UsersRouteActionsResource;
 
 /**
- * Class RouteNotFoundAttributeTest.
+ * Class RouteNotFoundTest.
  *
  * @package routing
  */
-final class RouteNotFoundAttributeTest extends TestCase
+final class RouteNotFoundTest extends TestCase
 {
     public function testWithOrigins() : void
     {
