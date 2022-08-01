@@ -48,6 +48,14 @@ final class ReflectorTest extends TestCase
         ], $reflector->getRoutes());
         self::assertContains([
             'origins' => [],
+            'methods' => ['PATCH'],
+            'path' => '/users',
+            'arguments' => '*',
+            'name' => 'repeated',
+            'action' => UsersRouteActionsPresenter::class . '::create',
+        ], $reflector->getRoutes());
+        self::assertContains([
+            'origins' => [],
             'methods' => ['POST'],
             'path' => '/users/{int}/delete',
             'arguments' => '*',

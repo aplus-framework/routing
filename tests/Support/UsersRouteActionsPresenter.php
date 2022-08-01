@@ -32,6 +32,7 @@ class UsersRouteActionsPresenter extends RouteActions implements PresenterInterf
     }
 
     #[Route('POST', '/users')]
+    #[Route('PATCH', '/users', name: 'repeated')]
     public function create() : string
     {
         return __METHOD__;

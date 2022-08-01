@@ -44,21 +44,18 @@ class Reflector
      *
      * @throws ReflectionException
      *
-     * @return Route|null
+     * @return array<Route>
      */
-    protected function getMethodRoute(string $method) : ?Route
+    protected function getMethodRoutes(string $method) : array
     {
         $reflectionMethod = $this->reflection->getMethod($method);
-        $route = null;
+        $routes = [];
         foreach ($reflectionMethod->getAttributes() as $attribute) {
             if ($attribute->getName() === Route::class) {
-                /**
-                 * @var Route $route
-                 */
-                $route = $attribute->newInstance();
+                $routes[] = $attribute->newInstance();
             }
         }
-        return $route;
+        return $routes; // @phpstan-ignore-line
     }
 
     /**
@@ -97,27 +94,29 @@ class Reflector
     public function getRoutes() : array
     {
         $origins = $this->getObjectOrigins($this->reflection);
-        $routes = [];
+        $result = [];
         foreach ($this->reflection->getMethods() as $method) {
             if ( ! $method->isPublic()) {
                 continue;
             }
-            $route = $this->getMethodRoute($method->getName());
-            if ($route === null) {
+            $routes = $this->getMethodRoutes($method->getName());
+            if (empty($routes)) {
                 continue;
             }
-            $origin = $route->getOrigin();
-            $origin = $origin === null ? $origins : [$origin];
-            $routes[] = [
-                'origins' => $origin,
-                'methods' => $route->getMethods(),
-                'path' => $route->getPath(),
-                'arguments' => $route->getArguments(),
-                'name' => $route->getName(),
-                'action' => $this->reflection->name . '::' . $method->name,
-            ];
+            foreach ($routes as $route) {
+                $origin = $route->getOrigin();
+                $origin = $origin === null ? $origins : [$origin];
+                $result[] = [
+                    'origins' => $origin,
+                    'methods' => $route->getMethods(),
+                    'path' => $route->getPath(),
+                    'arguments' => $route->getArguments(),
+                    'name' => $route->getName(),
+                    'action' => $this->reflection->name . '::' . $method->name,
+                ];
+            }
         }
-        return $routes;
+        return $result;
     }
 
     /**
@@ -125,21 +124,18 @@ class Reflector
      *
      * @throws ReflectionException
      *
-     * @return RouteNotFound|null
+     * @return array<RouteNotFound>
      */
-    protected function getMethodRouteNotFound(string $method) : ?RouteNotFound
+    protected function getMethodRoutesNotFound(string $method) : array
     {
         $reflectionMethod = $this->reflection->getMethod($method);
-        $route = null;
+        $routes = [];
         foreach ($reflectionMethod->getAttributes() as $attribute) {
             if ($attribute->getName() === RouteNotFound::class) {
-                /**
-                 * @var RouteNotFound $route
-                 */
-                $route = $attribute->newInstance();
+                $routes[] = $attribute->newInstance();
             }
         }
-        return $route;
+        return $routes; // @phpstan-ignore-line
     }
 
     /**
@@ -150,22 +146,24 @@ class Reflector
     public function getRoutesNotFound() : array
     {
         $origins = $this->getObjectOrigins($this->reflection);
-        $routes = [];
+        $result = [];
         foreach ($this->reflection->getMethods() as $method) {
             if ( ! $method->isPublic()) {
                 continue;
             }
-            $route = $this->getMethodRouteNotFound($method->getName());
-            if ($route === null) {
+            $routes = $this->getMethodRoutesNotFound($method->getName());
+            if (empty($routes)) {
                 continue;
             }
-            $origin = $route->getOrigin();
-            $origin = $origin === null ? $origins : [$origin];
-            $routes[] = [
-                'origins' => $origin,
-                'action' => $this->reflection->name . '::' . $method->name,
-            ];
+            foreach ($routes as $route) {
+                $origin = $route->getOrigin();
+                $origin = $origin === null ? $origins : [$origin];
+                $result[] = [
+                    'origins' => $origin,
+                    'action' => $this->reflection->name . '::' . $method->name,
+                ];
+            }
         }
-        return $routes;
+        return $result;
     }
 }
