@@ -11,6 +11,7 @@ namespace Framework\Routing;
 
 use Framework\Routing\Attributes\Origin;
 use Framework\Routing\Attributes\Route;
+use Framework\Routing\Attributes\RouteNotFound;
 use ReflectionClass;
 use ReflectionException;
 
@@ -113,6 +114,55 @@ class Reflector
                 'path' => $route->getPath(),
                 'arguments' => $route->getArguments(),
                 'name' => $route->getName(),
+                'action' => $this->reflection->name . '::' . $method->name,
+            ];
+        }
+        return $routes;
+    }
+
+    /**
+     * @param string $method
+     *
+     * @throws ReflectionException
+     *
+     * @return RouteNotFound|null
+     */
+    protected function getMethodRouteNotFound(string $method) : ?RouteNotFound
+    {
+        $reflectionMethod = $this->reflection->getMethod($method);
+        $route = null;
+        foreach ($reflectionMethod->getAttributes() as $attribute) {
+            if ($attribute->getName() === RouteNotFound::class) {
+                /**
+                 * @var RouteNotFound $route
+                 */
+                $route = $attribute->newInstance();
+            }
+        }
+        return $route;
+    }
+
+    /**
+     * @throws ReflectionException
+     *
+     * @return array<mixed>
+     */
+    public function getRoutesNotFound() : array
+    {
+        $origins = $this->getObjectOrigins($this->reflection);
+        $routes = [];
+        foreach ($this->reflection->getMethods() as $method) {
+            if ( ! $method->isPublic()) {
+                continue;
+            }
+            $route = $this->getMethodRouteNotFound($method->getName());
+            if ($route === null) {
+                continue;
+            }
+            $origin = $route->getOrigin();
+            $origin = $origin === null ? $origins : [$origin];
+            $routes[] = [
+                'origins' => $origin,
                 'action' => $this->reflection->name . '::' . $method->name,
             ];
         }

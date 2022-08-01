@@ -10,6 +10,7 @@
 namespace Tests\Routing\Support;
 
 use Framework\Routing\Attributes\Route;
+use Framework\Routing\Attributes\RouteNotFound;
 use Framework\Routing\PresenterInterface;
 use Framework\Routing\RouteActions;
 
@@ -64,5 +65,11 @@ class UsersRouteActionsPresenter extends RouteActions implements PresenterInterf
     public function delete(string $id) : string
     {
         return __METHOD__ . '/' . $id;
+    }
+
+    #[RouteNotFound]
+    public function notFound() : string
+    {
+        return __METHOD__;
     }
 }
