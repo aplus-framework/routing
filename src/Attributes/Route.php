@@ -26,7 +26,10 @@ class Route
     protected string $path;
     protected string $arguments;
     protected ?string $name;
-    protected ?string $origin;
+    /**
+     * @var array<string>
+     */
+    protected array $origins;
 
     /**
      * Route constructor.
@@ -35,14 +38,14 @@ class Route
      * @param string $path The Route path
      * @param string $arguments The Route action arguments
      * @param string|null $name The Route name
-     * @param string|null $origin The Route origin
+     * @param array<string>|string $origins The Route origins
      */
     public function __construct(
         array | string $methods,
         string $path,
         string $arguments = '*',
         string $name = null,
-        string $origin = null,
+        array | string $origins = [],
     ) {
         $methods = (array) $methods;
         foreach ($methods as &$method) {
@@ -53,7 +56,7 @@ class Route
         $this->path = $path;
         $this->arguments = $arguments;
         $this->name = $name;
-        $this->origin = $origin;
+        $this->origins = (array) $origins;
     }
 
     /**
@@ -89,10 +92,10 @@ class Route
     }
 
     /**
-     * @return string|null
+     * @return array<string>
      */
-    public function getOrigin() : ?string
+    public function getOrigins() : array
     {
-        return $this->origin;
+        return $this->origins;
     }
 }

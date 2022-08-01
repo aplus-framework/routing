@@ -47,8 +47,8 @@ final class RouteTest extends TestCase
             ? self::assertSame('users.delete', $instance->getName())
             : self::assertNull($instance->getName());
         $method === 'index'
-            ? self::assertSame('http://foo.com', $instance->getOrigin())
-            : self::assertNull($instance->getOrigin());
+            ? self::assertSame(['http://foo.com'], $instance->getOrigins())
+            : self::assertEmpty($instance->getOrigins());
     }
 
     public function testIndex() : void
@@ -56,7 +56,7 @@ final class RouteTest extends TestCase
         $this->assertAttribute('index', [
             'GET',
             '/users',
-            'origin' => 'http://foo.com',
+            'origins' => 'http://foo.com',
         ]);
     }
 

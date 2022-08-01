@@ -19,23 +19,26 @@ use Attribute;
 #[Attribute(Attribute::TARGET_METHOD | Attribute::IS_REPEATABLE)]
 class RouteNotFound
 {
-    protected ?string $origin;
+    /**
+     * @var array<string>
+     */
+    protected array $origins;
 
     /**
      * RouteNotFound constructor.
      *
-     * @param string|null $origin The Route Not Found origin
+     * @param array<string>|string $origins The Route Not Found origins
      */
-    public function __construct(string $origin = null)
+    public function __construct(array | string $origins = [])
     {
-        $this->origin = $origin;
+        $this->origins = (array) $origins;
     }
 
     /**
-     * @return string|null
+     * @return array<string>
      */
-    public function getOrigin() : ?string
+    public function getOrigins() : array
     {
-        return $this->origin;
+        return $this->origins;
     }
 }

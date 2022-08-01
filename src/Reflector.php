@@ -104,10 +104,8 @@ class Reflector
                 continue;
             }
             foreach ($routes as $route) {
-                $origin = $route->getOrigin();
-                $origin = $origin === null ? $origins : [$origin];
                 $result[] = [
-                    'origins' => $origin,
+                    'origins' => $route->getOrigins() ?: $origins,
                     'methods' => $route->getMethods(),
                     'path' => $route->getPath(),
                     'arguments' => $route->getArguments(),
@@ -156,10 +154,8 @@ class Reflector
                 continue;
             }
             foreach ($routes as $route) {
-                $origin = $route->getOrigin();
-                $origin = $origin === null ? $origins : [$origin];
                 $result[] = [
-                    'origins' => $origin,
+                    'origins' => $route->getOrigins() ?: $origins,
                     'action' => $this->reflection->name . '::' . $method->name,
                 ];
             }

@@ -20,8 +20,13 @@ abstract class AbstractClass
     {
     }
 
-    #[Route('GET', '/replace-origin', origin: 'xxx')]
+    #[Route('GET', '/replace-origin', origins: 'xxx')]
     public function replaceOrigin() : void
+    {
+    }
+
+    #[Route('GET', '/replace-origin-2', origins: ['xxx', 'yyy'])]
+    public function replaceOrigin2() : void
     {
     }
 }
