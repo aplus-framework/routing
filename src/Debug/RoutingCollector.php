@@ -240,6 +240,7 @@ class RoutingCollector extends Collector
         <table>
             <thead>
             <tr>
+                <th>#</th>
                 <th>Method</th>
                 <th>Path</th>
                 <th>Action</th>
@@ -248,8 +249,9 @@ class RoutingCollector extends Collector
             </tr>
             </thead>
             <tbody>
-            <?php foreach ($this->getRoutes($collection) as $route): ?>
+            <?php foreach ($this->getRoutes($collection) as $index => $route): ?>
                 <tr<?= $route['matched'] ? ' class="active" title="Matched Route"' : '' ?>>
+                    <td><?= ++$index ?></td>
                     <td><?= \htmlentities($route['method']) ?></td>
                     <td><?= $this->toCodeBrackets(\htmlentities($route['path'])) ?></td>
                     <td><?= \htmlentities($route['action']) ?></td>
@@ -271,7 +273,9 @@ class RoutingCollector extends Collector
     protected function getRoutes(RouteCollection $collection) : array
     {
         $result = [];
-        foreach ($collection->routes as $method => $routes) {
+        $collectionRoutes = $collection->routes;
+        \ksort($collectionRoutes);
+        foreach ($collectionRoutes as $method => $routes) {
             foreach ($routes as $route) {
                 $result[] = [
                     'method' => $method,
@@ -283,13 +287,6 @@ class RoutingCollector extends Collector
                 ];
             }
         }
-        \usort($result, static function ($str1, $str2) {
-            $cmp = \strcmp($str1['path'], $str2['path']);
-            if ($cmp === 0) {
-                $cmp = \strcmp($str1['method'], $str2['method']);
-            }
-            return $cmp;
-        });
         return $result;
     }
 
