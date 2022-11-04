@@ -425,7 +425,7 @@ final class RouterTest extends TestCase
     {
         $json = \json_encode($this->router);
         self::assertIsString($json);
-        $json = \json_decode($json); // @phpstan-ignore-line
+        $json = \json_decode($json);
         self::assertNull($json->matched);
         self::assertIsArray($json->collections);
         self::assertIsBool($json->isAutoMethods);
