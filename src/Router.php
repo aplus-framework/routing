@@ -568,14 +568,33 @@ class Router implements \JsonSerializable
             $method = 'GET';
         }
         $url = $this->response->getRequest()->getUrl();
-        $this->setMatchedPath($url->getPath());
+        $path = $this->makePath($url->getPath());
+        $this->setMatchedPath($path);
         $this->setMatchedOrigin($url->getOrigin());
         $this->matchedCollection = $this->matchCollection($url->getOrigin());
         if ( ! $this->matchedCollection) {
             return $this->matchedRoute = $this->getDefaultRouteNotFound();
         }
-        return $this->matchedRoute = $this->matchRoute($method, $this->matchedCollection, $url->getPath())
-            ?? $this->getAlternativeRoute($method, $this->matchedCollection);
+        return $this->matchedRoute = $this->matchRoute(
+            $method,
+            $this->matchedCollection,
+            $path
+        ) ?? $this->getAlternativeRoute($method, $this->matchedCollection);
+    }
+
+    /**
+     * Creates a path without a trailing slash to be able to match both with and
+     * without a slash at the end.
+     *
+     * @since 3.4.3
+     *
+     * @param string $path
+     *
+     * @return string
+     */
+    protected function makePath(string $path) : string
+    {
+        return '/' . \trim($path, '/');
     }
 
     protected function getAlternativeRoute(string $method, RouteCollection $collection) : Route

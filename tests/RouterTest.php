@@ -179,6 +179,18 @@ final class RouterTest extends TestCase
         self::assertInstanceOf(RouteCollection::class, $this->router->getMatchedCollection());
     }
 
+    public function testMatchRouteWithTrailingSlash() : void
+    {
+        $this->prepare([
+            'REQUEST_METHOD' => 'PATCH',
+            'REQUEST_URI' => '/post/25/',
+        ]);
+        $this->router->match();
+        self::assertSame('post.update', $this->router->getMatchedRoute()->getName());
+        self::assertSame(['25'], $this->router->getMatchedRoute()->getActionArguments());
+        self::assertInstanceOf(RouteCollection::class, $this->router->getMatchedCollection());
+    }
+
     public function testGetMatchedUrl() : void
     {
         self::assertNull($this->router->getMatchedUrl());
