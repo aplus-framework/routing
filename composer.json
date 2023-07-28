@@ -21,9 +21,9 @@
     "homepage": "https://aplus-framework.com/packages/routing",
     "support": {
         "email": "support@aplus-framework.com",
-        "issues": "https://gitlab.com/aplus-framework/libraries/routing/issues",
+        "issues": "https://github.com/aplus-framework/routing/issues",
         "forum": "https://aplus-framework.com/forum",
-        "source": "https://gitlab.com/aplus-framework/libraries/routing",
+        "source": "https://github.com/aplus-framework/routing",
         "docs": "https://docs.aplus-framework.com/guides/libraries/routing/"
     },
     "funding": [
