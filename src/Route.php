@@ -275,24 +275,24 @@ class Route implements \JsonSerializable
             }
             return $response;
         }
-        if ( ! \str_contains($action, '::')) {
+        if (!\str_contains($action, '::')) {
             $action .= '::' . $this->router->getDefaultRouteActionMethod();
         }
         [$classname, $action] = \explode('::', $action, 2);
         [$method, $arguments] = $this->extractMethodAndArguments($action);
-        if ( ! \class_exists($classname)) {
+        if (!\class_exists($classname)) {
             throw new RoutingException("Class not exists: {$classname}");
         }
         /**
          * @var RouteActions $class
          */
         $class = new $classname(...$construct);
-        if ( ! $class instanceof RouteActions) {
+        if (!$class instanceof RouteActions) {
             throw new RoutingException(
                 'Class ' . $class::class . ' is not an instance of ' . RouteActions::class
             );
         }
-        if ( ! \method_exists($class, $method)) {
+        if (!\method_exists($class, $method)) {
             throw new RoutingException(
                 "Class action method not exists: {$classname}::{$method}"
             );
@@ -373,7 +373,7 @@ class Route implements \JsonSerializable
     protected function extractMethodAndArguments(
         string $part
     ) : array {
-        if ( ! \str_contains($part, '/')) {
+        if (!\str_contains($part, '/')) {
             return [$part, []];
         }
         $arguments = \explode('/', $part);

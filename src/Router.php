@@ -117,7 +117,7 @@ class Router implements \JsonSerializable
 
     public function getLanguage() : Language
     {
-        if ( ! isset($this->language)) {
+        if (!isset($this->language)) {
             $this->setLanguage();
         }
         return $this->language;
@@ -311,10 +311,10 @@ class Router implements \JsonSerializable
             return $string;
         }
         foreach ($matches[0] as $index => $pattern) {
-            if ( ! isset($arguments[$index])) {
+            if (!isset($arguments[$index])) {
                 throw new InvalidArgumentException("Placeholder argument is not set: {$index}");
             }
-            if ( ! \preg_match('#' . $pattern . '#', $arguments[$index])) {
+            if (!\preg_match('#' . $pattern . '#', $arguments[$index])) {
                 throw new InvalidArgumentException("Placeholder argument is invalid: {$index}");
             }
             $string = \substr_replace(
@@ -572,7 +572,7 @@ class Router implements \JsonSerializable
         $this->setMatchedPath($path);
         $this->setMatchedOrigin($url->getOrigin());
         $this->matchedCollection = $this->matchCollection($url->getOrigin());
-        if ( ! $this->matchedCollection) {
+        if (!$this->matchedCollection) {
             return $this->matchedRoute = $this->getDefaultRouteNotFound();
         }
         return $this->matchedRoute = $this->matchRoute(
@@ -607,7 +607,7 @@ class Router implements \JsonSerializable
                 Status::METHOD_NOT_ALLOWED
             );
         }
-        if ( ! isset($route)) {
+        if (!isset($route)) {
             // @phpstan-ignore-next-line
             $route = $collection->getRouteNotFound() ?? $this->getDefaultRouteNotFound();
         }

@@ -96,7 +96,7 @@ class Reflector
         $origins = $this->getObjectOrigins($this->reflection);
         $result = [];
         foreach ($this->reflection->getMethods() as $method) {
-            if ( ! $method->isPublic()) {
+            if (!$method->isPublic()) {
                 continue;
             }
             $routes = $this->getMethodRoutes($method->getName());
@@ -146,7 +146,7 @@ class Reflector
         $origins = $this->getObjectOrigins($this->reflection);
         $result = [];
         foreach ($this->reflection->getMethods() as $method) {
-            if ( ! $method->isPublic()) {
+            if (!$method->isPublic()) {
                 continue;
             }
             $routes = $this->getMethodRoutesNotFound($method->getName());

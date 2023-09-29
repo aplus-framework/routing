@@ -151,7 +151,7 @@ class RouteCollection implements \Countable, \JsonSerializable
     protected function addRoute(string $httpMethod, Route $route) : static
     {
         $method = \strtoupper($httpMethod);
-        if ( ! \in_array($method, [
+        if (!\in_array($method, [
             'DELETE',
             'GET',
             'OPTIONS',
@@ -281,10 +281,10 @@ class RouteCollection implements \Countable, \JsonSerializable
                 'When adding a route action as array, the index 0 must be a FQCN'
             );
         }
-        if ( ! isset($action[1])) {
+        if (!isset($action[1])) {
             $action[1] = $this->router->getDefaultRouteActionMethod();
         }
-        if ( ! isset($action[2])) {
+        if (!isset($action[2])) {
             $action[2] = '*';
         }
         if ($action[2] !== '') {
@@ -508,42 +508,42 @@ class RouteCollection implements \Countable, \JsonSerializable
             $except = \array_flip($except);
         }
         $routes = [];
-        if ( ! isset($except['index'])) {
+        if (!isset($except['index'])) {
             $routes[] = $this->get(
                 $path,
                 $class . 'index/*',
                 $baseName . '.index'
             );
         }
-        if ( ! isset($except['create'])) {
+        if (!isset($except['create'])) {
             $routes[] = $this->post(
                 $path,
                 $class . 'create/*',
                 $baseName . '.create'
             );
         }
-        if ( ! isset($except['show'])) {
+        if (!isset($except['show'])) {
             $routes[] = $this->get(
                 $path . $placeholder,
                 $class . 'show/*',
                 $baseName . '.show'
             );
         }
-        if ( ! isset($except['update'])) {
+        if (!isset($except['update'])) {
             $routes[] = $this->patch(
                 $path . $placeholder,
                 $class . 'update/*',
                 $baseName . '.update'
             );
         }
-        if ( ! isset($except['replace'])) {
+        if (!isset($except['replace'])) {
             $routes[] = $this->put(
                 $path . $placeholder,
                 $class . 'replace/*',
                 $baseName . '.replace'
             );
         }
-        if ( ! isset($except['delete'])) {
+        if (!isset($except['delete'])) {
             $routes[] = $this->delete(
                 $path . $placeholder,
                 $class . 'delete/*',
@@ -581,56 +581,56 @@ class RouteCollection implements \Countable, \JsonSerializable
             $except = \array_flip($except);
         }
         $routes = [];
-        if ( ! isset($except['index'])) {
+        if (!isset($except['index'])) {
             $routes[] = $this->get(
                 $path,
                 $class . 'index/*',
                 $baseName . '.index'
             );
         }
-        if ( ! isset($except['new'])) {
+        if (!isset($except['new'])) {
             $routes[] = $this->get(
                 $path . 'new',
                 $class . 'new/*',
                 $baseName . '.new'
             );
         }
-        if ( ! isset($except['create'])) {
+        if (!isset($except['create'])) {
             $routes[] = $this->post(
                 $path,
                 $class . 'create/*',
                 $baseName . '.create'
             );
         }
-        if ( ! isset($except['show'])) {
+        if (!isset($except['show'])) {
             $routes[] = $this->get(
                 $path . $placeholder,
                 $class . 'show/*',
                 $baseName . '.show'
             );
         }
-        if ( ! isset($except['edit'])) {
+        if (!isset($except['edit'])) {
             $routes[] = $this->get(
                 $path . $placeholder . '/edit',
                 $class . 'edit/*',
                 $baseName . '.edit'
             );
         }
-        if ( ! isset($except['update'])) {
+        if (!isset($except['update'])) {
             $routes[] = $this->post(
                 $path . $placeholder . '/update',
                 $class . 'update/*',
                 $baseName . '.update'
             );
         }
-        if ( ! isset($except['remove'])) {
+        if (!isset($except['remove'])) {
             $routes[] = $this->get(
                 $path . $placeholder . '/remove',
                 $class . 'remove/*',
                 $baseName . '.remove'
             );
         }
-        if ( ! isset($except['delete'])) {
+        if (!isset($except['delete'])) {
             $routes[] = $this->post(
                 $path . $placeholder . '/delete',
                 $class . 'delete/*',

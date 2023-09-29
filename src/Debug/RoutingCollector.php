@@ -66,7 +66,7 @@ class RoutingCollector extends Collector
 
     public function getContents() : string
     {
-        if ( ! isset($this->router)) {
+        if (!isset($this->router)) {
             return '<p>A Router instance has not been set on this collector.</p>';
         }
         \ob_start(); ?>
