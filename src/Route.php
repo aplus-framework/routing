@@ -344,13 +344,6 @@ class Route implements \JsonSerializable
         if (\is_scalar($result)) {
             return (string) $result;
         }
-        if (\is_object($result) && \method_exists($result, '__toString')) {
-            \trigger_error(
-                'Object to string conversion is deprecated',
-                \E_USER_DEPRECATED
-            );
-            return (string) $result;
-        }
         if (
             \is_array($result)
             || $result instanceof \stdClass

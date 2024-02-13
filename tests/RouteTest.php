@@ -286,25 +286,6 @@ final class RouteTest extends TestCase
         self::assertSame('1.5', $this->response->getBody());
     }
 
-    public function testResponseBodyPartWithStringable() : void
-    {
-        $route = new Route(
-            $this->router,
-            'http://domain.tld',
-            '/',
-            static function () {
-                return new class() {
-                    public function __toString() : string
-                    {
-                        return '__toString';
-                    }
-                };
-            }
-        );
-        self::assertInstanceOf(Response::class, $route->run());
-        self::assertSame('__toString', $this->response->getBody());
-    }
-
     public function testResponseBodyPartWithJsonSerializable() : void
     {
         $data = ['id' => 1, 'name' => 'Natan'];
