@@ -352,6 +352,9 @@ class Route implements \JsonSerializable
             $this->router->getResponse()->setJson($result);
             return '';
         }
+        if (\is_object($result) && \method_exists($result, '__toString')) {
+            return (string) $result;
+        }
         $type = \get_debug_type($result);
         throw new RoutingException(
             "Invalid action return type '{$type}'" . $this->onNamedRoutePart()
