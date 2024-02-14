@@ -328,9 +328,16 @@ final class RouteTest extends TestCase
             WithRouteActions::class . '::noStrictTypes/*'
         );
         $route->setActionArguments(['1.1', '1.1', '1.1', '1.1']);
+        // We will suppress the error issued by calling the RouteActions class
+        // and the action method `$class->{$method}(...$arguments)` within
+        // Route::run().
         self::assertSame(
             '{"bool":true,"float":1.1,"int":1,"string":"1.1"}',
-            $route->run()->getBody()
+            @$route->run()->getBody()
+        );
+        self::assertSame(
+            'Implicit conversion from float-string "1.1" to int loses precision',
+            \error_get_last()['message']
         );
     }
 
