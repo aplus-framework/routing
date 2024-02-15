@@ -238,7 +238,9 @@ class Route implements \JsonSerializable
     public function setActionArguments(array $arguments) : static
     {
         \ksort($arguments);
-        $this->actionArguments = $arguments;
+        foreach ($arguments as $i => $argument) {
+            $this->actionArguments[++$i] = $argument;
+        }
         return $this;
     }
 
@@ -376,29 +378,33 @@ class Route implements \JsonSerializable
         if (!\str_contains($part, '/')) {
             return [$part, []];
         }
+        $part = \rtrim($part, '/');
         $arguments = \explode('/', $part);
         $method = $arguments[0];
         unset($arguments[0]);
         $actionArguments = $this->getActionArguments();
-        $arguments = \array_values($arguments);
         foreach ($arguments as $index => $arg) {
-            if (\is_numeric($arg)) {
-                $arg = (int) $arg;
-                if (\array_key_exists($arg, $actionArguments)) {
-                    $arguments[$index] = $actionArguments[$arg];
-                    continue;
+            if ($arg[0] === '$') {
+                $arg = \substr($arg, 1);
+                if (\is_numeric($arg) && $arg > 0) {
+                    $arg = (int) $arg;
+                    if (\array_key_exists($arg, $actionArguments)) {
+                        $arguments[$index] = $actionArguments[$arg];
+                        continue;
+                    }
+                    throw new InvalidArgumentException(
+                        "Undefined action argument: \${$arg}" . $this->onNamedRoutePart()
+                    );
                 }
                 throw new InvalidArgumentException(
-                    "Undefined action argument: {$arg}" . $this->onNamedRoutePart()
+                    "Invalid action argument: \${$arg}" . $this->onNamedRoutePart()
                 );
             }
             if ($arg !== '*') {
-                throw new InvalidArgumentException(
-                    'Action argument is not numeric, or has not an allowed wildcard, on index ' . $index
-                    . $this->onNamedRoutePart()
-                );
+                $arguments[$index] = $arg;
+                continue;
             }
-            if ($index !== 0 || \count($arguments) > 1) {
+            if ($index > 1 || \count($arguments) > 1) {
                 throw new InvalidArgumentException(
                     'Action arguments can only contain an asterisk wildcard and must be passed alone'
                     . $this->onNamedRoutePart()
