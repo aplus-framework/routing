@@ -105,7 +105,7 @@ final class RouterTest extends TestCase
         $this->router->serve(
             '{scheme}://{subdomain}.domain.tld:{port}',
             static function (RouteCollection $routes) : void {
-                $routes->get('/users/{int}', 'Admin\Users::show/0', 'admin.users.show');
+                $routes->get('/users/{int}', 'Admin\Users::show/$0', 'admin.users.show');
             }
         );
         $this->router->match();

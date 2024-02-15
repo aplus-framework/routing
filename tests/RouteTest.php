@@ -147,7 +147,7 @@ final class RouteTest extends TestCase
             $this->router,
             'http://domain.tld',
             '/',
-            '\Tests\Routing\Support\WithRouteActions::index/0/1'
+            '\Tests\Routing\Support\WithRouteActions::index/$0/$1'
         );
         $this->assertsForRunWithAction($route);
     }
@@ -202,7 +202,7 @@ final class RouteTest extends TestCase
             $this->router,
             'http://domain.tld',
             '/',
-            '\Tests\Routing\Support\WithRouteActions::foo/0/*'
+            '\Tests\Routing\Support\WithRouteActions::foo/$0/*'
         );
         $route->setActionArguments(['arg1', 'arg2']);
         $this->expectException(\InvalidArgumentException::class);
@@ -218,12 +218,12 @@ final class RouteTest extends TestCase
             $this->router,
             'http://domain.tld',
             '/',
-            '\Tests\Routing\Support\WithRouteActions::foo/0/a'
+            '\Tests\Routing\Support\WithRouteActions::foo/$0/$a'
         );
         $route->setActionArguments(['arg1', 'arg2']);
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'Action argument is not numeric, or has not an allowed wildcard, on index 1, on unnamed route'
+            'Invalid action argument: $a, on unnamed route'
         );
         $route->run();
     }
@@ -234,12 +234,12 @@ final class RouteTest extends TestCase
             $this->router,
             'http://domain.tld',
             '/',
-            '\Tests\Routing\Support\WithRouteActions::foo/0/1/2'
+            '\Tests\Routing\Support\WithRouteActions::foo/$0/$1/$2'
         );
         $route->setActionArguments(['arg1', 'arg2']);
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'Undefined action argument: 2, on unnamed route'
+            'Undefined action argument: $2, on unnamed route'
         );
         $route->run();
     }
