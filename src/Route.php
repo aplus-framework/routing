@@ -238,9 +238,10 @@ class Route implements \JsonSerializable
     public function setActionArguments(array $arguments) : static
     {
         \ksort($arguments);
-        foreach ($arguments as $i => $argument) {
+        /*foreach ($arguments as $i => $argument) {
             $this->actionArguments[++$i] = $argument;
-        }
+        }*/
+        $this->actionArguments = $arguments;
         return $this;
     }
 
@@ -386,7 +387,7 @@ class Route implements \JsonSerializable
         foreach ($arguments as $index => $arg) {
             if ($arg[0] === '$') {
                 $arg = \substr($arg, 1);
-                if (\is_numeric($arg) && $arg > 0) {
+                if (\is_numeric($arg) /*&& $arg > 0*/) {
                     $arg = (int) $arg;
                     if (\array_key_exists($arg, $actionArguments)) {
                         $arguments[$index] = $actionArguments[$arg];
