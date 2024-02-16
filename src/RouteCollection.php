@@ -13,6 +13,7 @@ use BadMethodCallException;
 use Closure;
 use Error;
 use Framework\HTTP\Method;
+use Framework\HTTP\Status;
 use InvalidArgumentException;
 use LogicException;
 
@@ -412,19 +413,28 @@ class RouteCollection implements \Countable, \JsonSerializable
      *
      * @param string $path The URL path
      * @param string $location The URL to redirect
-     * @param int|null $code The status code of the response
+     * @param int $code The status code of the response
+     * @param string|null $name The Route name
      *
      * @return Route The Route added to the collection
      */
-    public function redirect(string $path, string $location, int $code = null) : Route
-    {
+    public function redirect(
+        string $path,
+        string $location,
+        int $code = Status::TEMPORARY_REDIRECT,
+        string $name = null
+    ) : Route {
         $response = $this->router->getResponse();
         return $this->addSimple(
             'GET',
             $path,
-            static function () use ($response, $location, $code) : void {
+            static function (array $args) use ($response, $location, $code) : void {
+                foreach ($args as $key => $value) {
+                    $location = \strtr($location, ['$' . $key => $value]);
+                }
                 $response->redirect($location, [], $code);
-            }
+            },
+            $name
         );
     }
 
