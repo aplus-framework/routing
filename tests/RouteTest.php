@@ -125,6 +125,18 @@ final class RouteTest extends TestCase
         ], $this->route->getActionArguments());
     }
 
+    public function testActionArgumentsWithRandomValues() : void
+    {
+        $this->route->setAction(
+            '\Tests\Routing\Support\WithRouteActions::index/abc/$1/$0/cde'
+        )->setActionArguments([
+            'zero',
+            'one',
+        ]);
+        $response = $this->route->run();
+        self::assertSame('abc, one, zero, cde', $response->getBody());
+    }
+
     protected function assertsForRunWithAction(Route $route) : void
     {
         self::assertInstanceOf(Route::class, $route->setActionArguments(['foo', 'bar']));
