@@ -34,9 +34,9 @@
     ],
     "require": {
         "php": ">=8.3",
-        "aplus/debug": "^3.1",
-        "aplus/http": "6.x-dev",
-        "aplus/language": "^3.0"
+        "aplus/debug": "^4.0",
+        "aplus/http": "^6.0",
+        "aplus/language": "^4.0"
     },
     "require-dev": {
         "ext-xdebug": "*",
