@@ -191,7 +191,7 @@ final class RouteTest extends TestCase
         );
         $this->expectException(RoutingException::class);
         $this->expectExceptionMessage(
-            'Class action method not exists: Tests\\Routing\\Support\\WithRouteActions::foo'
+            'Class action method not exists: Tests\Routing\Support\WithRouteActions::foo'
         );
         $route->run();
     }

@@ -174,7 +174,7 @@ final class RouteCollectionTest extends TestCase
     public function testPresenter() : void
     {
         self::assertSame([], $this->collection->routes);
-        $this->collection->presenter('/admin/posts', 'Admin\\Posts', 'admin.posts');
+        $this->collection->presenter('/admin/posts', 'Admin\Posts', 'admin.posts');
         self::assertSame([
             'GET',
             'POST',
@@ -192,7 +192,7 @@ final class RouteCollectionTest extends TestCase
     public function testPresenterWithExcept() : void
     {
         self::assertSame([], $this->collection->routes);
-        $this->collection->presenter('/admin/posts', 'Admin\\Posts', 'admin.posts', [
+        $this->collection->presenter('/admin/posts', 'Admin\Posts', 'admin.posts', [
             'create',
             'update',
             'delete',
