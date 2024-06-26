@@ -179,7 +179,7 @@ final class RouteTest extends TestCase
     {
         $route = new Route($this->router, 'http://domain.tld', '/', 'UnknownClass');
         $this->expectException(RoutingException::class);
-        $this->expectExceptionMessage('Class not exists: UnknownClass');
+        $this->expectExceptionMessage('Class does not exist: UnknownClass');
         $route->run();
     }
 
@@ -203,7 +203,7 @@ final class RouteTest extends TestCase
         );
         $this->expectException(RoutingException::class);
         $this->expectExceptionMessage(
-            'Class action method not exists: Tests\\Routing\\Support\\WithRouteActions::foo'
+            'Class action method does not exist: Tests\Routing\Support\WithRouteActions::foo'
         );
         $route->run();
     }
