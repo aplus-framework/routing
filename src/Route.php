@@ -284,7 +284,7 @@ class Route implements \JsonSerializable
         [$classname, $action] = \explode('::', $action, 2);
         [$method, $arguments] = $this->extractMethodAndArguments($action);
         if (!\class_exists($classname)) {
-            throw new RoutingException("Class not exists: {$classname}");
+            throw new RoutingException("Class does not exist: {$classname}");
         }
         /**
          * @var RouteActions $class
@@ -297,7 +297,7 @@ class Route implements \JsonSerializable
         }
         if (!\method_exists($class, $method)) {
             throw new RoutingException(
-                "Class action method not exists: {$classname}::{$method}"
+                "Class action method does not exist: {$classname}::{$method}"
             );
         }
         $result = $class->beforeAction($method, $arguments); // @phpstan-ignore-line
