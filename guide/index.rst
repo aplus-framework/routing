@@ -160,14 +160,15 @@ Actions can also be defined as strings. Following the format below:
 The Class must extend the **Framework\Routing\RouteActions** class and have
 the action method.
 
-The arguments are numbers separated by slashes after the method name.
+The arguments start with the dollar sign and then have numbers that are
+separated by slashes after the method name.
 
 The number of arguments starts at zero and can have custom order. These are the
 arguments that will go to the action class method.
 
 .. code-block:: php
 
-    $routes->get('/posts/{int}', 'Posts::show/0');
+    $routes->get('/posts/{int}', 'Posts::show/$0');
 
 Let's see an example creating the ``Posts`` class, which will have the ``show``
 method, which will receive two arguments. In the first will be the value of
@@ -175,7 +176,7 @@ placeholder ``{int}`` and in the second will be the value of ``{slug}``:
 
 .. code-block:: php
 
-    $routes->get('/categories/{slug}/posts/{int}/', 'Posts::show/1/0');
+    $routes->get('/categories/{slug}/posts/{int}/', 'Posts::show/$1/$0');
 
 Let's see the class that serves this route:
 
@@ -194,7 +195,7 @@ Let's see the class that serves this route:
 
         public function show(int $id, string $category)
         {
-            echo 'Category slug is: ' . $categoryId;
+            echo 'Category slug is: ' . $category;
             echo 'Post id is: ' . $id;
             var_dump($this->constructorArguments);
         }
@@ -263,8 +264,8 @@ collection is accepted, which will be prefixed to the name of the routes:
         // Different HTTP Methods using placeholders
         $routes->get('/user', 'App\Users::index');
         $routes->post('/user', 'App\Users::create');
-        $routes->get('/user/{int}', 'App\Users::show/0');
-        $routes->patch('/user/{username}', 'App\Users::update/0');
+        $routes->get('/user/{int}', 'App\Users::show/$0');
+        $routes->patch('/user/{username}', 'App\Users::update/$0');
         $routes->put('/user/{int}', [\App\Users::class, 'replace']);
         $routes->delete('/user/{int}', 'App\Users::delete/*');
 
@@ -303,7 +304,7 @@ Which will create 6 routes, as follows:
 | **DELETE**      | /users/{int} | App\Users::delete/*  | users.delete  |
 +-----------------+--------------+----------------------+---------------+
 
-In the fourth parameter of the ``serve`` method it is possible to be in an array
+In the fourth parameter of the ``resource`` method it is possible to be in an array
 the routes that should not be added. And they are: ``index``, ``create``, ``show``,
 ``update``, ``replace`` and ``delete``.
 
@@ -362,7 +363,7 @@ is possible to group them with a base path.
         // Route for "/blog/"
         $routes->get('/', 'App\Blog\Posts::index'),
         // Route for "/blog/{title}"
-        $routes->get('/{title}', 'App\Blog\Posts::show/0'),
+        $routes->get('/{title}', 'App\Blog\Posts::show/$0'),
     ]);
 
 Grouping works on multiple layers. This also works:
@@ -376,7 +377,7 @@ Grouping works on multiple layers. This also works:
             // Route for "/blog/posts/"
             $routes->get('/', 'App\Blog\Posts::index'),
             // Route for "/blog/posts/{title}"
-            $routes->get('/{title}','App\Blog\Posts::show/0'),
+            $routes->get('/{title}','App\Blog\Posts::show/$0'),
         ]),
     ]);
 
@@ -394,8 +395,8 @@ It is possible group route actions with the ``namespace`` method:
             $routes->group('/blog', [
                 // Routes "/blog/posts" for App\Controllers\Blog\Posts::index
                 $routes->get('/posts', 'Posts::index'),
-                // Routes "/blog/posts/{title}" for App\Controllers\Blog\Posts::show/0
-                $routes->get('/posts/{title}', 'Posts::show/0'),
+                // Routes "/blog/posts/{title}" for App\Controllers\Blog\Posts::show/$0
+                $routes->get('/posts/{title}', 'Posts::show/$0'),
             ]),
         ]), 
     ]);
@@ -465,7 +466,7 @@ action and redirect to the route named ``access.login``:
 
         protected function beforeAction(string $method, array $arguments) : mixed
         {
-            if( ! isset($_SESSION['user_id'])) {
+            if(!isset($_SESSION['user_id'])) {
                 return $this->response->redirect(
                     $this->router->getNamedRoute('access.login')->getUrl()
                 );
@@ -490,7 +491,7 @@ action and redirect to the route named ``access.login``:
 
     $router->serve(null, function(RouteCollection $routes) {
         $routes->get('admin', 'Admin::index');
-        $routes->get('foo/other', 'Admin::something/1/0');
+        $routes->get('foo/other', 'Admin::something/$1/$0');
         $routes->get('login', 'Access\Login::index', 'access.login');
     });
 
