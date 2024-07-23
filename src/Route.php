@@ -238,6 +238,9 @@ class Route implements \JsonSerializable
     public function setActionArguments(array $arguments) : static
     {
         \ksort($arguments);
+        /*foreach ($arguments as $i => $argument) {
+            $this->actionArguments[++$i] = $argument;
+        }*/
         $this->actionArguments = $arguments;
         return $this;
     }
@@ -281,7 +284,7 @@ class Route implements \JsonSerializable
         [$classname, $action] = \explode('::', $action, 2);
         [$method, $arguments] = $this->extractMethodAndArguments($action);
         if (!\class_exists($classname)) {
-            throw new RoutingException("Class not exists: {$classname}");
+            throw new RoutingException("Class does not exist: {$classname}");
         }
         /**
          * @var RouteActions $class
@@ -294,7 +297,7 @@ class Route implements \JsonSerializable
         }
         if (!\method_exists($class, $method)) {
             throw new RoutingException(
-                "Class action method not exists: {$classname}::{$method}"
+                "Class action method does not exist: {$classname}::{$method}"
             );
         }
         $result = $class->beforeAction($method, $arguments); // @phpstan-ignore-line
@@ -344,13 +347,6 @@ class Route implements \JsonSerializable
         if (\is_scalar($result)) {
             return (string) $result;
         }
-        if (\is_object($result) && \method_exists($result, '__toString')) {
-            \trigger_error(
-                'Object to string conversion is deprecated',
-                \E_USER_DEPRECATED
-            );
-            return (string) $result;
-        }
         if (
             \is_array($result)
             || $result instanceof \stdClass
@@ -358,6 +354,9 @@ class Route implements \JsonSerializable
         ) {
             $this->router->getResponse()->setJson($result);
             return '';
+        }
+        if (\is_object($result) && \method_exists($result, '__toString')) {
+            return (string) $result;
         }
         $type = \get_debug_type($result);
         throw new RoutingException(
@@ -380,29 +379,33 @@ class Route implements \JsonSerializable
         if (!\str_contains($part, '/')) {
             return [$part, []];
         }
+        $part = \rtrim($part, '/');
         $arguments = \explode('/', $part);
         $method = $arguments[0];
         unset($arguments[0]);
         $actionArguments = $this->getActionArguments();
-        $arguments = \array_values($arguments);
         foreach ($arguments as $index => $arg) {
-            if (\is_numeric($arg)) {
-                $arg = (int) $arg;
-                if (\array_key_exists($arg, $actionArguments)) {
-                    $arguments[$index] = $actionArguments[$arg];
-                    continue;
+            if ($arg[0] === '$') {
+                $arg = \substr($arg, 1);
+                if (\is_numeric($arg) /*&& $arg > 0*/) {
+                    $arg = (int) $arg;
+                    if (\array_key_exists($arg, $actionArguments)) {
+                        $arguments[$index] = $actionArguments[$arg];
+                        continue;
+                    }
+                    throw new InvalidArgumentException(
+                        "Undefined action argument: \${$arg}" . $this->onNamedRoutePart()
+                    );
                 }
                 throw new InvalidArgumentException(
-                    "Undefined action argument: {$arg}" . $this->onNamedRoutePart()
+                    "Invalid action argument: \${$arg}" . $this->onNamedRoutePart()
                 );
             }
             if ($arg !== '*') {
-                throw new InvalidArgumentException(
-                    'Action argument is not numeric, or has not an allowed wildcard, on index ' . $index
-                    . $this->onNamedRoutePart()
-                );
+                $arguments[$index] = $arg;
+                continue;
             }
-            if ($index !== 0 || \count($arguments) > 1) {
+            if ($index > 1 || \count($arguments) > 1) {
                 throw new InvalidArgumentException(
                     'Action arguments can only contain an asterisk wildcard and must be passed alone'
                     . $this->onNamedRoutePart()

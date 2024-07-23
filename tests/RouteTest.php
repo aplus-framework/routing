@@ -125,6 +125,18 @@ final class RouteTest extends TestCase
         ], $this->route->getActionArguments());
     }
 
+    public function testActionArgumentsWithRandomValues() : void
+    {
+        $this->route->setAction(
+            '\Tests\Routing\Support\WithRouteActions::index/abc/$1/$0/cde'
+        )->setActionArguments([
+            'zero',
+            'one',
+        ]);
+        $response = $this->route->run();
+        self::assertSame('abc, one, zero, cde', $response->getBody());
+    }
+
     protected function assertsForRunWithAction(Route $route) : void
     {
         self::assertInstanceOf(Route::class, $route->setActionArguments(['foo', 'bar']));
@@ -147,7 +159,7 @@ final class RouteTest extends TestCase
             $this->router,
             'http://domain.tld',
             '/',
-            '\Tests\Routing\Support\WithRouteActions::index/0/1'
+            '\Tests\Routing\Support\WithRouteActions::index/$0/$1'
         );
         $this->assertsForRunWithAction($route);
     }
@@ -167,7 +179,7 @@ final class RouteTest extends TestCase
     {
         $route = new Route($this->router, 'http://domain.tld', '/', 'UnknownClass');
         $this->expectException(RoutingException::class);
-        $this->expectExceptionMessage('Class not exists: UnknownClass');
+        $this->expectExceptionMessage('Class does not exist: UnknownClass');
         $route->run();
     }
 
@@ -191,7 +203,7 @@ final class RouteTest extends TestCase
         );
         $this->expectException(RoutingException::class);
         $this->expectExceptionMessage(
-            'Class action method not exists: Tests\Routing\Support\WithRouteActions::foo'
+            'Class action method does not exist: Tests\Routing\Support\WithRouteActions::foo'
         );
         $route->run();
     }
@@ -202,7 +214,7 @@ final class RouteTest extends TestCase
             $this->router,
             'http://domain.tld',
             '/',
-            '\Tests\Routing\Support\WithRouteActions::foo/0/*'
+            '\Tests\Routing\Support\WithRouteActions::foo/$0/*'
         );
         $route->setActionArguments(['arg1', 'arg2']);
         $this->expectException(\InvalidArgumentException::class);
@@ -218,12 +230,12 @@ final class RouteTest extends TestCase
             $this->router,
             'http://domain.tld',
             '/',
-            '\Tests\Routing\Support\WithRouteActions::foo/0/a'
+            '\Tests\Routing\Support\WithRouteActions::foo/$0/$a'
         );
         $route->setActionArguments(['arg1', 'arg2']);
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'Action argument is not numeric, or has not an allowed wildcard, on index 1, on unnamed route'
+            'Invalid action argument: $a, on unnamed route'
         );
         $route->run();
     }
@@ -234,12 +246,12 @@ final class RouteTest extends TestCase
             $this->router,
             'http://domain.tld',
             '/',
-            '\Tests\Routing\Support\WithRouteActions::foo/0/1/2'
+            '\Tests\Routing\Support\WithRouteActions::foo/$0/$1/$2'
         );
         $route->setActionArguments(['arg1', 'arg2']);
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'Undefined action argument: 2, on unnamed route'
+            'Undefined action argument: $2, on unnamed route'
         );
         $route->run();
     }
@@ -347,9 +359,16 @@ final class RouteTest extends TestCase
             WithRouteActions::class . '::noStrictTypes/*'
         );
         $route->setActionArguments(['1.1', '1.1', '1.1', '1.1']);
+        // We will suppress the error issued by calling the RouteActions class
+        // and the action method `$class->{$method}(...$arguments)` within
+        // Route::run().
         self::assertSame(
             '{"bool":true,"float":1.1,"int":1,"string":"1.1"}',
-            $route->run()->getBody()
+            @$route->run()->getBody()
+        );
+        self::assertSame(
+            'Implicit conversion from float-string "1.1" to int loses precision',
+            \error_get_last()['message']
         );
     }
 

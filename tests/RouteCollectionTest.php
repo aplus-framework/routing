@@ -323,6 +323,25 @@ final class RouteCollectionTest extends TestCase
         self::assertSame('Temporary Redirect', $response->getStatusReason());
     }
 
+    public function testRedirectWithPlaceholders() : void
+    {
+        $response = $this->router->getResponse();
+        $route = $this->collection->redirect(
+            '/blog/{int}/comments/{int}',
+            '/blog/posts/$1/foo/$0'
+        );
+        $route->setActionArguments([
+            '25',
+            '10',
+        ])->run();
+        self::assertSame(
+            '/blog/posts/10/foo/25',
+            $response->getHeader('Location')
+        );
+        self::assertSame(307, $response->getStatusCode());
+        self::assertSame('Temporary Redirect', $response->getStatusReason());
+    }
+
     public function testMethodNotAllowed() : void
     {
         $this->expectException(\BadMethodCallException::class);
