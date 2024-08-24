@@ -51,7 +51,7 @@ class RouteCollection implements \Countable, \JsonSerializable
      * `{scheme}://{hostname}[:{port}]`
      * @param string|null $name The collection name
      */
-    public function __construct(Router $router, string $origin, string $name = null)
+    public function __construct(Router $router, string $origin, ?string $name = null)
     {
         $this->router = $router;
         $this->setOrigin($origin);
@@ -206,7 +206,7 @@ class RouteCollection implements \Countable, \JsonSerializable
      *
      * @param array<int,string> $httpMethods The HTTP Methods
      * @param string $path The URL path
-     * @param array<int,string>|Closure|string $action The Route action
+     * @param Closure|array<int,string>|string $action The Route action
      * @param string|null $name The Route name
      *
      * @see Method::DELETE
@@ -221,8 +221,8 @@ class RouteCollection implements \Countable, \JsonSerializable
     public function add(
         array $httpMethods,
         string $path,
-        array | Closure | string $action,
-        string $name = null
+        Closure | array | string $action,
+        ?string $name = null
     ) : Route {
         $route = $this->makeRoute($path, $action, $name);
         foreach ($httpMethods as $method) {
@@ -233,15 +233,15 @@ class RouteCollection implements \Countable, \JsonSerializable
 
     /**
      * @param string $path
-     * @param array<int,string>|Closure|string $action
+     * @param Closure|array<int,string>|string $action
      * @param string|null $name
      *
      * @return Route
      */
     protected function makeRoute(
         string $path,
-        array | Closure | string $action,
-        string $name = null
+        Closure | array | string $action,
+        ?string $name = null
     ) : Route {
         if (\is_array($action)) {
             $action = $this->makeRouteActionFromArray($action);
@@ -256,7 +256,7 @@ class RouteCollection implements \Countable, \JsonSerializable
     /**
      * @param string $method
      * @param string $path
-     * @param array<int,string>|Closure|string $action
+     * @param Closure|array<int,string>|string $action
      * @param string|null $name
      *
      * @return Route
@@ -264,8 +264,8 @@ class RouteCollection implements \Countable, \JsonSerializable
     protected function addSimple(
         string $method,
         string $path,
-        array | Closure | string $action,
-        string $name = null
+        Closure | array | string $action,
+        ?string $name = null
     ) : Route {
         return $this->routes[$method][] = $this->makeRoute($path, $action, $name);
     }
@@ -298,7 +298,7 @@ class RouteCollection implements \Countable, \JsonSerializable
      * Adds a Route to match the HTTP GET Method.
      *
      * @param string $path The URL path
-     * @param array<int,string>|Closure|string $action The Route action
+     * @param Closure|array<int,string>|string $action The Route action
      * @param string|null $name The Route name
      *
      * @see Method::GET
@@ -307,8 +307,8 @@ class RouteCollection implements \Countable, \JsonSerializable
      */
     public function get(
         string $path,
-        array | Closure | string $action,
-        string $name = null
+        Closure | array | string $action,
+        ?string $name = null
     ) : Route {
         return $this->addSimple('GET', $path, $action, $name);
     }
@@ -317,7 +317,7 @@ class RouteCollection implements \Countable, \JsonSerializable
      * Adds a Route to match the HTTP POST Method.
      *
      * @param string $path The URL path
-     * @param array<int,string>|Closure|string $action The Route action
+     * @param Closure|array<int,string>|string $action The Route action
      * @param string|null $name The Route name
      *
      * @see Method::POST
@@ -326,8 +326,8 @@ class RouteCollection implements \Countable, \JsonSerializable
      */
     public function post(
         string $path,
-        array | Closure | string $action,
-        string $name = null
+        Closure | array | string $action,
+        ?string $name = null
     ) : Route {
         return $this->addSimple('POST', $path, $action, $name);
     }
@@ -336,7 +336,7 @@ class RouteCollection implements \Countable, \JsonSerializable
      * Adds a Route to match the HTTP PUT Method.
      *
      * @param string $path The URL path
-     * @param array<int,string>|Closure|string $action The Route action
+     * @param Closure|array<int,string>|string $action The Route action
      * @param string|null $name The Route name
      *
      * @see Method::PUT
@@ -345,8 +345,8 @@ class RouteCollection implements \Countable, \JsonSerializable
      */
     public function put(
         string $path,
-        array | Closure | string $action,
-        string $name = null
+        Closure | array | string $action,
+        ?string $name = null
     ) : Route {
         return $this->addSimple('PUT', $path, $action, $name);
     }
@@ -355,7 +355,7 @@ class RouteCollection implements \Countable, \JsonSerializable
      * Adds a Route to match the HTTP PATCH Method.
      *
      * @param string $path The URL path
-     * @param array<int,string>|Closure|string $action The Route action
+     * @param Closure|array<int,string>|string $action The Route action
      * @param string|null $name The Route name
      *
      * @see Method::PATCH
@@ -364,8 +364,8 @@ class RouteCollection implements \Countable, \JsonSerializable
      */
     public function patch(
         string $path,
-        array | Closure | string $action,
-        string $name = null
+        Closure | array | string $action,
+        ?string $name = null
     ) : Route {
         return $this->addSimple('PATCH', $path, $action, $name);
     }
@@ -374,7 +374,7 @@ class RouteCollection implements \Countable, \JsonSerializable
      * Adds a Route to match the HTTP DELETE Method.
      *
      * @param string $path The URL path
-     * @param array<int,string>|Closure|string $action The Route action
+     * @param Closure|array<int,string>|string $action The Route action
      * @param string|null $name The Route name
      *
      * @see Method::DELETE
@@ -383,8 +383,8 @@ class RouteCollection implements \Countable, \JsonSerializable
      */
     public function delete(
         string $path,
-        array | Closure | string $action,
-        string $name = null
+        Closure | array | string $action,
+        ?string $name = null
     ) : Route {
         return $this->addSimple('DELETE', $path, $action, $name);
     }
@@ -393,7 +393,7 @@ class RouteCollection implements \Countable, \JsonSerializable
      * Adds a Route to match the HTTP OPTIONS Method.
      *
      * @param string $path The URL path
-     * @param array<int,string>|Closure|string $action The Route action
+     * @param Closure|array<int,string>|string $action The Route action
      * @param string|null $name The Route name
      *
      * @see Method::OPTIONS
@@ -402,8 +402,8 @@ class RouteCollection implements \Countable, \JsonSerializable
      */
     public function options(
         string $path,
-        array | Closure | string $action,
-        string $name = null
+        Closure | array | string $action,
+        ?string $name = null
     ) : Route {
         return $this->addSimple('OPTIONS', $path, $action, $name);
     }
@@ -422,7 +422,7 @@ class RouteCollection implements \Countable, \JsonSerializable
         string $path,
         string $location,
         int $code = Status::TEMPORARY_REDIRECT,
-        string $name = null
+        ?string $name = null
     ) : Route {
         $response = $this->router->getResponse();
         return $this->addSimple(
@@ -442,10 +442,10 @@ class RouteCollection implements \Countable, \JsonSerializable
      * Groups many Routes into a URL path.
      *
      * @param string $basePath The URL path to group in
-     * @param array<array<mixed|Route>|Route> $routes The Routes to be grouped
+     * @param array<Route|array<Route|mixed>> $routes The Routes to be grouped
      * @param array<string,mixed> $options Custom options passed to the Routes
      *
-     * @return array<array<mixed|Route>|Route> The same $routes with updated paths and options
+     * @return array<Route|array<Route|mixed>> The same $routes with updated paths and options
      */
     public function group(string $basePath, array $routes, array $options = []) : array
     {
@@ -471,9 +471,9 @@ class RouteCollection implements \Countable, \JsonSerializable
      * Updates Routes actions, which are strings, prepending a namespace.
      *
      * @param string $namespace The namespace
-     * @param array<array<mixed|Route>|Route> $routes The Routes
+     * @param array<Route|array<Route|mixed>> $routes The Routes
      *
-     * @return array<array<mixed|Route>|Route> The same $routes with updated actions
+     * @return array<Route|array<Route|mixed>> The same $routes with updated actions
      */
     public function namespace(string $namespace, array $routes) : array
     {

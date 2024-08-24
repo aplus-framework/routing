@@ -44,7 +44,7 @@ class Route
         array | string $methods,
         string $path,
         string $arguments = '*',
-        string $name = null,
+        ?string $name = null,
         array | string $origins = [],
     ) {
         $methods = (array) $methods;

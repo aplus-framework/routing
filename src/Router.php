@@ -79,7 +79,7 @@ class Router implements \JsonSerializable
      * @param Response $response
      * @param Language|null $language
      */
-    public function __construct(Response $response, Language $language = null)
+    public function __construct(Response $response, ?Language $language = null)
     {
         $this->response = $response;
         if ($language) {
@@ -108,7 +108,7 @@ class Router implements \JsonSerializable
         return $this->response;
     }
 
-    public function setLanguage(Language $language = null) : static
+    public function setLanguage(?Language $language = null) : static
     {
         $this->language = $language ?? new Language();
         $this->language->addDirectory(__DIR__ . '/Languages');
@@ -244,7 +244,7 @@ class Router implements \JsonSerializable
      *
      * @return static
      */
-    public function addPlaceholder(array | string $placeholder, string $pattern = null) : static
+    public function addPlaceholder(array | string $placeholder, ?string $pattern = null) : static
     {
         if (\is_array($placeholder)) {
             foreach ($placeholder as $key => $value) {
@@ -338,7 +338,7 @@ class Router implements \JsonSerializable
      *
      * @return static
      */
-    public function serve(?string $origin, callable $callable, string $collectionName = null) : static
+    public function serve(?string $origin, callable $callable, ?string $collectionName = null) : static
     {
         if (isset($this->debugCollector)) {
             $start = \microtime(true);
@@ -360,7 +360,7 @@ class Router implements \JsonSerializable
     protected function addServedCollection(
         ?string $origin,
         callable $callable,
-        string $collectionName = null
+        ?string $collectionName = null
     ) : static {
         if ($origin === null) {
             $origin = $this->response->getRequest()->getUrl()->getOrigin();
