@@ -34,7 +34,7 @@ class WithRouteActions extends RouteActions
      * @param int $int
      * @param string $string
      *
-     * @return array<string,scalar>
+     * @return array<string,mixed>
      */
     public function noStrictTypes(bool $bool, float $float, int $int, string $string) : array
     {
