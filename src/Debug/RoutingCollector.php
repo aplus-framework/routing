@@ -11,6 +11,7 @@ namespace Framework\Routing\Debug;
 
 use Closure;
 use Framework\Debug\Collector;
+use Framework\Debug\Debugger;
 use Framework\Routing\RouteCollection;
 use Framework\Routing\Router;
 
@@ -135,8 +136,8 @@ class RoutingCollector extends Collector
                 <th>Action</th>
                 <th>Name</th>
                 <th>Has Options</th>
-                <th title="Seconds">Time to Match</th>
-                <th title="Seconds">Runtime</th>
+                <th title="Milliseconds">Time to Match</th>
+                <th title="Milliseconds">Runtime</th>
             </tr>
             </thead>
             <tbody>
@@ -159,13 +160,13 @@ class RoutingCollector extends Collector
                 <td><?php
                     foreach ($this->getData() as $data) {
                         if ($data['type'] === 'match') {
-                            echo \round($data['end'] - $data['start'], 6);
+                            echo Debugger::roundSecondsToMilliseconds($data['end'] - $data['start']);
                         }
                     } ?></td>
                 <td><?php
                     foreach ($this->getData() as $data) {
                         if ($data['type'] === 'run') {
-                            echo \round($data['end'] - $data['start'], 6);
+                            echo Debugger::roundSecondsToMilliseconds($data['end'] - $data['start']);
                         }
                     } ?></td>
             </tr>
@@ -214,8 +215,8 @@ class RoutingCollector extends Collector
         foreach ($this->getData() as $data) {
             if ($data['type'] === 'serve' && $data['collectionId'] === \spl_object_id($collection)) {
                 $contents = '<p title="Seconds"><strong>Time to Serve:</strong> '
-                    . \round($data['end'] - $data['start'], 6)
-                    . '</p>';
+                    . Debugger::roundSecondsToMilliseconds($data['end'] - $data['start'])
+                    . ' ms</p>';
                 break;
             }
         }
