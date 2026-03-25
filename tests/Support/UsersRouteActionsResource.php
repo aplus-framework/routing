@@ -16,7 +16,7 @@ use Framework\Routing\ResourceInterface;
 use Framework\Routing\RouteActions;
 
 #[Origin('http://domain.com')]
-#[Origin('http://api.domain.xyz')]
+#[Origin('http://api.domain.xyz')] // @phpstan-ignore-line
 class UsersRouteActionsResource extends RouteActions implements ResourceInterface
 {
     #[Route('GET', '/users', origins: 'http://foo.com')]

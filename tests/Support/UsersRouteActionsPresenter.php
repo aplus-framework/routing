@@ -29,7 +29,7 @@ class UsersRouteActionsPresenter extends RouteActions implements PresenterInterf
     }
 
     #[Route('POST', '/users')]
-    #[Route('PATCH', '/users', name: 'repeated')]
+    #[Route('PATCH', '/users', name: 'repeated')] // @phpstan-ignore-line
     public function create() : string
     {
         return __METHOD__;
