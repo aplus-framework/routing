@@ -305,7 +305,8 @@ final class RouteTest extends TestCase
             'http://domain.tld',
             '/',
             static function () {
-                return new class() {
+                return new class()
+                {
                     public function __toString() : string
                     {
                         return '__toString';

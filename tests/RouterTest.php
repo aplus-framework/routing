@@ -455,7 +455,8 @@ final class RouterTest extends TestCase
      */
     public function testSatisfaction() : void
     {
-        $router = new class($this->response) extends Router {
+        $router = new class($this->response) extends Router
+        {
             public function setMatchedCollection(RouteCollection $matchedCollection) : static
             {
                 return parent::setMatchedCollection($matchedCollection);
