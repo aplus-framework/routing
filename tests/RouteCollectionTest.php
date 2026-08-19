@@ -152,12 +152,12 @@ final class RouteCollectionTest extends TestCase
             'PUT',
             'DELETE',
         ], \array_keys($this->collection->routes));
-        self::assertSame('users.index', $this->collection->routes['GET'][0]->getName()); // @phpstan-ignore-line
-        self::assertSame('users.create', $this->collection->routes['POST'][0]->getName()); // @phpstan-ignore-line
-        self::assertSame('users.show', $this->collection->routes['GET'][1]->getName()); // @phpstan-ignore-line
-        self::assertSame('users.update', $this->collection->routes['PATCH'][0]->getName()); // @phpstan-ignore-line
-        self::assertSame('users.replace', $this->collection->routes['PUT'][0]->getName()); // @phpstan-ignore-line
-        self::assertSame('users.delete', $this->collection->routes['DELETE'][0]->getName()); // @phpstan-ignore-line
+        self::assertSame('users.index', $this->collection->routes['GET'][0]->getName());
+        self::assertSame('users.create', $this->collection->routes['POST'][0]->getName());
+        self::assertSame('users.show', $this->collection->routes['GET'][1]->getName());
+        self::assertSame('users.update', $this->collection->routes['PATCH'][0]->getName());
+        self::assertSame('users.replace', $this->collection->routes['PUT'][0]->getName());
+        self::assertSame('users.delete', $this->collection->routes['DELETE'][0]->getName());
     }
 
     public function testResourceWithExcept() : void
@@ -179,14 +179,14 @@ final class RouteCollectionTest extends TestCase
             'GET',
             'POST',
         ], \array_keys($this->collection->routes));
-        self::assertSame('admin.posts.index', $this->collection->routes['GET'][0]->getName()); // @phpstan-ignore-line
-        self::assertSame('admin.posts.new', $this->collection->routes['GET'][1]->getName()); // @phpstan-ignore-line
-        self::assertSame('admin.posts.create', $this->collection->routes['POST'][0]->getName()); // @phpstan-ignore-line
-        self::assertSame('admin.posts.show', $this->collection->routes['GET'][2]->getName()); // @phpstan-ignore-line
-        self::assertSame('admin.posts.edit', $this->collection->routes['GET'][3]->getName()); // @phpstan-ignore-line
-        self::assertSame('admin.posts.update', $this->collection->routes['POST'][1]->getName()); // @phpstan-ignore-line
-        self::assertSame('admin.posts.remove', $this->collection->routes['GET'][4]->getName()); // @phpstan-ignore-line
-        self::assertSame('admin.posts.delete', $this->collection->routes['POST'][2]->getName()); // @phpstan-ignore-line
+        self::assertSame('admin.posts.index', $this->collection->routes['GET'][0]->getName());
+        self::assertSame('admin.posts.new', $this->collection->routes['GET'][1]->getName());
+        self::assertSame('admin.posts.create', $this->collection->routes['POST'][0]->getName());
+        self::assertSame('admin.posts.show', $this->collection->routes['GET'][2]->getName());
+        self::assertSame('admin.posts.edit', $this->collection->routes['GET'][3]->getName());
+        self::assertSame('admin.posts.update', $this->collection->routes['POST'][1]->getName());
+        self::assertSame('admin.posts.remove', $this->collection->routes['GET'][4]->getName());
+        self::assertSame('admin.posts.delete', $this->collection->routes['POST'][2]->getName());
     }
 
     public function testPresenterWithExcept() : void
@@ -363,16 +363,16 @@ final class RouteCollectionTest extends TestCase
     public function testIsset() : void
     {
         self::assertTrue(isset($this->collection->origin));
-        self::assertTrue(isset($this->collection->router));
-        self::assertTrue(isset($this->collection->routes));
+        self::assertTrue(isset($this->collection->router)); // @phpstan-ignore-line
+        self::assertTrue(isset($this->collection->routes)); // @phpstan-ignore-line
         self::assertFalse(isset($this->collection->notFoundAction));
     }
 
     public function testGetProperties() : void
     {
-        self::assertIsString($this->collection->origin);
+        self::assertIsString($this->collection->origin); // @phpstan-ignore-line
         self::assertInstanceOf(Router::class, $this->collection->router);
-        self::assertIsArray($this->collection->routes);
+        self::assertIsArray($this->collection->routes); // @phpstan-ignore-line
         $this->expectException(\Error::class);
         $this->expectExceptionMessage(
             'Cannot access property ' . $this->collection::class . '::$foo'

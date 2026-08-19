@@ -286,15 +286,15 @@ class Route implements \JsonSerializable
         if (!\class_exists($classname)) {
             throw new RoutingException("Class does not exist: {$classname}");
         }
-        /**
-         * @var RouteActions $class
-         */
         $class = new $classname(...$construct);
         if (!$class instanceof RouteActions) {
             throw new RoutingException(
                 'Class ' . $class::class . ' is not an instance of ' . RouteActions::class
             );
         }
+        /**
+         * @var RouteActions $class
+         */
         if (!\method_exists($class, $method)) {
             throw new RoutingException(
                 "Class action method does not exist: {$classname}::{$method}"

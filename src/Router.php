@@ -349,7 +349,7 @@ class Router implements \JsonSerializable
                 'start' => $start,
                 'end' => $end,
                 'collectionId' => \spl_object_id(
-                    $this->collections[\array_key_last($this->collections)]
+                    $this->collections[\array_key_last($this->collections)] // @phpstan-ignore-line
                 ),
             ]);
             return $this;

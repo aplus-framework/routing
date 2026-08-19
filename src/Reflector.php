@@ -36,7 +36,7 @@ class Reflector
      */
     public function __construct(object | string $routeActions)
     {
-        $this->reflection = new ReflectionClass($routeActions); // @phpstan-ignore-line
+        $this->reflection = new ReflectionClass($routeActions);
     }
 
     /**
