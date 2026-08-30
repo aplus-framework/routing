@@ -11,7 +11,7 @@ namespace Framework\Routing\Debug;
 
 use Closure;
 use Framework\Debug\Collector;
-use Framework\Debug\Debugger;
+use Framework\Debug\Debugger as D;
 use Framework\Routing\RouteCollection;
 use Framework\Routing\Router;
 
@@ -79,13 +79,13 @@ class RoutingCollector extends Collector
         <p><strong>Auto Methods:</strong> <?= $this->router->isAutoMethods() ? 'On' : 'Off' ?></p>
         <p><strong>Auto Options:</strong> <?= $this->router->isAutoOptions() ? 'On' : 'Off' ?></p>
         <p>
-            <strong>Default Route Action Method:</strong> <?= \htmlentities($this->router->getDefaultRouteActionMethod()) ?>
+            <strong>Default Route Action Method:</strong> <?= D::esc($this->router->getDefaultRouteActionMethod()) ?>
         </p>
         <?php
         $notFound = $this->router->defaultRouteNotFound; // @phpstan-ignore-line
         if ($notFound): ?>
             <p><strong>Default Route Not Found:</strong> <?=
-                $notFound instanceof Closure ? 'Closure' : \htmlentities($notFound)
+                $notFound instanceof Closure ? 'Closure' : D::esc($notFound)
             ?></p>
         <?php
         endif ?>
@@ -107,9 +107,9 @@ class RoutingCollector extends Collector
             <tbody>
             <?php foreach ($placeholders as $placeholder => $pattern): ?>
                 <tr>
-                    <td><code>{<?= \htmlentities($placeholder) ?>}</code></td>
+                    <td><code>{<?= D::esc($placeholder) ?>}</code></td>
                     <td>
-                        <pre><code class="language-regex"><?= \htmlentities($pattern) ?></code></pre>
+                        <pre><code class="language-regex"><?= D::esc($pattern) ?></code></pre>
                     </td>
                 </tr>
             <?php endforeach ?>
@@ -150,23 +150,23 @@ class RoutingCollector extends Collector
                     } ?></td>
                 <td><?= $this->router->getResponse()->getRequest()->getMethod() ?></td>
 
-                <td><?= \htmlentities($this->router->getMatchedOrigin()) ?></td>
-                <td><?= \htmlentities($this->router->getMatchedPath()) ?></td>
+                <td><?= D::esc($this->router->getMatchedOrigin()) ?></td>
+                <td><?= D::esc($this->router->getMatchedPath()) ?></td>
                 <td><?= $route->getAction() instanceof Closure
                         ? 'Closure'
-                        : \htmlentities($route->getAction()) ?></td>
-                <td><?= \htmlentities((string) $route->getName()) ?></td>
+                        : D::esc($route->getAction()) ?></td>
+                <td><?= D::esc($route->getName()) ?></td>
                 <td><?= $route->getOptions() ? 'Yes' : 'No' ?></td>
                 <td><?php
                     foreach ($this->getData() as $data) {
                         if ($data['type'] === 'match') {
-                            echo Debugger::roundSecondsToMilliseconds($data['end'] - $data['start']);
+                            echo D::roundSecondsToMilliseconds($data['end'] - $data['start']);
                         }
                     } ?></td>
                 <td><?php
                     foreach ($this->getData() as $data) {
                         if ($data['type'] === 'run') {
-                            echo Debugger::roundSecondsToMilliseconds($data['end'] - $data['start']);
+                            echo D::roundSecondsToMilliseconds($data['end'] - $data['start']);
                         }
                     } ?></td>
             </tr>
@@ -201,7 +201,7 @@ class RoutingCollector extends Collector
                 ?>
                 <p><strong>Route Not Found:</strong> <?= $notFound instanceof Closure
                         ? 'Closure'
-                        : \htmlentities($notFound) ?></p>
+                        : D::esc($notFound) ?></p>
             <?php
             endif;
             echo $this->renderRouteCollectionsTable($collection);
@@ -215,7 +215,7 @@ class RoutingCollector extends Collector
         foreach ($this->getData() as $data) {
             if ($data['type'] === 'serve' && $data['collectionId'] === \spl_object_id($collection)) {
                 $contents = '<p title="Seconds"><strong>Time to Serve:</strong> '
-                    . Debugger::roundSecondsToMilliseconds($data['end'] - $data['start'])
+                    . D::roundSecondsToMilliseconds($data['end'] - $data['start'])
                     . ' ms</p>';
                 break;
             }
@@ -253,11 +253,11 @@ class RoutingCollector extends Collector
             <?php foreach ($this->getRoutes($collection) as $index => $route): ?>
                 <tr<?= $route['matched'] ? ' class="active" title="Matched Route"' : '' ?>>
                     <td><?= ++$index ?></td>
-                    <td><?= \htmlentities($route['method']) ?></td>
-                    <td><?= $this->toCodeBrackets(\htmlentities($route['path'])) ?></td>
-                    <td><?= \htmlentities($route['action']) ?></td>
-                    <td><?= \htmlentities((string) $route['name']) ?></td>
-                    <td><?= \htmlentities($route['hasOptions']) ?></td>
+                    <td><?= D::esc($route['method']) ?></td>
+                    <td><?= $this->toCodeBrackets(D::esc($route['path'])) ?></td>
+                    <td><?= D::esc($route['action']) ?></td>
+                    <td><?= D::esc($route['name']) ?></td>
+                    <td><?= D::esc($route['hasOptions']) ?></td>
                 </tr>
             <?php endforeach ?>
             </tbody>
