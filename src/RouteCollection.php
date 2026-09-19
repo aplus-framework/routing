@@ -20,6 +20,8 @@ use LogicException;
 /**
  * Class RouteCollection.
  *
+ * @todo Add Asymmetric Visibility to properties when PHPMD allows it (it does not support the syntax at the moment).
+ *
  * @property-read string|null $name
  * @property-read string $origin
  * @property-read Router $router
