@@ -12,7 +12,6 @@ namespace Framework\Routing;
 use Closure;
 use Framework\HTTP\Response;
 use InvalidArgumentException;
-use JetBrains\PhpStorm\ArrayShape;
 use JetBrains\PhpStorm\Pure;
 use JsonException;
 
@@ -369,10 +368,11 @@ class Route implements \JsonSerializable
      *
      * @throws InvalidArgumentException for undefined action argument
      *
-     * @return array<int,mixed> The action method in the first index, the action
-     * arguments in the second
+     * @return array{
+     *      0: string,
+     *      1: array<int,string>,
+     * } The action method in the first index, the action arguments in the second
      */
-    #[ArrayShape([0 => 'string', 1 => 'array'])]
     protected function extractMethodAndArguments(
         string $part
     ) : array {

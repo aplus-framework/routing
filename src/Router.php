@@ -839,7 +839,13 @@ class Router implements \JsonSerializable
     }
 
     /**
-     * @return array<string,mixed>
+     * @return array{
+     *      matched: Route|null,
+     *      collections: array<int,RouteCollection>,
+     *      isAutoMethods: bool,
+     *      isAutoOptions: bool,
+     *      placeholders: array<string,string>,
+     * }
      */
     public function jsonSerialize() : array
     {

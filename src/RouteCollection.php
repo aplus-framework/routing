@@ -665,7 +665,11 @@ class RouteCollection implements \Countable, \JsonSerializable
     }
 
     /**
-     * @return array<string,mixed>
+     * @return array{
+     *      origin: string,
+     *      routes: array<string,array<Route>>,
+     *      hasNotFound: bool,
+     * }
      */
     public function jsonSerialize() : array
     {

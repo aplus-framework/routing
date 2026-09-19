@@ -89,7 +89,14 @@ class Reflector
     /**
      * @throws ReflectionException
      *
-     * @return array<mixed>
+     * @return array<int,array{
+     *      origins: array<string>,
+     *      methods: array<string>,
+     *      path: string,
+     *      arguments: string,
+     *      name: string|null,
+     *      action: string,
+     * }>
      */
     public function getRoutes() : array
     {
