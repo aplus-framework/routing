@@ -32,7 +32,7 @@ class Route implements \JsonSerializable
     protected array $actionArguments = [];
     protected ?string $name = null;
     /**
-     * @var array<string,mixed>
+     * @var array<mixed>
      */
     protected array $options = [];
 
@@ -103,7 +103,7 @@ class Route implements \JsonSerializable
     /**
      * Gets Route options.
      *
-     * @return array<string,mixed>
+     * @return array<mixed>
      */
     #[Pure]
     public function getOptions() : array
@@ -116,7 +116,7 @@ class Route implements \JsonSerializable
      * For example: its possible set Access Control List options, Locations,
      * Middleware filters, etc.
      *
-     * @param array<string,mixed> $options
+     * @param array<mixed> $options
      *
      * @return static
      */

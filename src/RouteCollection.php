@@ -35,7 +35,7 @@ class RouteCollection implements \Countable, \JsonSerializable
     /**
      * Array of HTTP Methods as keys and array of Routes as values.
      *
-     * @var array<string, Route[]>
+     * @var array<string,array<Route>>
      */
     protected array $routes = [];
     /**

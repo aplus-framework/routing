@@ -821,7 +821,7 @@ class Router implements \JsonSerializable
     /**
      * Gets all routes, except the not found.
      *
-     * @return array<string,Route[]> The HTTP Methods as keys and its Routes as
+     * @return array<string,array<Route>> The HTTP Methods as keys and its Routes as
      * values
      */
     #[Pure]
