@@ -24,17 +24,30 @@ use LogicException;
  */
 class RouteCollection implements \Countable, \JsonSerializable
 {
+    /**
+     * The route collection {@see Router} instance.
+     */
     public protected(set) Router $router;
+    /**
+     * The route collection origin.
+     */
     public protected(set) string $origin;
+    /**
+     * The route collection name.
+     */
     public protected(set) ?string $name;
     /**
+     * The route collection routes.
+     *
      * Array of HTTP Methods as keys and array of Routes as values.
      *
-     * @var array<string,array<Route>>
+     * @var array<string,array<int,Route>>
      */
     public protected(set) array $routes = [];
     /**
      * The Error 404 page action.
+     *
+     * Used internally by the RoutingCollector.
      */
     protected Closure | string $notFoundAction;
 
