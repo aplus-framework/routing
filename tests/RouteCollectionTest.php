@@ -363,7 +363,7 @@ final class RouteCollectionTest extends TestCase
     public function testIsset() : void
     {
         self::assertTrue(isset($this->collection->origin));
-        self::assertTrue(isset($this->collection->router)); // @phpstan-ignore-line
+        self::assertTrue(isset($this->collection->router));
         self::assertTrue(isset($this->collection->routes)); // @phpstan-ignore-line
         self::assertFalse(isset($this->collection->notFoundAction));
     }

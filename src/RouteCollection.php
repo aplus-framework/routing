@@ -20,26 +20,19 @@ use LogicException;
 /**
  * Class RouteCollection.
  *
- * @todo Add Asymmetric Visibility to properties when PHPMD allows it (it does not support the syntax at the moment).
- *
- * @property-read string|null $name
- * @property-read string $origin
- * @property-read Router $router
- * @property-read array<string, Route[]> $routes
- *
  * @package routing
  */
 class RouteCollection implements \Countable, \JsonSerializable
 {
-    protected Router $router;
-    protected string $origin;
-    protected ?string $name;
+    public protected(set) Router $router;
+    public protected(set) string $origin;
+    public protected(set) ?string $name;
     /**
      * Array of HTTP Methods as keys and array of Routes as values.
      *
      * @var array<string,array<Route>>
      */
-    protected array $routes = [];
+    public protected(set) array $routes = [];
     /**
      * The Error 404 page action.
      */
@@ -91,20 +84,8 @@ class RouteCollection implements \Countable, \JsonSerializable
      */
     public function __get(string $property) : mixed
     {
-        if ($property === 'name') {
-            return $this->name;
-        }
         if ($property === 'notFoundAction') {
             return $this->notFoundAction;
-        }
-        if ($property === 'origin') {
-            return $this->origin;
-        }
-        if ($property === 'router') {
-            return $this->router;
-        }
-        if ($property === 'routes') {
-            return $this->routes;
         }
         throw new Error(
             'Cannot access property ' . static::class . '::$' . $property
