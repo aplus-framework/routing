@@ -18,7 +18,6 @@ use Framework\HTTP\Status;
 use Framework\Language\Language;
 use Framework\Routing\Debug\RoutingCollector;
 use InvalidArgumentException;
-use JetBrains\PhpStorm\Pure;
 use OutOfBoundsException;
 use RuntimeException;
 
@@ -102,7 +101,6 @@ class Router implements \JsonSerializable
      *
      * @return Response
      */
-    #[Pure]
     public function getResponse() : Response
     {
         return $this->response;
@@ -132,7 +130,6 @@ class Router implements \JsonSerializable
      *
      * @return string
      */
-    #[Pure]
     public function getDefaultRouteActionMethod() : string
     {
         return $this->defaultRouteActionMethod;
@@ -261,7 +258,6 @@ class Router implements \JsonSerializable
      *
      * @return array<string,string>
      */
-    #[Pure]
     public function getPlaceholders() : array
     {
         return static::$placeholders;
@@ -275,7 +271,6 @@ class Router implements \JsonSerializable
      *
      * @return string
      */
-    #[Pure]
     public function replacePlaceholders(
         string $string,
         bool $flip = false
@@ -387,7 +382,6 @@ class Router implements \JsonSerializable
      *
      * @return array<int,RouteCollection>
      */
-    #[Pure]
     public function getCollections() : array
     {
         return $this->collections;
@@ -400,7 +394,6 @@ class Router implements \JsonSerializable
      *
      * @return RouteCollection|null
      */
-    #[Pure]
     public function getMatchedCollection() : ?RouteCollection
     {
         return $this->matchedCollection;
@@ -417,7 +410,6 @@ class Router implements \JsonSerializable
      *
      * @return Route|null
      */
-    #[Pure]
     public function getMatchedRoute() : ?Route
     {
         return $this->matchedRoute;
@@ -439,7 +431,6 @@ class Router implements \JsonSerializable
      *
      * @return string|null
      */
-    #[Pure]
     public function getMatchedPath() : ?string
     {
         return $this->matchedPath;
@@ -461,7 +452,6 @@ class Router implements \JsonSerializable
      *
      * @return array<int,string>
      */
-    #[Pure]
     public function getMatchedPathArguments() : array
     {
         return $this->matchedPathArguments;
@@ -486,7 +476,6 @@ class Router implements \JsonSerializable
      *
      * @return string|null
      */
-    #[Pure]
     public function getMatchedUrl() : ?string
     {
         return $this->getMatchedOrigin()
@@ -499,7 +488,6 @@ class Router implements \JsonSerializable
      *
      * @return string|null
      */
-    #[Pure]
     public function getMatchedOrigin() : ?string
     {
         return $this->matchedOrigin;
@@ -521,7 +509,6 @@ class Router implements \JsonSerializable
      *
      * @return array<int,string>
      */
-    #[Pure]
     public function getMatchedOriginArguments() : array
     {
         return $this->matchedOriginArguments;
@@ -683,7 +670,6 @@ class Router implements \JsonSerializable
      *
      * @return bool
      */
-    #[Pure]
     public function isAutoOptions() : bool
     {
         return $this->autoOptions;
@@ -715,7 +701,6 @@ class Router implements \JsonSerializable
      *
      * @return bool
      */
-    #[Pure]
     public function isAutoMethods() : bool
     {
         return $this->autoMethods;
@@ -802,7 +787,6 @@ class Router implements \JsonSerializable
      *
      * @return bool
      */
-    #[Pure]
     public function hasNamedRoute(
         string $name
     ) : bool {
@@ -824,7 +808,6 @@ class Router implements \JsonSerializable
      * @return array<string,array<Route>> The HTTP Methods as keys and its Routes as
      * values
      */
-    #[Pure]
     public function getRoutes() : array
     {
         $result = [];

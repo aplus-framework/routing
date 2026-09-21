@@ -12,7 +12,6 @@ namespace Framework\Routing;
 use Closure;
 use Framework\HTTP\Response;
 use InvalidArgumentException;
-use JetBrains\PhpStorm\Pure;
 use JsonException;
 
 /**
@@ -105,7 +104,6 @@ class Route implements \JsonSerializable
      *
      * @return array<mixed>
      */
-    #[Pure]
     public function getOptions() : array
     {
         return $this->options;
@@ -131,7 +129,6 @@ class Route implements \JsonSerializable
      *
      * @return string|null
      */
-    #[Pure]
     public function getName() : ?string
     {
         return $this->name;
@@ -183,7 +180,6 @@ class Route implements \JsonSerializable
      *
      * @return Closure|string
      */
-    #[Pure]
     public function getAction() : Closure | string
     {
         return $this->action;
@@ -218,7 +214,6 @@ class Route implements \JsonSerializable
      *
      * @return array<int,string>
      */
-    #[Pure]
     public function getActionArguments() : array
     {
         return $this->actionArguments;
@@ -419,7 +414,6 @@ class Route implements \JsonSerializable
         ];
     }
 
-    #[Pure]
     protected function onNamedRoutePart() : string
     {
         $routeName = $this->getName();
