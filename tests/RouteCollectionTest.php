@@ -90,6 +90,13 @@ final class RouteCollectionTest extends TestCase
         self::assertArrayHasKey('PATCH', $this->collection->routes);
     }
 
+    public function testQuery() : void
+    {
+        self::assertSame([], $this->collection->routes);
+        $this->collection->query('/', 'RouteActions::foo');
+        self::assertArrayHasKey('QUERY', $this->collection->routes);
+    }
+
     public function testDelete() : void
     {
         self::assertSame([], $this->collection->routes);

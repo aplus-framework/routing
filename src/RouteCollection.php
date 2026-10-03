@@ -155,6 +155,7 @@ class RouteCollection implements \Countable, \JsonSerializable
             'PATCH',
             'POST',
             'PUT',
+            'QUERY',
         ], true)) {
             throw new InvalidArgumentException('Invalid method: ' . $httpMethod);
         }
@@ -211,6 +212,7 @@ class RouteCollection implements \Countable, \JsonSerializable
      * @see Method::PATCH
      * @see Method::POST
      * @see Method::PUT
+     * @see Method::QUERY
      *
      * @return Route
      */
@@ -364,6 +366,25 @@ class RouteCollection implements \Countable, \JsonSerializable
         ?string $name = null
     ) : Route {
         return $this->addSimple('PATCH', $path, $action, $name);
+    }
+
+    /**
+     * Adds a Route to match the HTTP QUERY Method.
+     *
+     * @param string $path The URL path
+     * @param Closure|array<int,string>|string $action The Route action
+     * @param string|null $name The Route name
+     *
+     * @see Method::QUERY
+     *
+     * @return Route The Route added to the collection
+     */
+    public function query(
+        string $path,
+        Closure | array | string $action,
+        ?string $name = null
+    ) : Route {
+        return $this->addSimple('QUERY', $path, $action, $name);
     }
 
     /**
