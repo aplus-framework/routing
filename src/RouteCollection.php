@@ -542,6 +542,13 @@ class RouteCollection implements \Countable, \JsonSerializable
                 $baseName . '.index'
             );
         }
+        if (!isset($except['search'])) {
+            $routes[] = $this->query(
+                $path,
+                $class . 'search/*',
+                $baseName . '.search'
+            );
+        }
         if (!isset($except['create'])) {
             $routes[] = $this->post(
                 $path,

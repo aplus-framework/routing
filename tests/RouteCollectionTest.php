@@ -154,12 +154,14 @@ final class RouteCollectionTest extends TestCase
         $this->collection->resource('/users', 'Users', 'users');
         self::assertSame([
             'GET',
+            'QUERY',
             'POST',
             'PATCH',
             'PUT',
             'DELETE',
         ], \array_keys($this->collection->routes));
         self::assertSame('users.index', $this->collection->routes['GET'][0]->getName());
+        self::assertSame('users.search', $this->collection->routes['QUERY'][0]->getName());
         self::assertSame('users.create', $this->collection->routes['POST'][0]->getName());
         self::assertSame('users.show', $this->collection->routes['GET'][1]->getName());
         self::assertSame('users.update', $this->collection->routes['PATCH'][0]->getName());
@@ -170,7 +172,12 @@ final class RouteCollectionTest extends TestCase
     public function testResourceWithExcept() : void
     {
         self::assertSame([], $this->collection->routes);
-        $this->collection->resource('/users', 'Users', 'users', ['create', 'show', 'delete']);
+        $this->collection->resource(
+            '/users',
+            'Users',
+            'users',
+            ['create', 'show', 'delete', 'search']
+        );
         self::assertSame([
             'GET',
             'PATCH',
@@ -213,11 +220,11 @@ final class RouteCollectionTest extends TestCase
     {
         self::assertCount(0, $this->collection);
         $this->collection->resource('/users', 'Users', 'users');
-        self::assertCount(6, $this->collection);
+        self::assertCount(7, $this->collection);
         $this->collection->presenter('/posts', 'Posts', 'posts');
-        self::assertCount(14, $this->collection);
-        $this->collection->notFound('Errors::notFound');
         self::assertCount(15, $this->collection);
+        $this->collection->notFound('Errors::notFound');
+        self::assertCount(16, $this->collection);
     }
 
     public function testGroup() : void
