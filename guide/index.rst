@@ -286,12 +286,14 @@ automatic routes is ``users``:
 
     $routes->resource('/users', 'App\Users', 'users');
 
-Which will create 6 routes, as follows:
+Which will create 7 routes, as follows:
 
 +-----------------+--------------+----------------------+---------------+
 | HTTP Method     | Path         | Action               | Name          |
 +=================+==============+======================+===============+
 | **GET**         | /users       | App\Users::index/*   | users.index   |
++-----------------+--------------+----------------------+---------------+
+| **QUERY**       | /users       | App\Users::search/*  | users.search  |
 +-----------------+--------------+----------------------+---------------+
 | **POST**        | /users       | App\Users::create/*  | users.create  |
 +-----------------+--------------+----------------------+---------------+
@@ -304,9 +306,9 @@ Which will create 6 routes, as follows:
 | **DELETE**      | /users/{int} | App\Users::delete/*  | users.delete  |
 +-----------------+--------------+----------------------+---------------+
 
-In the fourth parameter of the ``resource`` method it is possible to be in an array
-the routes that should not be added. And they are: ``index``, ``create``, ``show``,
-``update``, ``replace`` and ``delete``.
+In the fourth parameter of the ``resource`` method it is possible to be in an
+array the routes that should not be added. And they are: ``index``, ``search``,
+``create``, ``show``, ``update``, ``replace`` and ``delete``.
 
 In the fifth parameter, the placeholder to be used is defined, the default being
 ``{int}``, to be the id of the resource.
