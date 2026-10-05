@@ -25,6 +25,12 @@ class UsersRouteActionsResource extends RouteActions implements ResourceInterfac
         return __METHOD__;
     }
 
+    #[Route('QUERY', '/users')]
+    public function search() : string
+    {
+        return __METHOD__;
+    }
+
     #[Route('POST', '/users')]
     public function create() : string
     {

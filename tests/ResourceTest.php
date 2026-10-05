@@ -58,6 +58,18 @@ final class ResourceTest extends TestCase
         self::assertSame('api.users.index', $this->router->getMatchedRoute()->getName());
     }
 
+    public function testSearch() : void
+    {
+        $this->prepare([
+            'REQUEST_METHOD' => 'QUERY',
+        ]);
+        self::assertSame(
+            UsersRouteActionsResource::class . '::search',
+            $this->router->match()->run()->getBody()
+        );
+        self::assertSame('api.users.search', $this->router->getMatchedRoute()->getName());
+    }
+
     public function testCreate() : void
     {
         $this->prepare([

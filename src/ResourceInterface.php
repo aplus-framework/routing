@@ -9,6 +9,7 @@
  */
 namespace Framework\Routing;
 
+use Framework\HTTP\HeaderTrait;
 use Framework\HTTP\Method;
 use Framework\HTTP\ResponseHeader;
 use Framework\HTTP\Status;
@@ -40,6 +41,19 @@ interface ResourceInterface
      * @return mixed
      */
     public function index() : mixed;
+
+    /**
+     * Handles a QUERY request for /.
+     *
+     * Common usage: It receives a search query in the message body and returns
+     * the found results with pagination.
+     *
+     * @see Method::QUERY
+     * @see HeaderTrait::CONTENT_TYPE
+     *
+     * @return mixed
+     */
+    public function search() : mixed;
 
     /**
      * Handles a POST request for /.
