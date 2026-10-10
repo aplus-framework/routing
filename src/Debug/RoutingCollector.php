@@ -10,6 +10,7 @@
 namespace Framework\Routing\Debug;
 
 use Closure;
+use Framework\Debug\Activity;
 use Framework\Debug\Collector;
 use Framework\Debug\Debugger as D;
 use Framework\Routing\RouteCollection;
@@ -37,29 +38,29 @@ class RoutingCollector extends Collector
         foreach ($this->getData() as $data) {
             if ($data['type'] === 'serve') {
                 $serveCount++;
-                $activities[] = [
-                    'collector' => $this->getName(),
-                    'class' => static::class,
-                    'description' => 'Serve route collection ' . $serveCount,
-                    'start' => $data['start'],
-                    'end' => $data['end'],
-                ];
+                $activities[] = new Activity(
+                    collector: $this->getName(),
+                    class: static::class,
+                    description: 'Serve route collection ' . $serveCount,
+                    start: $data['start'],
+                    end: $data['end'],
+                );
             } elseif ($data['type'] === 'match') {
-                $activities[] = [
-                    'collector' => $this->getName(),
-                    'class' => static::class,
-                    'description' => 'Match route',
-                    'start' => $data['start'],
-                    'end' => $data['end'],
-                ];
+                $activities[] = new Activity(
+                    collector: $this->getName(),
+                    class: static::class,
+                    description: 'Match route',
+                    start: $data['start'],
+                    end: $data['end'],
+                );
             } elseif ($data['type'] === 'run') {
-                $activities[] = [
-                    'collector' => $this->getName(),
-                    'class' => static::class,
-                    'description' => 'Run matched route',
-                    'start' => $data['start'],
-                    'end' => $data['end'],
-                ];
+                $activities[] = new Activity(
+                    collector: $this->getName(),
+                    class: static::class,
+                    description: 'Run matched route',
+                    start: $data['start'],
+                    end: $data['end'],
+                );
             }
         }
         return $activities;

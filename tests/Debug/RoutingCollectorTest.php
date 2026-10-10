@@ -76,8 +76,8 @@ final class RoutingCollectorTest extends TestCase
     {
         $this->makeRouter();
         $activities = $this->collector->getActivities();
-        self::assertSame('Serve route collection 1', $activities[0]['description']);
-        self::assertSame('Serve route collection 2', $activities[1]['description']);
+        self::assertSame('Serve route collection 1', $activities[0]->description);
+        self::assertSame('Serve route collection 2', $activities[1]->description);
         $contents = $this->collector->getContents();
         self::assertStringContainsString('Route Collection 1', $contents);
         self::assertStringContainsString('Route Collection 2', $contents);
@@ -95,7 +95,7 @@ final class RoutingCollectorTest extends TestCase
     {
         $this->makeRouter()->match();
         $activities = $this->collector->getActivities();
-        self::assertSame('Match route', $activities[2]['description']);
+        self::assertSame('Match route', $activities[2]->description);
         $contents = $this->collector->getContents();
         self::assertStringNotContainsString('No matching route', $contents);
         self::assertStringContainsString('Time to Match', $contents);
@@ -105,7 +105,7 @@ final class RoutingCollectorTest extends TestCase
     {
         $this->makeRouter()->match()->run();
         $activities = $this->collector->getActivities();
-        self::assertSame('Run matched route', $activities[3]['description']);
+        self::assertSame('Run matched route', $activities[3]->description);
         $contents = $this->collector->getContents();
         self::assertStringNotContainsString('No matching route', $contents);
         self::assertStringContainsString('Time to Match', $contents);
@@ -122,9 +122,9 @@ final class RoutingCollectorTest extends TestCase
         });
         $router->match()->run();
         $activities = $this->collector->getActivities();
-        self::assertSame('Serve route collection 1', $activities[0]['description']);
-        self::assertSame('Match route', $activities[1]['description']);
-        self::assertSame('Run matched route', $activities[2]['description']);
+        self::assertSame('Serve route collection 1', $activities[0]->description);
+        self::assertSame('Match route', $activities[1]->description);
+        self::assertSame('Run matched route', $activities[2]->description);
         $contents = $this->collector->getContents();
         self::assertStringNotContainsString('No matching route', $contents);
         self::assertStringContainsString('Time to Match', $contents);
