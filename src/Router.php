@@ -7,16 +7,16 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Framework\Routing;
+namespace Aplus\Routing;
 
+use Aplus\Http\Method;
+use Aplus\Http\Request;
+use Aplus\Http\Response;
+use Aplus\Http\ResponseHeader;
+use Aplus\Http\Status;
+use Aplus\Language\Language;
+use Aplus\Routing\Debug\RoutingCollector;
 use Closure;
-use Framework\HTTP\Method;
-use Framework\HTTP\Request;
-use Framework\HTTP\Response;
-use Framework\HTTP\ResponseHeader;
-use Framework\HTTP\Status;
-use Framework\Language\Language;
-use Framework\Routing\Debug\RoutingCollector;
 use InvalidArgumentException;
 use OutOfBoundsException;
 use RuntimeException;

@@ -9,12 +9,12 @@
  */
 namespace Tests\Routing;
 
-use Framework\HTTP\Request;
-use Framework\HTTP\Response;
-use Framework\Routing\Route;
-use Framework\Routing\RouteActions;
-use Framework\Routing\RouteCollection;
-use Framework\Routing\Router;
+use Aplus\Http\Request;
+use Aplus\Http\Response;
+use Aplus\Routing\Route;
+use Aplus\Routing\RouteActions;
+use Aplus\Routing\RouteCollection;
+use Aplus\Routing\Router;
 use PHPUnit\Framework\TestCase;
 
 final class RouteCollectionTest extends TestCase
@@ -115,17 +115,17 @@ final class RouteCollectionTest extends TestCase
     {
         $this->collection->get('/', [RouteActions::class]);
         self::assertSame(
-            'Framework\Routing\RouteActions::index/*',
+            'Aplus\Routing\RouteActions::index/*',
             $this->collection->routes['GET'][0]->getAction()
         );
         $this->collection->get('/', [RouteActions::class, 'index', '']);
         self::assertSame(
-            'Framework\Routing\RouteActions::index',
+            'Aplus\Routing\RouteActions::index',
             $this->collection->routes['GET'][1]->getAction()
         );
         $this->collection->get('/{int}', [RouteActions::class, 'show']);
         self::assertSame(
-            'Framework\Routing\RouteActions::show/*',
+            'Aplus\Routing\RouteActions::show/*',
             $this->collection->routes['GET'][2]->getAction()
         );
         $this->expectException(\LogicException::class);

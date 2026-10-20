@@ -7,12 +7,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Framework\Routing;
+namespace Aplus\Routing;
 
-use Framework\HTTP\HeaderTrait;
-use Framework\HTTP\Method;
-use Framework\HTTP\ResponseHeader;
-use Framework\HTTP\Status;
+use Aplus\Http\Method;
+use Aplus\Http\ResponseHeader;
+use Aplus\Http\Status;
+use Aplus\Http\Traits\HeaderTrait;
 
 /**
  * Interface ResourceInterface.

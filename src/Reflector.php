@@ -7,11 +7,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Framework\Routing;
+namespace Aplus\Routing;
 
-use Framework\Routing\Attributes\Origin;
-use Framework\Routing\Attributes\Route;
-use Framework\Routing\Attributes\RouteNotFound;
+use Aplus\Routing\Attributes\Origin;
+use Aplus\Routing\Attributes\Route;
+use Aplus\Routing\Attributes\RouteNotFound;
 use ReflectionClass;
 use ReflectionException;
 

@@ -9,7 +9,7 @@
  */
 namespace Tests\Routing\Debug;
 
-use Framework\Routing\Debug\RoutingCollection;
+use Aplus\Routing\Debug\RoutingCollection;
 use PHPUnit\Framework\TestCase;
 
 final class RoutingCollectionTest extends TestCase

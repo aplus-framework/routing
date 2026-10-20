@@ -9,7 +9,7 @@
  */
 namespace Tests\Routing;
 
-use Framework\Routing\RouteActions;
+use Aplus\Routing\RouteActions;
 use PHPUnit\Framework\TestCase;
 use Tests\Routing\Support\WithRouteActions;
 

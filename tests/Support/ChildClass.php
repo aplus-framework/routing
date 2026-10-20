@@ -9,7 +9,7 @@
  */
 namespace Tests\Routing\Support;
 
-use Framework\Routing\Attributes\Route;
+use Aplus\Routing\Attributes\Route;
 
 class ChildClass extends AbstractClass
 {

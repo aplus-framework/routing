@@ -9,12 +9,12 @@
  */
 namespace Tests\Routing;
 
-use Framework\HTTP\Request;
-use Framework\HTTP\Response;
-use Framework\Language\Language;
-use Framework\Routing\Route;
-use Framework\Routing\RouteCollection;
-use Framework\Routing\Router;
+use Aplus\Http\Request;
+use Aplus\Http\Response;
+use Aplus\Language\Language;
+use Aplus\Routing\Route;
+use Aplus\Routing\RouteCollection;
+use Aplus\Routing\Router;
 use PHPUnit\Framework\TestCase;
 
 final class RouterTest extends TestCase
@@ -29,6 +29,7 @@ final class RouterTest extends TestCase
             'REQUEST_METHOD' => 'GET',
             'HTTP_HOST' => 'domain.tld',
             'REQUEST_URI' => '/',
+            'REMOTE_ADDR' => '127.0.0.1',
         ]);
     }
 

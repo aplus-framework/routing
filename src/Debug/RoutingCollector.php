@@ -7,14 +7,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Framework\Routing\Debug;
+namespace Aplus\Routing\Debug;
 
+use Aplus\Debug\Activity;
+use Aplus\Debug\Collector;
+use Aplus\Debug\Debugger as D;
+use Aplus\Routing\RouteCollection;
+use Aplus\Routing\Router;
 use Closure;
-use Framework\Debug\Activity;
-use Framework\Debug\Collector;
-use Framework\Debug\Debugger as D;
-use Framework\Routing\RouteCollection;
-use Framework\Routing\Router;
 
 /**
  * Class RoutingCollector.

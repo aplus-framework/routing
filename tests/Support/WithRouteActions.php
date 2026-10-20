@@ -9,7 +9,7 @@
  */
 namespace Tests\Routing\Support;
 
-use Framework\Routing\RouteActions;
+use Aplus\Routing\RouteActions;
 
 class WithRouteActions extends RouteActions
 {

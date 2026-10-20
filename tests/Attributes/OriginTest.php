@@ -9,8 +9,8 @@
  */
 namespace Tests\Routing\Attributes;
 
+use Aplus\Routing\Attributes\Origin;
 use Attribute;
-use Framework\Routing\Attributes\Origin;
 use PHPUnit\Framework\TestCase;
 use ReflectionObject;
 use Tests\Routing\Support\UsersRouteActionsResource;

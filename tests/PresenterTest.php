@@ -9,10 +9,10 @@
  */
 namespace Tests\Routing;
 
-use Framework\HTTP\Request;
-use Framework\HTTP\Response;
-use Framework\Routing\RouteCollection;
-use Framework\Routing\Router;
+use Aplus\Http\Request;
+use Aplus\Http\Response;
+use Aplus\Routing\RouteCollection;
+use Aplus\Routing\Router;
 use PHPUnit\Framework\TestCase;
 use Tests\Routing\Support\UsersRouteActionsPresenter;
 

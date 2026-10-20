@@ -9,8 +9,8 @@
  */
 namespace Tests\Routing\Support;
 
-use Framework\Routing\Attributes\Origin;
-use Framework\Routing\Attributes\Route;
+use Aplus\Routing\Attributes\Origin;
+use Aplus\Routing\Attributes\Route;
 
 #[Origin('http://bar.xyz')]
 abstract class AbstractClass

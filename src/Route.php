@@ -7,10 +7,10 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Framework\Routing;
+namespace Aplus\Routing;
 
+use Aplus\Http\Response;
 use Closure;
-use Framework\HTTP\Response;
 use InvalidArgumentException;
 use JsonException;
 

@@ -9,12 +9,12 @@
  */
 namespace Tests\Routing;
 
-use Framework\HTTP\Request;
-use Framework\HTTP\Response;
-use Framework\Routing\Route;
-use Framework\Routing\RouteActions;
-use Framework\Routing\Router;
-use Framework\Routing\RoutingException;
+use Aplus\Http\Request;
+use Aplus\Http\Response;
+use Aplus\Routing\Route;
+use Aplus\Routing\RouteActions;
+use Aplus\Routing\Router;
+use Aplus\Routing\RoutingException;
 use PHPUnit\Framework\TestCase;
 use Tests\Routing\Support\WithoutRouteActions;
 use Tests\Routing\Support\WithRouteActions;

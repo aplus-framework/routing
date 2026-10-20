@@ -9,11 +9,11 @@
  */
 namespace Tests\Routing\Debug;
 
-use Framework\HTTP\Request;
-use Framework\HTTP\Response;
-use Framework\Routing\Debug\RoutingCollector;
-use Framework\Routing\RouteCollection;
-use Framework\Routing\Router;
+use Aplus\Http\Request;
+use Aplus\Http\Response;
+use Aplus\Routing\Debug\RoutingCollector;
+use Aplus\Routing\RouteCollection;
+use Aplus\Routing\Router;
 use PHPUnit\Framework\TestCase;
 
 final class RoutingCollectorTest extends TestCase
@@ -31,6 +31,7 @@ final class RoutingCollectorTest extends TestCase
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['REQUEST_URI'] = '/contact';
         $_SERVER['HTTP_HOST'] = 'domain.tld';
+        $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
     }
 
     protected function makeRouter() : Router

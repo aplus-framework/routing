@@ -7,13 +7,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Framework\Routing;
+namespace Aplus\Routing;
 
+use Aplus\Http\Method;
+use Aplus\Http\Status;
 use BadMethodCallException;
 use Closure;
 use Error;
-use Framework\HTTP\Method;
-use Framework\HTTP\Status;
 use InvalidArgumentException;
 use LogicException;
 

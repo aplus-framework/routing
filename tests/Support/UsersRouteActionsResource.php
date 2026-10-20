@@ -9,11 +9,11 @@
  */
 namespace Tests\Routing\Support;
 
-use Framework\Routing\Attributes\Origin;
-use Framework\Routing\Attributes\Route;
-use Framework\Routing\Attributes\RouteNotFound;
-use Framework\Routing\ResourceInterface;
-use Framework\Routing\RouteActions;
+use Aplus\Routing\Attributes\Origin;
+use Aplus\Routing\Attributes\Route;
+use Aplus\Routing\Attributes\RouteNotFound;
+use Aplus\Routing\ResourceInterface;
+use Aplus\Routing\RouteActions;
 
 #[Origin('http://domain.com')]
 #[Origin('http://api.domain.xyz')]
