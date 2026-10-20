@@ -51,7 +51,7 @@
     "prefer-stable": true,
     "autoload": {
         "psr-4": {
-            "Framework\\Routing\\": "src/"
+            "Aplus\\Routing\\": "src/"
         }
     },
     "autoload-dev": {
