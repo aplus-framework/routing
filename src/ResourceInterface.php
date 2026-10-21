@@ -12,7 +12,7 @@ namespace Aplus\Routing;
 use Aplus\Http\Method;
 use Aplus\Http\ResponseHeader;
 use Aplus\Http\Status;
-use Aplus\Http\Traits\HeaderTrait;
+use Aplus\Http\Traits\Header;
 
 /**
  * Interface ResourceInterface.
@@ -49,7 +49,7 @@ interface ResourceInterface
      * the found results with pagination.
      *
      * @see Method::QUERY
-     * @see HeaderTrait::CONTENT_TYPE
+     * @see Header::CONTENT_TYPE
      *
      * @return mixed
      */
