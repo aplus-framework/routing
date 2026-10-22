@@ -48,10 +48,10 @@ Let's look at a complete example of the routing system:
 
 .. code-block:: php
 
-    use Framework\HTTP\Request;
-    use Framework\HTTP\Response;
-    use Framework\Routing\RouteCollection;
-    use Framework\Routing\Router;
+    use Aplus\Http\Request;
+    use Aplus\Http\Response;
+    use Aplus\Routing\RouteCollection;
+    use Aplus\Routing\Router;
     
     $request = new Request();
     $response = new Response($request);
@@ -127,7 +127,7 @@ Actions
 -------
 
 The router delivers route actions which can be a Closure or a
-instance of the **Framework\Routing\RouteActions** class.
+instance of the **Aplus\Routing\RouteActions** class.
 
 Let's see how to define a Closure for the path ``/posts/{int}``.
 
@@ -157,7 +157,7 @@ Actions can also be defined as strings. Following the format below:
 
     Class::method/arguments
 
-The Class must extend the **Framework\Routing\RouteActions** class and have
+The Class must extend the **Aplus\Routing\RouteActions** class and have
 the action method.
 
 The arguments start with the dollar sign and then have numbers that are
@@ -182,7 +182,7 @@ Let's see the class that serves this route:
 
 .. code-block:: php
 
-    use Framework\Routing\RouteActions;
+    use Aplus\Routing\RouteActions;
 
     class Posts extends RouteActions
     {
@@ -443,11 +443,11 @@ action and redirect to the route named ``access.login``:
 
 .. code-block:: php
 
-    use Framework\HTTP\Request;
-    use Framework\HTTP\Response;
-    use Framework\Routing\RouteActions;
-    use Framework\Routing\RouteCollection;
-    use Framework\Routing\Router;
+    use Aplus\Http\Request;
+    use Aplus\Http\Response;
+    use Aplus\Routing\RouteActions;
+    use Aplus\Routing\RouteCollection;
+    use Aplus\Routing\Router;
 
     class Admin extends RouteActions
     {
