@@ -29,6 +29,7 @@ registerArgumentsSet(
     'PATCH',
     'POST',
     'PUT',
+    'QUERY',
 );
 registerArgumentsSet(
     'placeholders',
