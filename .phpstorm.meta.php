@@ -11,15 +11,15 @@ namespace PHPSTORM_META;
 
 registerArgumentsSet(
     'redirect_codes',
-    \Framework\HTTP\Status::FOUND,
-    \Framework\HTTP\Status::MOVED_PERMANENTLY,
-    \Framework\HTTP\Status::MULTIPLE_CHOICES,
-    \Framework\HTTP\Status::NOT_MODIFIED,
-    \Framework\HTTP\Status::PERMANENT_REDIRECT,
-    \Framework\HTTP\Status::SEE_OTHER,
-    \Framework\HTTP\Status::SWITCH_PROXY,
-    \Framework\HTTP\Status::TEMPORARY_REDIRECT,
-    \Framework\HTTP\Status::USE_PROXY,
+    \Aplus\Http\Status::FOUND,
+    \Aplus\Http\Status::MOVED_PERMANENTLY,
+    \Aplus\Http\Status::MULTIPLE_CHOICES,
+    \Aplus\Http\Status::NOT_MODIFIED,
+    \Aplus\Http\Status::PERMANENT_REDIRECT,
+    \Aplus\Http\Status::SEE_OTHER,
+    \Aplus\Http\Status::SWITCH_PROXY,
+    \Aplus\Http\Status::TEMPORARY_REDIRECT,
+    \Aplus\Http\Status::USE_PROXY,
 );
 registerArgumentsSet(
     'methods',
@@ -48,22 +48,22 @@ registerArgumentsSet(
     '{uuid}',
 );
 expectedArguments(
-    \Framework\Routing\RouteCollection::redirect(),
+    \Aplus\Routing\RouteCollection::redirect(),
     2,
     argumentsSet('redirect_codes')
 );
 expectedArguments(
-    \Framework\Routing\RouteCollection::resource(),
+    \Aplus\Routing\RouteCollection::resource(),
     4,
     argumentsSet('placeholders')
 );
 expectedArguments(
-    \Framework\Routing\RouteCollection::presenter(),
+    \Aplus\Routing\RouteCollection::presenter(),
     4,
     argumentsSet('placeholders')
 );
 expectedArguments(
-    \Framework\Routing\Attributes\Route::__construct(),
+    \Aplus\Routing\Attributes\Route::__construct(),
     0,
     argumentsSet('methods')
 );
